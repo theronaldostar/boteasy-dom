@@ -1,20 +1,24 @@
 {
-  "name": "boteasy-dom",
-  "version": "1.0.1",
-  "description": "Esta documentação é inspirada no jQuery e desenvolvido exclusivamente para a plataforma Boteasy, mas está liberado o uso para quais quer outras aplicações.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/theronaldostar/boteasy-dom.git"
-  },
-  "keywords": ["boteasy-dom", "boteasy", "dom", ".net"],
-  "author": "Ronaldo S.",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/theronaldostar/boteasy-dom/issues"
-  },
-  "homepage": "https://github.com/theronaldostar/boteasy-dom#readme"
+	"name": "boteasy-dom",
+	"version": "1.0.1",
+	"description": "Esta documentação é inspirada no jQuery e desenvolvido exclusivamente para a plataforma Boteasy, mas está liberado o uso para quais quer outras aplicações.",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/theronaldostar/boteasy-dom.git"
+	},
+	"keywords": [
+		"boteasy-dom",
+		"boteasy",
+		"dom"
+	],
+	"author": "Ronaldo S.",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/theronaldostar/boteasy-dom/issues"
+	},
+	"homepage": "https://github.com/theronaldostar/boteasy-dom#readme"
 }

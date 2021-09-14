@@ -1,28 +1,29 @@
-/** @license Boteasy.net
-	* This robot/App was developed by Ronaldo for https://www.boteasy.net/
+/** @license Boteasy v1.0.3
+	* index.js 
+	*
+	* This library was developed by Ronaldo for https://www.boteasy.net/
 	* Copyright (c) since 2020 Boteasy, all rights reserved.
 */
+
 const DOM = document;
 const UDF = undefined;
 
-const DOMChange = (fn, t, v) => {
-	const props = {
-		html: {function: "innerHTML", value: v},
-		prop: {function: "disabled", value: JSON.parse(v)}
-	};
+const DOMChange = (func,t,v) => {
+	const _func = func === "html" ? "innerHTML" : "disabled";
+	const value = func === "html" ? v : JSON.parse(v);
 	const target = t.replace(/\s/g, "").split(",");
-	target.forEach((t, i) => {
+	target.forEach((t,i) => {
 		const element = DOM.querySelector(t);
-		if (element) element[props[fn].function] = props[fn].value;
+		if (element) element[_func] = value;
 	});
 };
 
-const DOMCss = (fn, t, v) => {
+const DOMCss = (func,t,v) => {
 	const target = t.replace(/\s/g, "").split(",");
 	const css = v.replace(/\s/g, "").split(",");
 	target.forEach((t, i) => {
 		const element = DOM.querySelector(t);
-		if (element) element.classList[fn](...css);
+		if (element) element.classList[func](...css);
 	});
 };
 
@@ -42,11 +43,11 @@ const app = {
 };
 
 const css = {
-	add: (t, v) => DOMCss("add", t, v),
-	remove: (t, v) => DOMCss("remove", t, v)
+	add: (t,v) => DOMCss("add", t, v),
+	remove: (t,v) => DOMCss("remove", t, v)
 };
-const html = (t, v) => DOMChange("html", t, v);
-const prop = (t, v) => DOMChange("prop", t, v);
+const html = (t,v) => DOMChange("html", t, v);
+const prop = (t,v) => DOMChange("prop", t, v);
 
 const tests = async (t, v) => {
 
@@ -116,28 +117,25 @@ const copy = (value) => {
 
 const request = (props) => {
 
-	let url = props.url === UDF || props.url === null || props.url === "" || props.url === {} ? `${window.location.origin}/` : props.url;
-	let method = props.method === UDF || props.method === null || props.method === "" || props.method === {} ? "GET" : (props.method).toUpperCase();
-	let headers = new Headers(props.headers === UDF || props.headers === null || props.headers === {} ? [] : props.headers);
-	let dataParams = new URLSearchParams(Object.entries(props.data === UDF || props.data === null || props.data === {} ? [] : props.data));
-
-	const dataType = props.dataType === UDF || props.dataType === null || props.dataType === "" || props.dataType === {} ? "json" : (props.dataType).toLowerCase();
-	const success = props.success === UDF || props.success === null || props.success === "" || props.success === {} ? () => {} : props.success;
-	const error = props.error === UDF || props.error === null || props.error === "" || props.error === {} ? (error) => console.error(error) : props.error;
-
+	const url = props.url ? props.url : null;
+	const method = props.method ? props.method.toUpperCase() : "GET";
+	const headers = new Headers(props.headers || {});
 	if (method !== "GET") headers.append("Content-Type", "application/x-www-form-urlencoded");
-	headers.append("Content-Type", "charset=utf-8");
-	dataParams = dataParams !== UDF && dataParams !== null && method === "GET" ? `?${dataParams.toString()}` : dataParams.toString();
+	const data = new URLSearchParams(props.data || {});
+	const params = method === "GET" ? `?${data.toString()}` : data.toString();
+	const dataType = props.dataType ? props.dataType.toLowerCase() : "json";
+	const success = props.success ? props.success : () => {};
+	const error = props.error ? props.error : (error) => console.error(error);
 
 	const cors = "//cors-anywhere.herokuapp.com/";
-	const endLink = method === "GET" ? dataParams : "";
-	const params = dataParams !== UDF && dataParams !== null && method !== "GET" ? dataParams : null;
-	const link = props.cors !== UDF && props.cors === true ? cors+url+endLink : url+endLink;
+	const endPoint = method === "GET" ? params : "";
+	const body = method !== "GET" ? params : null;
+	const link = props.cors ? cors+url+endPoint : url+endPoint;
 
-	let callback = {
+	const callback = {
 		responseText: UDF,
 		responseJSON: UDF,
-		type: "ethernet",
+		type: "connection",
 		status: "connection::ERROR",
 		statusText: "A technical fault has been detected and is already being fixed."
 	};
@@ -145,8 +143,9 @@ const request = (props) => {
 	fetch(link, {
 		method,
 		headers,
-		body: params
-	}).then(async (response) => {
+		body
+	})
+	.then(async (response) => {
 		if (!response.ok) {
 			let resolve = response.text();
 			callback.type = response.type;
@@ -159,7 +158,9 @@ const request = (props) => {
 			});
 		};
 		return response[dataType]();
-	}).then(success).catch((data) => error({...callback, data}));
+	})
+	.then(success)
+	.catch((data) => error({...callback, data}));
 };
 
 exports.app = app;
