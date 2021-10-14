@@ -1,4 +1,4 @@
-/** @license Boteasy v1.0.3
+/** @license Boteasy v1.0.4
  * index.js
  * 
  * This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform,
@@ -7,6 +7,7 @@
  * Copyright (c) since 2020 Boteasy, all rights reserved.
 */
 const dom = document;
+const nl = null;
 const undef = undefined;
 const link = window.location;
 
@@ -61,7 +62,7 @@ const css = (func, tar, val) => {
 };
 
 const wait = (action) => {
-	const elements = dom.querySelectorAll("html, head, body, #root, #App");
+	const elements = dom.querySelectorAll("html, head, body, #root, #app");
 	const props = action && "none" || "all";
 	elements.forEach((event, i) => event.style = `pointer-events: ${props}`);
 };
@@ -126,7 +127,7 @@ const tests = async (tar, val) => {
 
 const request = (event) => {
 
-	const url = event?.url || null;
+	const url = event?.url || nl;
 	const method = event?.method.toUpperCase() || "GET";
 	const headers = new Headers(event?.headers || {});
 	if (method !== "GET") headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -138,7 +139,7 @@ const request = (event) => {
 
 	const cors = "//cors-anywhere.herokuapp.com/";
 	const endPoint = method === "GET" ? params : "";
-	const body = method === "GET" ? null : params;
+	const body = method === "GET" ? nl : params;
 	const link = event?.cors ? cors + url + endPoint : url + endPoint;
 
 	const callback = {
@@ -146,16 +147,16 @@ const request = (event) => {
 		responseJSON: undef,
 		type: "connection",
 		status: "connection::ERROR",
-		statusText: "A technical fault has been detected and is already being fixed."
+		statusText: "A technical fault has been detected and is already being fixed"
 	};
 
-	fetch(link, { method, headers, body }).then(async res => {
+	fetch(link, { method, headers, body }).then(async (res) => {
 		if (!res.ok) {
 			let resolve = res.text();
 			callback.type = res.type;
 			callback.status = res.status;
 			callback.statusText = res.statusText;
-			await resolve.then(event => {
+			await resolve.then((event) => {
 				callback.responseText = event;
 				callback.responseJSON = JSON.parse(event);
 				throw callback;
@@ -165,6 +166,10 @@ const request = (event) => {
 	}).then(success).catch(data => error({...callback, data}));
 };
 
+exports.dom = dom;
+exports.nl = nl;
+exports.undef = undef;
+exports.link = link;
 exports.coins = coins;
 exports.app = app;
 exports.html = html;
