@@ -1,4 +1,4 @@
-/** @license Boteasy v1.0.4
+/** @license Boteasy v1.0.5
  * index.js
  * 
  * This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform,
@@ -10,6 +10,7 @@ const dom = document;
 const nl = null;
 const undef = undefined;
 const link = window.location;
+const local = localStorage;
 
 const coins = {
 	USDT: "₮ether",
@@ -34,10 +35,13 @@ const app = {
 		code: "Você deve gerar um código de verificação antes de efetuar qual quer ação.",
 		data: "O dado que irá ser alterado deve ser diferente do atual, modifique-o!",
 		null: "Não foi encontrado dados/informações para que possa ser mostradas atualmente nesta aba/pagina.",
+		notfound: "Oops, parece que essa pagina que você tentou acessar, foi removida do servidor."
 	}
 };
 
-const domSplit = (event) => event.replace(/\s/g, "").split(",");
+const domSplit = (event) => {
+	event.replace(/\s/g, "").split(",");
+};
 
 const domState = (func, tar, val) => {
 	const _ = func ? "innerHTML" : "disabled";
@@ -68,9 +72,11 @@ const wait = (action) => {
 };
 
 const copy = (value) => {
+
 	const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
 	const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
 	const fakeElement = dom.createElement("textarea");
+
 	fakeElement.style.fontSize = "12pt";
 	fakeElement.style.border = "0";
 	fakeElement.style.padding = "0";
@@ -80,9 +86,12 @@ const copy = (value) => {
 	fakeElement.style.top = `${yPosition}px`;
 	fakeElement.setAttribute("readonly", "");
 	fakeElement.value = value;
+
 	dom.body.appendChild(fakeElement);
+
 	fakeElement.focus();
 	fakeElement.select();
+
 	dom.execCommand("copy");
 	dom.body.removeChild(fakeElement);
 };
@@ -111,7 +120,7 @@ const tests = async (tar, val) => {
 		return result;
 	} else if (element === "birthday") {
 		const birthday = val.split("/"),day = birthday[0],month = birthday[1],year = birthday[2];
-		if (val.replace(/[^\d]/g, "").toString().length !== 8) {
+		if (val.replace(/[^\d]/g, "").toString()?.length !== 8) {
 			return false;
 		} else if (day === undef || day <= 0 || day > 31) {
 			return false;
@@ -140,14 +149,14 @@ const request = (event) => {
 	const cors = "//cors-anywhere.herokuapp.com/";
 	const endPoint = method === "GET" ? params : "";
 	const body = method === "GET" ? nl : params;
-	const link = event?.cors ? cors + url + endPoint : url + endPoint;
+	const link = event?.cors ? cors+url+endPoint : url+endPoint;
 
 	const callback = {
 		responseText: undef,
 		responseJSON: undef,
 		type: "connection",
 		status: "connection::ERROR",
-		statusText: "A technical fault has been detected and is already being fixed"
+		statusText: "A technical fault has been detected and is already being fixed!"
 	};
 
 	fetch(link, { method, headers, body }).then(async (res) => {
@@ -170,6 +179,7 @@ exports.dom = dom;
 exports.nl = nl;
 exports.undef = undef;
 exports.link = link;
+exports.local = local;
 exports.coins = coins;
 exports.app = app;
 exports.html = html;

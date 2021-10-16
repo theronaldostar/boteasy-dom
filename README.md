@@ -40,6 +40,13 @@ Boteasy.nl;
 Boteasy.link;
 ```
 
+# .local:
+* localStorage
+
+```shell
+Boteasy.local;
+```
+
 # .css(true|false, target, value):
 * This function is for you to add or remove class on one or multiple elements;
 
