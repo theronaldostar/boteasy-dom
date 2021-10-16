@@ -1,4 +1,4 @@
-/** @license Boteasy v1.0.5
+/** @license Boteasy v1.0.6-beta
  * index.js
  * 
  * This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform,
@@ -7,10 +7,9 @@
  * Copyright (c) since 2020 Boteasy, all rights reserved.
 */
 const dom = document;
-const nl = null;
 const undef = undefined;
 const link = window.location;
-const local = localStorage;
+const storage = window.localStorage;
 
 const coins = {
 	USDT: "₮ether",
@@ -39,39 +38,44 @@ const app = {
 	}
 };
 
-const domSplit = (event) => {
-	event.replace(/\s/g, "").split(",");
+function domSplit(event) {
+	return event.replace(/\s/g, "").split(",");
 };
 
-const domState = (func, tar, val) => {
+function domState(func, tar, val) {
 	const _ = func ? "innerHTML" : "disabled";
 	const value = func ? val : JSON.parse(val);
 	const target = domSplit(tar);
-	target.forEach((tar, i) => {
-		const selector = dom.querySelector(tar);
+	target.forEach((t, i) => {
+		const selector = dom.querySelector(t);
 		if (selector) selector[_] = value;
 	});
 };
 
-const html = (tar, val) => domState("html", tar, val);
-const prop = (tar, val) => domState("prop", tar, val);
+function html(tar, val) {
+	domState("html", tar, val);
+};
 
-const css = (func, tar, val) => {
+function prop(tar, val) {
+	domState("prop", tar, val);
+};
+
+function css(func, tar, val) {
 	const target = domSplit(tar);
 	const name = domSplit(val);
-	target.forEach((tar, i) => {
-		const selector = dom.querySelector(tar);
+	target.forEach(target => {
+		const selector = dom.querySelector(target);
 		if (selector) selector.classList[func ? "add" : "remove"](...name);
 	});
 };
 
-const wait = (action) => {
+function wait(action) {
 	const elements = dom.querySelectorAll("html, head, body, #root, #app");
 	const props = action && "none" || "all";
-	elements.forEach((event, i) => event.style = `pointer-events: ${props}`);
+	elements.forEach(event => event.style = `pointer-events: ${props}`);
 };
 
-const copy = (value) => {
+function copy(value) {
 
 	const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
 	const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
@@ -96,31 +100,36 @@ const copy = (value) => {
 	dom.body.removeChild(fakeElement);
 };
 
-const tests = async (tar, val) => {
+async function tests(tar, val) {
+
 	const element = tar.replace(/\s/g, "");
+
 	const object = {
 		fullname: /[A-Za-z][ ][A-Za-z]/gi,
 		email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/,
 		password: /^(?=.*[\d])(?=.*[A-Za-z])([\w!@#$%^&*]){6,}$/,
 		phone: /\d{2}[ ]\d{5}-\d{4}/
 	};
+
 	if (object[element] !== undef) {
 		return await object[element].test(val);
 	} else if (element === "CPF") {
 		const userCPF = val.replace(/\D/g, "");
 		let result = true;
 		if (userCPF.toString().length !== 11 || /^(\d)\1{10}$/.test(userCPF)) return false;
-		[9, 10].forEach(res => {
+		[9, 10].forEach(response => {
 			let sum = 0, answer;
-			userCPF.split(/(?=)/).splice(0, res).forEach((e, i) => sum += parseInt(e) * ((res+2) - (i+1)));
+			userCPF.split(/(?=)/).splice(0, response).forEach((e, i) => sum += parseInt(e) * ((response+2) - (i+1)));
 			answer = sum%11;
 			answer = answer < 2 ? 0 : 11-answer;
-			if (answer !== Number(userCPF.substring(res, res+1))) result = false;
+			if (answer !== Number(userCPF.substring(response, response+1))) result = false;
 		});
 		return result;
 	} else if (element === "birthday") {
-		const birthday = val.split("/"),day = birthday[0],month = birthday[1],year = birthday[2];
-		if (val.replace(/[^\d]/g, "").toString()?.length !== 8) {
+
+		const birthday = val.split("/"), day = birthday[0], month = birthday[1], year = birthday[2];
+
+		if (val.replace(/[^\d]/g, "").toString().length !== 8) {
 			return false;
 		} else if (day === undef || day <= 0 || day > 31) {
 			return false;
@@ -134,9 +143,9 @@ const tests = async (tar, val) => {
 	};
 };
 
-const request = (event) => {
+function request(event) {
 
-	const url = event?.url || nl;
+	const url = event?.url || null;
 	const method = event?.method.toUpperCase() || "GET";
 	const headers = new Headers(event?.headers || {});
 	if (method !== "GET") headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -148,38 +157,37 @@ const request = (event) => {
 
 	const cors = "//cors-anywhere.herokuapp.com/";
 	const endPoint = method === "GET" ? params : "";
-	const body = method === "GET" ? nl : params;
-	const link = event?.cors ? cors+url+endPoint : url+endPoint;
+	const body = method === "GET" ? null : params;
+	const link = event?.cors ? cors + url + endPoint : url + endPoint;
 
 	const callback = {
 		responseText: undef,
 		responseJSON: undef,
 		type: "connection",
 		status: "connection::ERROR",
-		statusText: "A technical fault has been detected and is already being fixed!"
+		statusText: "A technical fault has been detected and is already being fixed."
 	};
 
-	fetch(link, { method, headers, body }).then(async (res) => {
-		if (!res.ok) {
-			let resolve = res.text();
-			callback.type = res.type;
-			callback.status = res.status;
-			callback.statusText = res.statusText;
+	fetch(link, { method, headers, body }).then(async (response) => {
+		if (!response.ok) {
+			let resolve = response.text();
+			callback.type = response.type;
+			callback.status = response.status;
+			callback.statusText = response.statusText;
 			await resolve.then((event) => {
 				callback.responseText = event;
 				callback.responseJSON = JSON.parse(event);
 				throw callback;
 			});
 		};
-		return res[dataType]();
+		return response[dataType]();
 	}).then(success).catch(data => error({...callback, data}));
 };
 
 exports.dom = dom;
-exports.nl = nl;
 exports.undef = undef;
 exports.link = link;
-exports.local = local;
+exports.storage = storage;
 exports.coins = coins;
 exports.app = app;
 exports.html = html;

@@ -12,6 +12,7 @@ npm i boteasy-dom
 ```shell
 import Boteasy from "boteasy-dom";
 ```
+
 # .dom:
 * document
 
@@ -26,13 +27,6 @@ Boteasy.dom;
 Boteasy.undef;
 ```
 
-# .nl:
-* null
-
-```shell
-Boteasy.nl;
-```
-
 # .link:
 * window.location
 
@@ -40,22 +34,22 @@ Boteasy.nl;
 Boteasy.link;
 ```
 
-# .local:
-* localStorage
+# .storage:
+* window.localStorage
 
 ```shell
-Boteasy.local;
+Boteasy.storage;
 ```
 
 # .css(true|false, target, value):
 * This function is for you to add or remove class on one or multiple elements;
 
 ```shell
-Boteasy.css(true, "input", "active"); /* add */
+Boteasy.css(true, "input", "active");
 ```
 
 ```shell
-Boteasy.css(false, "input", "active"); /* remove */
+Boteasy.css(false, "input", "active");
 ```
 
 # .html(target, value):
@@ -80,7 +74,7 @@ Boteasy.prop("input", false);
 * This function serves to perform input tests;
 
 ```shell
-Boteasy.tests("input#CPF", "000.000.000-00").then((status) => {});
+Boteasy.tests("input#CPF", "000.000.000-00").then(status => {});
 ```
 
 # wait(target, true|false):
@@ -110,7 +104,7 @@ Boteasy.request({
 	method: "GET",
 	data: {},
 	dataType: "json",
-	cors: false, /* true|false */
+	cors: false,
 	success: () => {},
 	error: () => {}
 });
