@@ -1,4 +1,4 @@
-/** @license Boteasy v1.0.6-beta
+/** @license Boteasy v1.0.6
  * index.js
  * 
  * This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform,
@@ -38,13 +38,11 @@ const app = {
 	}
 };
 
-function domSplit(event) {
-	return event.replace(/\s/g, "").split(",");
-};
+const domSplit = event => event.replace(/\s/g, "").split(",");
 
-function domState(func, tar, val) {
-	const _ = func ? "innerHTML" : "disabled";
-	const value = func ? val : JSON.parse(val);
+const domState = (func, tar, val) => {
+	const _ = func === "html" ? "innerHTML" : "disabled";
+	const value = func === "html" ? val : JSON.parse(val);
 	const target = domSplit(tar);
 	target.forEach((t, i) => {
 		const selector = dom.querySelector(t);
@@ -52,15 +50,11 @@ function domState(func, tar, val) {
 	});
 };
 
-function html(tar, val) {
-	domState("html", tar, val);
-};
+const html = (tar, val) => domState("html", tar, val);
 
-function prop(tar, val) {
-	domState("prop", tar, val);
-};
+const prop = (tar, val) => domState("prop", tar, val);
 
-function css(func, tar, val) {
+const css = (func, tar, val) => {
 	const target = domSplit(tar);
 	const name = domSplit(val);
 	target.forEach(target => {
@@ -69,13 +63,13 @@ function css(func, tar, val) {
 	});
 };
 
-function wait(action) {
+const wait = action => {
 	const elements = dom.querySelectorAll("html, head, body, #root, #app");
 	const props = action && "none" || "all";
 	elements.forEach(event => event.style = `pointer-events: ${props}`);
 };
 
-function copy(value) {
+const copy = value => {
 
 	const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
 	const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
@@ -100,7 +94,7 @@ function copy(value) {
 	dom.body.removeChild(fakeElement);
 };
 
-async function tests(tar, val) {
+const tests = async (tar, val) => {
 
 	const element = tar.replace(/\s/g, "");
 
@@ -143,7 +137,7 @@ async function tests(tar, val) {
 	};
 };
 
-function request(event) {
+const request = event => {
 
 	const url = event?.url || null;
 	const method = event?.method.toUpperCase() || "GET";
@@ -168,13 +162,13 @@ function request(event) {
 		statusText: "A technical fault has been detected and is already being fixed."
 	};
 
-	fetch(link, { method, headers, body }).then(async (response) => {
+	fetch(link, { method, headers, body }).then(async response => {
 		if (!response.ok) {
 			let resolve = response.text();
 			callback.type = response.type;
 			callback.status = response.status;
 			callback.statusText = response.statusText;
-			await resolve.then((event) => {
+			await resolve.then(event => {
 				callback.responseText = event;
 				callback.responseJSON = JSON.parse(event);
 				throw callback;
