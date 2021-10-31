@@ -10,102 +10,130 @@ npm i boteasy-dom
 # Import:
 
 ```shell
-import Boteasy from "boteasy-dom";
+import $ from "boteasy-dom";
+```
+
+# .version:
+* a boteasy-dom version
+
+```shell
+$.version;
 ```
 
 # .dom:
 * document
 
 ```shell
-Boteasy.dom;
+$.dom;
 ```
 
 # .undef:
 * undefined
 
 ```shell
-Boteasy.undef;
+$.undef;
 ```
 
 # .link:
 * window.location
 
 ```shell
-Boteasy.link;
+$.link;
 ```
 
 # .storage:
 * window.localStorage
 
 ```shell
-Boteasy.storage;
+$.storage;
 ```
 
-# .css(true|false, target, value):
+# .css():
 * This function is for you to add or remove class on one or multiple elements;
 
 ```shell
-Boteasy.css(true, "input", "active");
+$.css("input").add("class");
 ```
 
 ```shell
-Boteasy.css(false, "input", "active");
+$.css("input").remove("class");
 ```
 
 # .html(target, value):
 * This function serves to add or remove an element in the DOM;
 
 ```shell
-Boteasy.html("div", "Just a test!");
+$.html("label", "Just a test!");
 ```
 
-# .prop(target, true|false):
+# .prop(target, bolean):
 * This function serves to enable/disable elements;
 
 ```shell
-Boteasy.prop("input", true);
+$.prop("input", true);
 ```
 
 ```shell
-Boteasy.prop("input", false);
+$.prop("input", false);
 ```
 
 # .tests(target, value):
 * This function serves to perform input tests;
 
 ```shell
-Boteasy.tests("input#CPF", "000.000.000-00").then(status => {});
+$.tests("input#fullname", "your fullname").then(status => {});
 ```
 
-# wait(target, true|false):
+# wait(target, bolean):
 * This function serves to disable the entire site/App so that the user does not make multiple clicks or leave the page during a request;
 
 ```shell
-Boteasy.wait(true);
+$.wait(true);
 ```
 
 ```shell
-Boteasy.wait(false);
+$.wait(false);
 ```
 
 # .copy(value):
 * This function serves to copy a text to a clipboard;
 
 ```shell
-Boteasy.copy("Just a test!");
+$.copy("Just a test!");
 ```
 
 # .request({}):
 * This function serves to perform AJAX requests;
 
 ```shell
-Boteasy.request({
+$.request({
 	url: "",
 	method: "GET",
+	headers: {},
 	data: {},
 	dataType: "json",
 	cors: false,
 	success: () => {},
 	error: () => {}
 });
+```
+
+# .createRoot():
+* This function serves to add or remove elements or routes from the document;
+
+```shell
+const container = $.dom.querySelector("#modal");
+const modal = $.createRoot(container);
+```
+
+* Render the element/route in the document;
+
+```shell
+modal.render(<>Boteasy</>);
+```
+
+* Remove the element/route in the document;
+
+```shell
+modal.unmount();
 ```

@@ -1,4 +1,4 @@
-/** @license Boteasy v1.0.6
+/** @license boteasy-dom
  * index.js
  * 
  * This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform,
@@ -6,6 +6,9 @@
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
 */
+"use strict";
+
+const version = "1.0.7-experimental-0-20211031";
 const dom = document;
 const undef = undefined;
 const link = window.location;
@@ -38,33 +41,54 @@ const app = {
 	}
 };
 
-const domSplit = event => event.replace(/\s/g, "").split(",");
+const setState = (func, tar, val) => {
 
-const domState = (func, tar, val) => {
+	const setSplit = event => event.replace(/\s/g, "").split(",");
+
 	const _ = func === "html" ? "innerHTML" : "disabled";
 	const value = func === "html" ? val : JSON.parse(val);
-	const target = domSplit(tar);
+	const target = setSplit(tar);
+
 	target.forEach((t, i) => {
 		const selector = dom.querySelector(t);
 		if (selector) selector[_] = value;
 	});
 };
 
-const html = (tar, val) => domState("html", tar, val);
+const html = (tar, val) => setState("html", tar, val);
 
-const prop = (tar, val) => domState("prop", tar, val);
+const prop = (tar, val) => setState("prop", tar, val);
 
-const css = (func, tar, val) => {
-	const target = domSplit(tar);
-	const name = domSplit(val);
-	target.forEach(target => {
-		const selector = dom.querySelector(target);
-		if (selector) selector.classList[func ? "add" : "remove"](...name);
-	});
+const css = target => {
+
+	const setSplit = event => event.replace(/\s/g, "").split(",");
+
+	class BoteasyCss {
+		constructor(target) {
+			this.target = setSplit(target);
+			this.add = this.add.bind(this);
+			this.remove = this.remove.bind(this);
+		};
+		add(value) {
+			const name = setSplit(value);
+			this.target.forEach((t, i) => {
+				const selector = dom.querySelector(t);
+				selector && selector.classList.add(...name);
+			});
+		};
+		remove(value) {
+			const name = setSplit(value);
+			this.target.forEach((t, i) => {
+				const selector = dom.querySelector(t);
+				selector && selector.classList.remove(...name);
+			});
+		};
+	};
+	return new BoteasyCss(target);
 };
 
 const wait = action => {
-	const elements = dom.querySelectorAll("html, head, body, #root, #app");
+	const elements = dom.querySelectorAll("html, head, body");
 	const props = action && "none" || "all";
 	elements.forEach(event => event.style = `pointer-events: ${props}`);
 };
@@ -178,6 +202,37 @@ const request = event => {
 	}).then(success).catch(data => error({...callback, data}));
 };
 
+const createRoot = target => {
+	class BoteasyRoot {
+		constructor(target) {
+			this.target = target;
+			this.render = this.render.bind(this);
+			this.unmount = this.unmount.bind(this);
+			this.state = {
+				target,
+				component: null
+			};
+		};
+		render(component) {
+			this.state.component = component;
+			if (this.state.target && !this.state.component) {
+				component && this.state.target.appendChild(component);
+			} else {
+				throw new Error("Cannot render another element at this time as another element has already been rendered by .createRoot() in this instance.");
+			};
+		};
+		unmount() {
+			if (this.state.target && this.state.component) {
+				this.state.target.removeChild(this.state.component);
+			} else {
+				throw new Error("Oops. We didn't find any elements rendered by this instance.");
+			};
+		};
+	};
+	return new BoteasyRoot(target);
+};
+
+exports.version = version;
 exports.dom = dom;
 exports.undef = undef;
 exports.link = link;
@@ -191,3 +246,4 @@ exports.wait = wait;
 exports.copy = copy;
 exports.tests = tests;
 exports.request = request;
+exports.createRoot = createRoot;

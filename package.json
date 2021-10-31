@@ -1,6 +1,6 @@
 {
 	"name": "boteasy-dom",
-	"version": "1.0.6",
+	"version": "1.0.7-experimental-0-20211031",
 	"description": "This document is inspired by jQuery and developed exclusively for the Boteasy platform, but can be used on other platforms.",
 	"main": "index.js",
 	"author": "Ronaldo S.",
