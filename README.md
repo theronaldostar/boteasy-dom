@@ -1,5 +1,5 @@
 # boteasy-dom
-* This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms.
+* This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms.
 
 # How to use?
 
@@ -7,106 +7,129 @@
 npm i boteasy-dom
 ```
 
+# How to use JSX?
+* If you want to use jsx and want to use our renderer, use this in the file:
+
+```shell
+/*
+	@jsx Boteasy.createElement
+	@jsxFrag Boteasy.Fragment
+*/
+```
+
 # Import:
 
 ```shell
-import $ from "boteasy-dom";
+import Boteasy from "boteasy-dom";
+/*
+	@jsx Boteasy.createElement
+	@jsxFrag Boteasy.Fragment
+	Tells babel to use Boteasy.createElement for JSX.
+	See how to use globally: https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#usage
+*/
 ```
 
 # .version:
 * a boteasy-dom version
 
 ```shell
-$.version;
+Boteasy.version;
+```
+
+# .Fragment:
+* Fragment for components
+
+```shell
+Boteasy.Fragment;
 ```
 
 # .dom:
 * document
 
 ```shell
-$.dom;
+Boteasy.dom;
 ```
 
 # .undef:
 * undefined
 
 ```shell
-$.undef;
+Boteasy.undef;
 ```
 
 # .link:
 * window.location
 
 ```shell
-$.link;
+Boteasy.link;
 ```
 
 # .storage:
 * window.localStorage
 
 ```shell
-$.storage;
+Boteasy.storage;
 ```
 
 # .css():
 * This function is for you to add or remove class on one or multiple elements;
 
 ```shell
-$.css("input").add("class");
+Boteasy.css.add("input", "class");
 ```
 
 ```shell
-$.css("input").remove("class");
+Boteasy.css.remove("input", "class");
 ```
 
 # .html(target, value):
 * This function serves to add or remove an element in the DOM;
 
 ```shell
-$.html("label", "Just a test!");
+Boteasy.html("label", "Just a test!");
 ```
 
 # .prop(target, bolean):
 * This function serves to enable/disable elements;
 
 ```shell
-$.prop("input", true);
+Boteasy.prop("input", true);
 ```
 
 ```shell
-$.prop("input", false);
+Boteasy.prop("input", false);
 ```
 
 # .tests(target, value):
 * This function serves to perform input tests;
 
 ```shell
-$.tests("input#fullname", "your fullname").then(status => {});
+Boteasy.tests("input#fullname", "your fullname").then(status => {});
 ```
 
 # wait(target, bolean):
 * This function serves to disable the entire site/App so that the user does not make multiple clicks or leave the page during a request;
 
 ```shell
-$.wait(true);
+Boteasy.wait(true);
 ```
 
 ```shell
-$.wait(false);
+Boteasy.wait(false);
 ```
 
 # .copy(value):
 * This function serves to copy a text to a clipboard;
 
 ```shell
-$.copy("Just a test!");
+Boteasy.copy("Just a test!");
 ```
 
 # .request({}):
 * This function serves to perform AJAX requests;
 
 ```shell
-$.request({
+Boteasy.request({
 	url: "",
 	method: "GET",
 	headers: {},
@@ -118,21 +141,37 @@ $.request({
 });
 ```
 
-# .createRoot():
-* This function serves to add or remove elements or routes from the document;
+# .createElement();
+* This function serves to create elements to be rendered by Boteasy-dom;
 
 ```shell
-const container = $.dom.querySelector("#modal");
-const modal = $.createRoot(container);
+Boteasy.createElement(Boteasy.Fragment, null,
+	Boteasy.createElement("input", {type: "email", className: "boteasy", style: {color: "#fff", "font-weight": "bold"}})
+);
 ```
 
-* Render the element/route in the document;
+# .createRoot():
+* This function serves to create a route to Boteasy-dom,
+* Send the second parameter as  true to give permission to hydrate;
+
+```shell
+const container = Boteasy.dom.querySelector("#modal");
+const modal = Boteasy.createRoot(container, true);
+```
+
+* Render the element in the root;
 
 ```shell
 modal.render(<>Boteasy</>);
 ```
 
-* Remove the element/route in the document;
+* hydrate the element in the root;
+
+```shell
+modal.hydrate();
+```
+
+* Remove the element in the root;
 
 ```shell
 modal.unmount();

@@ -6,244 +6,327 @@
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
 */
-"use strict";
+(function (global, factory) {
+	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
+	typeof define === "function" && define.amd ? define(["exports"], factory) :
+	(global = global || self, factory(global.Boteasy = {}));
+}(this, (function(exports) {
 
-const version = "1.0.7-experimental-0-20211031";
-const dom = document;
-const undef = undefined;
-const link = window.location;
-const storage = window.localStorage;
+	"use strict";
 
-const coins = {
-	USDT: "₮ether",
-	BTC: "₿itcoin",
-	BCH: "₿itcoin Cash",
-	ETH: "Ξthereum",
-	LTC: "Łitecoin",
-	XRP: "Ripple",
-	BNB: "Binance Coin",
-	DOGE: "Đogecoin",
-	ADA: "Cardano"
-};
+	const instanceKey = `isBoteasyRoot-${Math.random().toString(36).slice(2)}`;
+	const version = "0.0.0-experimental-l3dtb2q4upq";
+	const Fragment = 0xeacb;
+	const dom = document;
+	const undef = undefined;
+	const link = window.location;
+	const storage = window.localStorage;
 
-const app = {
-	api: {
-		local: `${link.protocol}//${link.hostname}/api/index`,
-		binance: `${link.protocol}//api.binance.com/api/v3/`
-	},
-	message: {
-		connection: "Detectamos uma falha técnica que já está sendo consertada.",
-		input: "Você deve preencher todos os campos corretamente!",
-		code: "Você deve gerar um código de verificação antes de efetuar qual quer ação.",
-		data: "O dado que irá ser alterado deve ser diferente do atual, modifique-o!",
-		null: "Não foi encontrado dados/informações para que possa ser mostradas atualmente nesta aba/pagina.",
-		notfound: "Oops, parece que essa pagina que você tentou acessar, foi removida do servidor."
-	}
-};
-
-const setState = (func, tar, val) => {
-
-	const setSplit = event => event.replace(/\s/g, "").split(",");
-
-	const _ = func === "html" ? "innerHTML" : "disabled";
-	const value = func === "html" ? val : JSON.parse(val);
-	const target = setSplit(tar);
-
-	target.forEach((t, i) => {
-		const selector = dom.querySelector(t);
-		if (selector) selector[_] = value;
-	});
-};
-
-const html = (tar, val) => setState("html", tar, val);
-
-const prop = (tar, val) => setState("prop", tar, val);
-
-const css = target => {
-
-	const setSplit = event => event.replace(/\s/g, "").split(",");
-
-	class BoteasyCss {
-		constructor(target) {
-			this.target = setSplit(target);
-			this.add = this.add.bind(this);
-			this.remove = this.remove.bind(this);
-		};
-		add(value) {
-			const name = setSplit(value);
-			this.target.forEach((t, i) => {
-				const selector = dom.querySelector(t);
-				selector && selector.classList.add(...name);
-			});
-		};
-		remove(value) {
-			const name = setSplit(value);
-			this.target.forEach((t, i) => {
-				const selector = dom.querySelector(t);
-				selector && selector.classList.remove(...name);
-			});
-		};
-	};
-	return new BoteasyCss(target);
-};
-
-const wait = action => {
-	const elements = dom.querySelectorAll("html, head, body");
-	const props = action && "none" || "all";
-	elements.forEach(event => event.style = `pointer-events: ${props}`);
-};
-
-const copy = value => {
-
-	const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
-	const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
-	const fakeElement = dom.createElement("textarea");
-
-	fakeElement.style.fontSize = "12pt";
-	fakeElement.style.border = "0";
-	fakeElement.style.padding = "0";
-	fakeElement.style.margin = "0";
-	fakeElement.style.position = "absolute";
-	fakeElement.style[isRTL ? "right" : "left"] = "-9999px";
-	fakeElement.style.top = `${yPosition}px`;
-	fakeElement.setAttribute("readonly", "");
-	fakeElement.value = value;
-
-	dom.body.appendChild(fakeElement);
-
-	fakeElement.focus();
-	fakeElement.select();
-
-	dom.execCommand("copy");
-	dom.body.removeChild(fakeElement);
-};
-
-const tests = async (tar, val) => {
-
-	const element = tar.replace(/\s/g, "");
-
-	const object = {
-		fullname: /[A-Za-z][ ][A-Za-z]/gi,
-		email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/,
-		password: /^(?=.*[\d])(?=.*[A-Za-z])([\w!@#$%^&*]){6,}$/,
-		phone: /\d{2}[ ]\d{5}-\d{4}/
+	function setSplit(string) {
+		return string.replace(/\s/g, "").split(",");
 	};
 
-	if (object[element] !== undef) {
-		return await object[element].test(val);
-	} else if (element === "CPF") {
-		const userCPF = val.replace(/\D/g, "");
-		let result = true;
-		if (userCPF.toString().length !== 11 || /^(\d)\1{10}$/.test(userCPF)) return false;
-		[9, 10].forEach(response => {
-			let sum = 0, answer;
-			userCPF.split(/(?=)/).splice(0, response).forEach((e, i) => sum += parseInt(e) * ((response+2) - (i+1)));
-			answer = sum%11;
-			answer = answer < 2 ? 0 : 11-answer;
-			if (answer !== Number(userCPF.substring(response, response+1))) result = false;
+	function setProp(func, tar, val) {
+		const data = {
+			html: {action: "innerHTML", value: val || null},
+			prop: {action: "disabled", value: typeof val === "string" ? JSON.parse(val) : val}
+		};
+		setSplit(tar).map(element => {
+			const selector = dom.querySelector(element);
+			console.info(selector, data[func])
+			if (selector) selector[data[func].action] = data[func].value;
 		});
-		return result;
-	} else if (element === "birthday") {
+	};
 
-		const birthday = val.split("/"), day = birthday[0], month = birthday[1], year = birthday[2];
-
-		if (val.replace(/[^\d]/g, "").toString().length !== 8) {
-			return false;
-		} else if (day === undef || day <= 0 || day > 31) {
-			return false;
-		} else if (month === undef || month <= 0 || month > 12) {
-			return false;
-		} else if (year === undef || year <= 0 || year <= 1930 || year >= 2008) {
-			return false;
-		} else if (day <= 31 && month <= 12 && year < new Date().getFullYear()) {
-			return true;
+	const css = (function() {
+		function toApply(action, element, val) {
+			const selector = dom.querySelector(element);
+			selector && selector.classList[action](...setSplit(val));
 		};
-	};
-};
+		const add = (tar, val) => setSplit(tar).map(element => toApply("add", element, val));
+		const remove = (tar, val) => setSplit(tar).map(element => toApply("remove", element, val));
+		return { add, remove };
+	})();
 
-const request = event => {
-
-	const url = event?.url || null;
-	const method = event?.method.toUpperCase() || "GET";
-	const headers = new Headers(event?.headers || {});
-	if (method !== "GET") headers.append("Content-Type", "application/x-www-form-urlencoded");
-	const data = new URLSearchParams(event?.data || {});
-	const params = method === "GET" ? `?${data.toString()}` : data.toString();
-	const dataType = event?.dataType.toLowerCase() || "json";
-	const success = event?.success || function() {};
-	const error = event?.error || function(error) {throw Error(error)};
-
-	const cors = "//cors-anywhere.herokuapp.com/";
-	const endPoint = method === "GET" ? params : "";
-	const body = method === "GET" ? null : params;
-	const link = event?.cors ? cors + url + endPoint : url + endPoint;
-
-	const callback = {
-		responseText: undef,
-		responseJSON: undef,
-		type: "connection",
-		status: "connection::ERROR",
-		statusText: "A technical fault has been detected and is already being fixed."
+	function html(tar, val) {
+		setProp("html", tar, val);
 	};
 
-	fetch(link, { method, headers, body }).then(async response => {
-		if (!response.ok) {
-			let resolve = response.text();
-			callback.type = response.type;
-			callback.status = response.status;
-			callback.statusText = response.statusText;
-			await resolve.then(event => {
-				callback.responseText = event;
-				callback.responseJSON = JSON.parse(event);
-				throw callback;
+	function prop(tar, val) {
+		setProp("prop", tar, val);
+	};
+
+	function awit(action) {
+		const selectorAll = dom.querySelectorAll("html, head, body");
+		const props = typeof action === "string" ? JSON.parse(action) : action;
+		selectorAll.forEach(element => element.style["pointer-events"] = props ? "none" : "all");
+	};
+
+	async function tests(element, val) {
+
+		const typeElement = element?.replace(/\s/g, "");
+		const object = {
+			fullname: /[A-Za-z][ ][A-Za-z]/gi,
+			email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/,
+			password: /^(?=.*[\d])(?=.*[A-Za-z])([\w!@#$%^&*]){6,}$/,
+			phone: /\d{2}[ ]\d{5}-\d{4}/
+		};
+
+		if (typeElement === "CPF") {
+
+			let result = true;
+			const CPFNumber = val?.replace(/\D/g, "");
+			if (CPFNumber.toString().length !== 11 || /^(\d)\1{10}$/.test(CPFNumber)) return false;
+	
+			[9, 10].forEach(response => {
+				let sum = 0;
+				let answer;
+				CPFNumber.split(/(?=)/).splice(0, response).forEach((event, i) => sum += parseInt(event) * ((response+2) - (i+1)));
+				answer = sum%11;
+				answer = answer < 2 ? 0 : 11-answer;
+				if (answer !== Number(CPFNumber.substring(response, response+1))) result = false;
 			});
-		};
-		return response[dataType]();
-	}).then(success).catch(data => error({...callback, data}));
-};
+			return result;
+		} else if (typeElement === "birthday") {
 
-const createRoot = target => {
-	class BoteasyRoot {
-		constructor(target) {
-			this.target = target;
-			this.render = this.render.bind(this);
-			this.unmount = this.unmount.bind(this);
-			this.state = {
-				target,
-				component: null
+			const birthday = val ? val.split("/") : "";
+			const day = birthday[0];
+			const month = birthday[1];
+			const year = birthday[2];
+
+			if (val?.replace(/[^\d]/g, "").toString().length !== 8) {
+				return false;
+			} else if (day === undef || day <= 0 || day > 31) {
+				return false;
+			} else if (month === undef || month <= 0 || month > 12) {
+				return false;
+			} else if (year === undef || year <= 0 || year <= 1930 || year >= 2008) {
+				return false;
+			} else if (day <= 31 && month <= 12 && year < new Date().getFullYear()) {
+				return true;
 			};
-		};
-		render(component) {
-			this.state.component = component;
-			if (this.state.target && !this.state.component) {
-				component && this.state.target.appendChild(component);
-			} else {
-				throw new Error("Cannot render another element at this time as another element has already been rendered by .createRoot() in this instance.");
-			};
-		};
-		unmount() {
-			if (this.state.target && this.state.component) {
-				this.state.target.removeChild(this.state.component);
-			} else {
-				throw new Error("Oops. We didn't find any elements rendered by this instance.");
-			};
+		} else if (object[typeElement] === undef) {
+			return await object[typeElement] ? object[typeElement].test(val) : false;
 		};
 	};
-	return new BoteasyRoot(target);
-};
 
-exports.version = version;
-exports.dom = dom;
-exports.undef = undef;
-exports.link = link;
-exports.storage = storage;
-exports.coins = coins;
-exports.app = app;
-exports.html = html;
-exports.prop = prop;
-exports.css = css;
-exports.wait = wait;
-exports.copy = copy;
-exports.tests = tests;
-exports.request = request;
-exports.createRoot = createRoot;
+	function request(event) {
+
+		const url = event?.url || null;
+		const method = event?.method?.toUpperCase() || "GET";
+		const headers = new Headers(event?.headers || {});
+		if (method !== "GET") headers.append("Content-Type", "application/x-www-form-urlencoded");
+		const data = new URLSearchParams(event?.data || {});
+		const params = method === "GET" ? `?${data.toString()}` : data.toString();
+		const dataType = event?.dataType?.toLowerCase() || "json";
+		const success = event?.success || function() {};
+		const error = event?.error || function(error) {throw error};
+
+		const cors = "//cors-anywhere.herokuapp.com/";
+		const endPoint = method === "GET" ? params : "";
+		const body = method === "GET" ? null : params;
+		const link = event?.cors ? cors + url + endPoint : url + endPoint;
+
+		const callback = {
+			responseText: undef,
+			responseJSON: undef,
+			type: "connection",
+			status: "connection::ERROR",
+			statusText: "A technical fault has been detected and is already being fixed."
+		};
+
+		fetch(link, { method, headers, body }).then(async response => {
+			if (!response.ok) {
+				let resolve = response.text();
+				callback.type = response.type;
+				callback.status = response.status;
+				callback.statusText = response.statusText;
+				await resolve.then(event => {
+					callback.responseText = event;
+					callback.responseJSON = JSON.parse(event);
+					throw callback;
+				});
+			};
+			return response[dataType]();
+		}).then(success).catch(data => error({...callback, data}));
+	};
+
+	function copy(string) {
+
+		const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
+		const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
+		const fakeNode = dom.createElement("textarea");
+
+		fakeNode.style.fontSize = "10px";
+		fakeNode.style.border = 0;
+		fakeNode.style.padding = 0;
+		fakeNode.style.margin = 0;
+		fakeNode.style.position = "absolute";
+		fakeNode.style[isRTL ? "right" : "left"] = "-9999px";
+		fakeNode.style.top = `${yPosition}px`;
+		fakeNode.setAttribute("readonly", "");
+		fakeNode.value = string;
+
+		dom.body.appendChild(fakeNode);
+
+		fakeNode.focus();
+		fakeNode.select();
+
+		dom.execCommand("copy");
+		dom.body.removeChild(fakeNode);
+	};
+
+	function isValidElementType(type) {
+		return type === Fragment ||
+		typeof type === "object" ||
+		typeof type === "function" ||
+		typeof type === "string" ||
+		typeof type === "number" && typeof type !== "undefined"
+	};
+
+	function createElement(type, props, ...children) {
+		const virtualProps = {...props, children};
+		if (typeof type === "function") return type(virtualProps);
+		return { type, props: {...props}, children };
+	};
+
+	function createVirtualNode(virtualNode) {
+
+		const propsDOM = {	
+			"className": true,
+			"htmlFor": true,
+			"tabIndex": true
+		};
+
+		const type = virtualNode?.type;
+		const props = virtualNode?.props;
+		const isValid = isValidElementType(type || virtualNode);
+		let element = undef;
+
+		if (isValid) {
+			if (typeof virtualNode === "string" || typeof virtualNode === "number") return dom.createTextNode(virtualNode);
+			element = typeof type === "undefined" || type === Fragment ? dom.createDocumentFragment() : dom.createElement(type);
+		};
+	
+		if (props) {
+
+			for (let name in props) {
+
+				const prop = propsDOM[name] ? name : name.toLocaleLowerCase();
+				const isFunc = name.startsWith("on") && name.substring(2, 3) === name.toUpperCase().substring(2, 3);
+
+				if (typeof props[name] === "function" && isFunc) {
+					const func = prop.replace("on", "");
+					element.addEventListener(func, props[name]);
+				} else {
+					if (propsDOM[name]) {
+						element[name] = props[name];
+					} else {
+						if (typeof props[name] === "object") {
+							Object.entries(props[name]).map(([name, value]) => {
+								element[prop][name] = value;
+							});
+						} else {
+							props[name] !== "key" && element.setAttribute(prop, props[name]);
+						};
+					};
+				};
+			};
+		};
+
+		if (Array.isArray(virtualNode)) {
+			virtualNode.map(children => element.appendChild(createVirtualNode(children)));
+		} else {
+			(virtualNode.children || []).map(children => element.appendChild(createVirtualNode(children)));
+		};
+		return element;
+	};
+
+	function createRoot(container, canHydrate = false) {
+
+		const initialSetting = {
+			isRendering: false,
+			children: null,
+			canHydrate
+		};
+	
+		function checkComponent(children) {
+			return typeof children === "object" && typeof children.props !== "undefined";
+		};
+	
+		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
+			throw Error(".createRoot(...): Target container is not a DOM element.");
+		} else {
+			if (container.nodeType === 1 && container.tagName && container.tagName.toUpperCase() === "BODY") {
+				throw Error(".createRoot(): Creating roots directly on body is not allowed.");
+			};
+			container[instanceKey] = initialSetting;
+		};
+	
+		function render(children) {
+			if (checkComponent(children)) {
+				if (!container[instanceKey].children) {
+					const unRendered = createVirtualNode(children);
+					container.appendChild(unRendered);
+					container[instanceKey].isRendering = true;
+					container[instanceKey].children = children;
+				} else {
+					throw Error(".render(...): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
+				};
+			} else {
+				throw Error(`.render(...): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: Boteasy.createElement("label", {className: "greeting"}, "Hello, world!");`);
+			};
+		};
+	
+		function hydrate(children) {
+			if (container[instanceKey].canHydrate) {
+				if (checkComponent(children)) {
+					if (container[instanceKey].isRendering) {
+						if (container[instanceKey].children !== children) {
+							const unRendered = createVirtualNode(children);
+							container.appendChild(unRendered);
+							container[instanceKey].isRendering = true;
+							container[instanceKey].children = children;
+						} else {
+							throw Error(".hydrate(...). You are trying to Hydrate a route by passing a component identical to the one rendered.");
+						};
+					} else {
+						throw Error(".hydrate (...): Cannot update a route that does not have any component rendered by Boteasy-dom");
+					};
+				} else {
+					throw Error(`.hydrate(...): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: Boteasy.createElement("label", {className: "greeting"}, "Hello, world!");`);
+				};
+			} else {
+				throw Error(".hydrate(...): Cannot hydrate this route because the second parameter in .createRoot (...) was sent null or false when it was created.");
+			};
+		};
+	
+		function unmount() {
+			let sibling;
+			if (container[instanceKey].isRendering) {
+				container[instanceKey] = initialSetting;
+				while (sibling = container.lastChild) container.removeChild(sibling);
+			} else {
+				throw Error(".unmount(...): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
+			};
+		};
+	
+		return { render, hydrate, unmount };
+	};
+
+	exports.version = version;
+	exports.Fragment = Fragment;
+	exports.dom = dom;
+	exports.undef = undef;
+	exports.link = link;
+	exports.storage = storage;
+	exports.css = css;
+	exports.html = html;
+	exports.prop = prop;
+	exports.awit = awit;
+	exports.tests = tests;
+	exports.request = request;
+	exports.copy = copy;
+	exports.createRoot = createRoot;
+	exports.createElement = createElement;
+})));
