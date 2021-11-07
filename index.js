@@ -1,21 +1,25 @@
-/** @license boteasy-dom
+/** 
+ * @license boteasy-dom
  * index.js
  * 
  * This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform,
  * but can be used on other platforms.
  * 
- * Copyright (c) since 2020 Boteasy, all rights reserved.
+ * @copyright (c) since 2020 Boteasy, all rights reserved.
 */
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
 	(global = global || self, factory(global.Boteasy = {}));
 }(this, (function(exports) {
-
 	"use strict";
-
+	/**
+	 * @version 1.0.7-beta-jzulusz9uj
+	 * experimental
+	 * beta
+	*/
 	const instanceKey = `isBoteasyRoot-${Math.random().toString(36).slice(2)}`;
-	const version = "0.0.0-experimental-l3dtb2q4upq";
+	const version = "1.0.7-beta-jzulusz9uj";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
@@ -33,7 +37,6 @@
 		};
 		setSplit(tar).map(element => {
 			const selector = dom.querySelector(element);
-			console.info(selector, data[func])
 			if (selector) selector[data[func].action] = data[func].value;
 		});
 	};
@@ -56,7 +59,7 @@
 		setProp("prop", tar, val);
 	};
 
-	function awit(action) {
+	function wait(action) {
 		const selectorAll = dom.querySelectorAll("html, head, body");
 		const props = typeof action === "string" ? JSON.parse(action) : action;
 		selectorAll.forEach(element => element.style["pointer-events"] = props ? "none" : "all");
@@ -65,6 +68,7 @@
 	async function tests(element, val) {
 
 		const typeElement = element?.replace(/\s/g, "");
+
 		const object = {
 			fullname: /[A-Za-z][ ][A-Za-z]/gi,
 			email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/,
@@ -105,8 +109,10 @@
 			} else if (day <= 31 && month <= 12 && year < new Date().getFullYear()) {
 				return true;
 			};
-		} else if (object[typeElement] === undef) {
+		} else if (object[typeElement] !== undef) {
 			return await object[typeElement] ? object[typeElement].test(val) : false;
+		} else {
+			return false;
 		};
 	};
 
@@ -323,7 +329,7 @@
 	exports.css = css;
 	exports.html = html;
 	exports.prop = prop;
-	exports.awit = awit;
+	exports.wait = wait;
 	exports.tests = tests;
 	exports.request = request;
 	exports.copy = copy;

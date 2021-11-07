@@ -11,9 +11,10 @@ npm i boteasy-dom
 * If you want to use jsx and want to use our renderer, use this in the file:
 
 ```shell
-/*
-	@jsx Boteasy.createElement
-	@jsxFrag Boteasy.Fragment
+/**
+ * @jsx Boteasy.createElement
+ * @jsxFrag Boteasy.Fragment
+ * @jsxRuntime classic
 */
 ```
 
@@ -21,11 +22,12 @@ npm i boteasy-dom
 
 ```shell
 import Boteasy from "boteasy-dom";
-/*
-	@jsx Boteasy.createElement
-	@jsxFrag Boteasy.Fragment
-	Tells babel to use Boteasy.createElement for JSX.
-	See how to use globally: https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#usage
+/**
+ * @jsx Boteasy.createElement
+ * @jsxFrag Boteasy.Fragment
+ * @jsxRuntime classic
+ * Tells babel to use Boteasy.createElement for JSX.
+ * See how to use globally: https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#usage
 */
 ```
 
@@ -162,13 +164,16 @@ const modal = Boteasy.createRoot(container, true);
 * Render the element in the root;
 
 ```shell
-modal.render(<>Boteasy</>);
+const element = Boteasy.createElement("h1", null, "Hello, world!");
+modal.render(Boteasy.createElement(element));
 ```
 
 * hydrate the element in the root;
 
 ```shell
-modal.hydrate();
+const name = "Ronaldo S.";
+const element = Boteasy.createElement("h1", null, "Hello, ", name);
+modal.hydrate(Boteasy.createElement(element));
 ```
 
 * Remove the element in the root;
