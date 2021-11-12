@@ -196,6 +196,6 @@ setState(prev => (prev + 1)); //{state: 11}
 
 ```shell
 useEffect(() => {
-	//TODO: Your code!
+	//TODO: Your code...
 }, []);
 ```

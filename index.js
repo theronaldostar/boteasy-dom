@@ -15,13 +15,13 @@
 
 	"use strict";
 	/**
-	 * @version 1.0.7-ydcwiwqbpum
+	 * @version 1.0.7-correction
 	 * experimental
 	 * beta
 	*/
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.7-ydcwiwqbpum";
+	const version = "1.0.7-correction";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
@@ -345,7 +345,9 @@
 		return [data, set];
 	};
 
-	const useEffect = (create, deps) => {};
+	const useEffect = (create, deps) => {
+		//TODO: ...
+	};
 
 	exports.version = version;
 	exports.Fragment = Fragment;
