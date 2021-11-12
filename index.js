@@ -2,7 +2,7 @@
  * @license boteasy-dom
  * index.js
  * 
- * This document is inspired by jQuery and developed by Ronaldo exclusively for the Boteasy platform,
+ * This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform,
  * but can be used on other platforms.
  * 
  * @copyright (c) since 2020 Boteasy, all rights reserved.
@@ -10,16 +10,18 @@
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
-	(global = global || self, factory(global.Boteasy = {}));
-}(this, (function(exports) {
+	(global = global || self, factory(global.BoteasyDOM = {}));
+} (this, ((exports) => {
+
 	"use strict";
 	/**
-	 * @version 1.0.7-beta-jzulusz9uj
+	 * @version 1.0.7
 	 * experimental
 	 * beta
 	*/
-	const instanceKey = `isBoteasyRoot-${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.7-beta-jzulusz9uj";
+
+	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
+	const version = "1.0.7";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
@@ -41,8 +43,8 @@
 		});
 	};
 
-	const css = (function() {
-		function toApply(action, element, val) {
+	const css = (() => {
+		const toApply = (action, element, val) => {
 			const selector = dom.querySelector(element);
 			selector && selector.classList[action](...setSplit(val));
 		};
@@ -52,11 +54,11 @@
 	})();
 
 	function html(tar, val) {
-		setProp("html", tar, val);
+		return setProp("html", tar, val);
 	};
 
 	function prop(tar, val) {
-		setProp("prop", tar, val);
+		return setProp("prop", tar, val);
 	};
 
 	function wait(action) {
@@ -110,7 +112,7 @@
 				return true;
 			};
 		} else if (object[typeElement] !== undef) {
-			return await object[typeElement] ? object[typeElement].test(val) : false;
+			return await object[typeElement].test(val);
 		} else {
 			return false;
 		};
@@ -198,16 +200,17 @@
 
 	function createVirtualNode(virtualNode) {
 
-		const propsDOM = {	
-			"className": true,
-			"htmlFor": true,
-			"tabIndex": true
-		};
-
+		const propsDOM = {"className": true, "htmlFor": true, "tabIndex": true};
 		const type = virtualNode?.type;
 		const props = virtualNode?.props;
 		const isValid = isValidElementType(type || virtualNode);
 		let element = undef;
+
+		if (typeof virtualNode.type === "object") {
+			virtualNode.type.props = {...virtualNode.type.props, ...virtualNode.props};
+			virtualNode.type.children = virtualNode.children;
+			return createVirtualNode(virtualNode.type);
+		};
 
 		if (isValid) {
 			if (typeof virtualNode === "string" || typeof virtualNode === "number") return dom.createTextNode(virtualNode);
@@ -228,12 +231,13 @@
 					if (propsDOM[name]) {
 						element[name] = props[name];
 					} else {
-						if (typeof props[name] === "object") {
+						if (typeof props[name] === "object" && prop === "style") {
 							Object.entries(props[name]).map(([name, value]) => {
 								element[prop][name] = value;
 							});
-						} else {
-							props[name] !== "key" && element.setAttribute(prop, props[name]);
+						} else if (typeof props[name] !== "boolean") {
+							const toDiscard = {"key": true, "__self" : true, "__source": true};
+							!toDiscard[prop] && element.setAttribute(prop, props[name]);
 						};
 					};
 				};
@@ -248,33 +252,39 @@
 		return element;
 	};
 
-	function createRoot(container, canHydrate = false) {
+	function createRoot(container, $hydrate = false) {
 
-		const initialSetting = {
-			isRendering: false,
+		const RootSettings = {
+			$hydrate,
 			children: null,
-			canHydrate
+			onDisplay: false
 		};
-	
-		function checkComponent(children) {
+
+		const checkComponent = children => {
 			return typeof children === "object" && typeof children.props !== "undefined";
 		};
-	
+
+		const updateContainer = () => {
+			let sibling;
+			while (sibling = container.lastChild) container.removeChild(sibling);
+		};
+
 		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
 			throw Error(".createRoot(...): Target container is not a DOM element.");
 		} else {
 			if (container.nodeType === 1 && container.tagName && container.tagName.toUpperCase() === "BODY") {
 				throw Error(".createRoot(): Creating roots directly on body is not allowed.");
 			};
-			container[instanceKey] = initialSetting;
+			container[instanceKey] = RootSettings;
 		};
-	
-		function render(children) {
+
+		const render = children => {
 			if (checkComponent(children)) {
-				if (!container[instanceKey].children) {
+				if (!container[instanceKey].children && container.lastChild === null) {
+					updateContainer();
 					const unRendered = createVirtualNode(children);
 					container.appendChild(unRendered);
-					container[instanceKey].isRendering = true;
+					container[instanceKey].onDisplay = true;
 					container[instanceKey].children = children;
 				} else {
 					throw Error(".render(...): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
@@ -283,15 +293,16 @@
 				throw Error(`.render(...): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: Boteasy.createElement("label", {className: "greeting"}, "Hello, world!");`);
 			};
 		};
-	
-		function hydrate(children) {
-			if (container[instanceKey].canHydrate) {
+
+		const hydrate = children => {
+			if (container[instanceKey].$hydrate) {
 				if (checkComponent(children)) {
-					if (container[instanceKey].isRendering) {
+					if (container[instanceKey].onDisplay && container.lastChild !== null) {
 						if (container[instanceKey].children !== children) {
+							updateContainer();
 							const unRendered = createVirtualNode(children);
 							container.appendChild(unRendered);
-							container[instanceKey].isRendering = true;
+							container[instanceKey].onDisplay = true;
 							container[instanceKey].children = children;
 						} else {
 							throw Error(".hydrate(...). You are trying to Hydrate a route by passing a component identical to the one rendered.");
@@ -306,18 +317,42 @@
 				throw Error(".hydrate(...): Cannot hydrate this route because the second parameter in .createRoot (...) was sent null or false when it was created.");
 			};
 		};
-	
-		function unmount() {
-			let sibling;
-			if (container[instanceKey].isRendering) {
-				container[instanceKey] = initialSetting;
-				while (sibling = container.lastChild) container.removeChild(sibling);
+
+		const unmount = () => {
+			if (!container[instanceKey].onDisplay) {
+				container[instanceKey] = RootSettings;
+				updateContainer();
 			} else {
 				throw Error(".unmount(...): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
 			};
 		};
-	
+
 		return { render, hydrate, unmount };
+	};
+
+	function useState(initialState = null) {
+
+		const weakMap = new WeakMap();
+	
+		const get = object => {
+			if(!weakMap.has(object)) weakMap.set(object, {});
+			return weakMap.get(object);
+		};
+	
+		const set = newState => {
+			let old = get(this);
+			if (typeof newState === "function") {
+				old.state = newState(old.state);
+			} else old.state = newState;
+		};
+	
+		set(initialState);
+		const data = get(this);
+		return [data, set];
+	};
+
+	function useEffect(create, deps) {
+		//
 	};
 
 	exports.version = version;
@@ -335,4 +370,5 @@
 	exports.copy = copy;
 	exports.createRoot = createRoot;
 	exports.createElement = createElement;
+	exports.useState = useState;
 })));

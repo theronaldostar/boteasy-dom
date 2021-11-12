@@ -181,3 +181,12 @@ modal.hydrate(Boteasy.createElement(element));
 ```shell
 modal.unmount();
 ```
+
+# .useState():
+* This function is just for adding some local states.
+
+
+```shell
+const [state, setState] = Boteasy.useState(10); //{state: 10}
+setState(prev => (prev + 1)); //{state: 11}
+```
