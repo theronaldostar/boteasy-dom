@@ -15,13 +15,13 @@
 
 	"use strict";
 	/**
-	 * @version 1.0.8-experimental-ydcwiwqbpum
+	 * @version 1.0.7-ydcwiwqbpum
 	 * experimental
 	 * beta
 	*/
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.8-experimental-ydcwiwqbpum";
+	const version = "1.0.7-ydcwiwqbpum";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
