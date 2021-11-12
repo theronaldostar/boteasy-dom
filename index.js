@@ -15,27 +15,25 @@
 
 	"use strict";
 	/**
-	 * @version 1.0.7
+	 * @version 1.0.8-experimental-ei65g49nmi
 	 * experimental
 	 * beta
 	*/
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.7";
+	const version = "1.0.8-experimental-ei65g49nmi";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
 	const link = window.location;
 	const storage = window.localStorage;
 
-	function setSplit(string) {
-		return string.replace(/\s/g, "").split(",");
-	};
+	const setSplit = string => string.replace(/\s/g, "").split(",");
 
-	function setProp(func, tar, val) {
+	const setProp = (func, tar, value) => {
 		const data = {
-			html: {action: "innerHTML", value: val || null},
-			prop: {action: "disabled", value: typeof val === "string" ? JSON.parse(val) : val}
+			html: {action: "innerHTML", value: value || null},
+			prop: {action: "disabled", value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value}
 		};
 		setSplit(tar).map(element => {
 			const selector = dom.querySelector(element);
@@ -44,30 +42,26 @@
 	};
 
 	const css = (() => {
-		const toApply = (action, element, val) => {
+		const toApply = (action, element, value) => {
 			const selector = dom.querySelector(element);
-			selector && selector.classList[action](...setSplit(val));
+			selector && selector.classList[action](...setSplit(value));
 		};
-		const add = (tar, val) => setSplit(tar).map(element => toApply("add", element, val));
-		const remove = (tar, val) => setSplit(tar).map(element => toApply("remove", element, val));
+		const add = (tar, value) => setSplit(tar).map(element => toApply("add", element, value));
+		const remove = (tar, value) => setSplit(tar).map(element => toApply("remove", element, value));
 		return { add, remove };
 	})();
 
-	function html(tar, val) {
-		return setProp("html", tar, val);
-	};
+	const html = (tar, value) => setProp("html", tar, value);
 
-	function prop(tar, val) {
-		return setProp("prop", tar, val);
-	};
+	const prop = (tar, value) => setProp("prop", tar, value);
 
-	function wait(action) {
+	const wait = action => {
 		const selectorAll = dom.querySelectorAll("html, head, body");
 		const props = typeof action === "string" ? JSON.parse(action) : action;
 		selectorAll.forEach(element => element.style["pointer-events"] = props ? "none" : "all");
 	};
 
-	async function tests(element, val) {
+	const tests = async (element, value) => {
 
 		const typeElement = element?.replace(/\s/g, "");
 
@@ -81,7 +75,7 @@
 		if (typeElement === "CPF") {
 
 			let result = true;
-			const CPFNumber = val?.replace(/\D/g, "");
+			const CPFNumber = value?.replace(/\D/g, "");
 			if (CPFNumber.toString().length !== 11 || /^(\d)\1{10}$/.test(CPFNumber)) return false;
 	
 			[9, 10].forEach(response => {
@@ -95,12 +89,12 @@
 			return result;
 		} else if (typeElement === "birthday") {
 
-			const birthday = val ? val.split("/") : "";
+			const birthday = value ? value.split("/") : "";
 			const day = birthday[0];
 			const month = birthday[1];
 			const year = birthday[2];
 
-			if (val?.replace(/[^\d]/g, "").toString().length !== 8) {
+			if (value?.replace(/[^\d]/g, "").toString().length !== 8) {
 				return false;
 			} else if (day === undef || day <= 0 || day > 31) {
 				return false;
@@ -112,13 +106,13 @@
 				return true;
 			};
 		} else if (object[typeElement] !== undef) {
-			return await object[typeElement].test(val);
+			return await object[typeElement].test(value);
 		} else {
 			return false;
 		};
 	};
 
-	function request(event) {
+	const request = event => {
 
 		const url = event?.url || null;
 		const method = event?.method?.toUpperCase() || "GET";
@@ -159,32 +153,32 @@
 		}).then(success).catch(data => error({...callback, data}));
 	};
 
-	function copy(string) {
+	const copy = string => {
 
 		const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
 		const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
-		const fakeNode = dom.createElement("textarea");
+		const nodeElement = dom.createElement("textarea");
 
-		fakeNode.style.fontSize = "10px";
-		fakeNode.style.border = 0;
-		fakeNode.style.padding = 0;
-		fakeNode.style.margin = 0;
-		fakeNode.style.position = "absolute";
-		fakeNode.style[isRTL ? "right" : "left"] = "-9999px";
-		fakeNode.style.top = `${yPosition}px`;
-		fakeNode.setAttribute("readonly", "");
-		fakeNode.value = string;
+		node.style.fontSize = "10px";
+		nodeElement.style.border = 0;
+		nodeElement.style.padding = 0;
+		nodeElement.style.margin = 0;
+		nodeElement.style.position = "absolute";
+		nodeElement.style[isRTL ? "right" : "left"] = "-9999px";
+		nodeElement.style.top = `${yPosition}px`;
+		nodeElement.setAttribute("readonly", "");
+		nodeElement.value = string;
 
-		dom.body.appendChild(fakeNode);
+		dom.body.appendChild(nodeElement);
 
-		fakeNode.focus();
-		fakeNode.select();
+		nodeElement.focus();
+		nodeElement.select();
 
 		dom.execCommand("copy");
-		dom.body.removeChild(fakeNode);
+		dom.body.removeChild(nodeElement);
 	};
 
-	function isValidElementType(type) {
+	const isValidElementType = type => {
 		return type === Fragment ||
 		typeof type === "object" ||
 		typeof type === "function" ||
@@ -192,13 +186,13 @@
 		typeof type === "number" && typeof type !== "undefined"
 	};
 
-	function createElement(type, props, ...children) {
+	const createElement = (type, props, ...children) => {
 		const virtualProps = {...props, children};
 		if (typeof type === "function") return type(virtualProps);
 		return { type, props: {...props}, children };
 	};
 
-	function createVirtualNode(virtualNode) {
+	const createVirtualNode = virtualNode => {
 
 		const propsDOM = {"className": true, "htmlFor": true, "tabIndex": true};
 		const type = virtualNode?.type;
@@ -252,7 +246,7 @@
 		return element;
 	};
 
-	function createRoot(container, $hydrate = false) {
+	const createRoot = (container, $hydrate = false) => {
 
 		const RootSettings = {
 			$hydrate,
@@ -330,7 +324,7 @@
 		return { render, hydrate, unmount };
 	};
 
-	function useState(initialState = null) {
+	const useState = (initialState = null) => {
 
 		const weakMap = new WeakMap();
 	
@@ -351,9 +345,7 @@
 		return [data, set];
 	};
 
-	function useEffect(create, deps) {
-		//
-	};
+	const useEffect = (create, deps) => {};
 
 	exports.version = version;
 	exports.Fragment = Fragment;
