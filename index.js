@@ -15,13 +15,13 @@
 
 	"use strict";
 	/**
-	 * @version 1.0.8-experimental-ei65g49nmi
+	 * @version 1.0.8-experimental-ydcwiwqbpum
 	 * experimental
 	 * beta
 	*/
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.8-experimental-ei65g49nmi";
+	const version = "1.0.8-experimental-ydcwiwqbpum";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
@@ -159,7 +159,7 @@
 		const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
 		const nodeElement = dom.createElement("textarea");
 
-		node.style.fontSize = "10px";
+		nodeElement.style.fontSize = "10px";
 		nodeElement.style.border = 0;
 		nodeElement.style.padding = 0;
 		nodeElement.style.margin = 0;
