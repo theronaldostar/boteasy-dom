@@ -21,7 +21,7 @@
 	*/
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.7-correction";
+	const version = "1.0.7-correction-1";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
