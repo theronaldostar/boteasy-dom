@@ -1,7 +1,7 @@
 /** 
  * @license boteasy-dom
- * index.js
  * 
+ * @description
  * This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform,
  * but can be used on other platforms.
  * 
@@ -15,13 +15,13 @@
 
 	"use strict";
 	/**
-	 * @version 1.0.7-correction
+	 * @version 1.0.8
 	 * experimental
 	 * beta
 	*/
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.7-correction-1";
+	const version = "1.0.8";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
@@ -30,12 +30,18 @@
 
 	const setSplit = string => string.replace(/\s/g, "").split(",");
 
-	const setProp = (func, tar, value) => {
+	const setProp = (func, target, value) => {
 		const data = {
-			html: {action: "innerHTML", value: value || null},
-			prop: {action: "disabled", value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value}
+			html: {
+				action: "innerHTML",
+				value: value || null
+			},
+			prop: {
+				action: "disabled",
+				value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value
+			},
 		};
-		setSplit(tar).map(element => {
+		setSplit(target).map(element => {
 			const selector = dom.querySelector(element);
 			if (selector) selector[data[func].action] = data[func].value;
 		});
@@ -51,9 +57,9 @@
 		return { add, remove };
 	})();
 
-	const html = (tar, value) => setProp("html", tar, value);
+	const html = (target, value) => setProp("html", target, value);
 
-	const prop = (tar, value) => setProp("prop", tar, value);
+	const prop = (target, value) => setProp("prop", target, value);
 
 	const wait = action => {
 		const selectorAll = dom.querySelectorAll("html, head, body");
@@ -69,7 +75,7 @@
 			fullname: /[A-Za-z][ ][A-Za-z]/gi,
 			email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/,
 			password: /^(?=.*[\d])(?=.*[A-Za-z])([\w!@#$%^&*]){6,}$/,
-			phone: /\d{2}[ ]\d{5}-\d{4}/
+			phone: /\d{2}[ ]\d{5}-\d{4}/,
 		};
 
 		if (typeElement === "CPF") {
@@ -183,7 +189,7 @@
 		typeof type === "object" ||
 		typeof type === "function" ||
 		typeof type === "string" ||
-		typeof type === "number" && typeof type !== "undefined"
+		typeof type === "number" && typeof type !== "undefined";
 	};
 
 	const createElement = (type, props, ...children) => {
@@ -194,7 +200,12 @@
 
 	const createVirtualNode = virtualNode => {
 
-		const propsDOM = {"className": true, "htmlFor": true, "tabIndex": true};
+		const propsDOM = {
+			"className": true,
+			"htmlFor": true,
+			"tabIndex": true
+		};
+
 		const type = virtualNode?.type;
 		const props = virtualNode?.props;
 		const isValid = isValidElementType(type || virtualNode);
@@ -264,7 +275,7 @@
 		};
 
 		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
-			throw Error(".createRoot(...): Target container is not a DOM element.");
+			throw Error(".createRoot(): Target container is not a DOM element.");
 		} else {
 			if (container.nodeType === 1 && container.tagName && container.tagName.toUpperCase() === "BODY") {
 				throw Error(".createRoot(): Creating roots directly on body is not allowed.");
@@ -281,10 +292,10 @@
 					container[instanceKey].onDisplay = true;
 					container[instanceKey].children = children;
 				} else {
-					throw Error(".render(...): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
+					throw Error(".render(): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
 				};
 			} else {
-				throw Error(`.render(...): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: Boteasy.createElement("label", {className: "greeting"}, "Hello, world!");`);
+				throw Error(`.render(): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: Boteasy.createElement("label", {className: "greeting"}, "Hello, world!");`);
 			};
 		};
 
@@ -299,16 +310,16 @@
 							container[instanceKey].onDisplay = true;
 							container[instanceKey].children = children;
 						} else {
-							throw Error(".hydrate(...). You are trying to Hydrate a route by passing a component identical to the one rendered.");
+							throw Error(".hydrate(). You are trying to Hydrate a route by passing a component identical to the one rendered.");
 						};
 					} else {
-						throw Error(".hydrate (...): Cannot update a route that does not have any component rendered by Boteasy-dom");
+						throw Error(".hydrate(): Cannot update a route that does not have any component rendered by Boteasy-dom");
 					};
 				} else {
-					throw Error(`.hydrate(...): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: Boteasy.createElement("label", {className: "greeting"}, "Hello, world!");`);
+					throw Error(`.hydrate(): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: Boteasy.createElement("label", {className: "greeting"}, "Hello, world!");`);
 				};
 			} else {
-				throw Error(".hydrate(...): Cannot hydrate this route because the second parameter in .createRoot (...) was sent null or false when it was created.");
+				throw Error(".hydrate(): Cannot hydrate this route because the second parameter in .createRoot (...) was sent null or false when it was created.");
 			};
 		};
 
@@ -317,7 +328,7 @@
 				container[instanceKey] = RootSettings;
 				updateContainer();
 			} else {
-				throw Error(".unmount(...): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
+				throw Error(".unmount(): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
 			};
 		};
 
@@ -343,10 +354,6 @@
 		set(initialState);
 		const data = get(this);
 		return [data, set];
-	};
-
-	const useEffect = (create, deps) => {
-		//TODO: ...
 	};
 
 	exports.version = version;
