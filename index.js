@@ -1,8 +1,8 @@
 /** 
  * @license boteasy-dom
+ * @version 1.0.9
  * 
- * @description
- * This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform,
+ * @description This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform,
  * but can be used on other platforms.
  * 
  * @copyright (c) since 2020 Boteasy, all rights reserved.
@@ -14,14 +14,9 @@
 } (this, ((exports) => {
 
 	"use strict";
-	/**
-	 * @version 1.0.8
-	 * experimental
-	 * beta
-	*/
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.8";
+	const version = "1.0.9";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const undef = undefined;
@@ -69,16 +64,17 @@
 
 	const tests = async (element, value) => {
 
-		const typeElement = element?.replace(/\s/g, "");
+		const type = element?.replace(/\s/g, "");
 
 		const object = {
 			fullname: /[A-Za-z][ ][A-Za-z]/gi,
-			email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,4}))$/,
+			email: /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z\-0-9]+.)+[a-zA-Z]{2,4}))$/,
 			password: /^(?=.*[\d])(?=.*[A-Za-z])([\w!@#$%^&*]){6,}$/,
 			phone: /\d{2}[ ]\d{5}-\d{4}/,
+			random: /[a-zA-Z\-0-9]{8}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{12}/
 		};
 
-		if (typeElement === "CPF") {
+		if (type === "CPF") {
 
 			let result = true;
 			const CPFNumber = value?.replace(/\D/g, "");
@@ -92,8 +88,45 @@
 				answer = answer < 2 ? 0 : 11-answer;
 				if (answer !== Number(CPFNumber.substring(response, response+1))) result = false;
 			});
+	
 			return result;
-		} else if (typeElement === "birthday") {
+
+		} else if (type === "CNPJ") {
+	
+			let result = true;
+			const CNPJNumber = value?.replace(/\D/g, "");
+			if (CNPJNumber.toString().length !== 14 || /^(\d)\1{13}$/.test(CNPJNumber)) return false;
+	
+			var tamanho = CNPJNumber.length - 2;
+			var numeros = CNPJNumber.substring(0, tamanho);
+			var digitos = CNPJNumber.substring(tamanho);
+			var soma = 0;
+			var pos = tamanho - 7;
+	
+			for (let i = tamanho; i >= 1; i--) {
+				soma += numeros.charAt(tamanho - i) * pos--;
+				if (pos < 2) pos = 9;
+			};
+	
+			var resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+			if (resultado != digitos.charAt(0)) result = false;
+	
+			tamanho = tamanho + 1;
+			numeros = CNPJNumber.substring(0, tamanho);
+			soma = 0;
+			pos = tamanho - 7;
+	
+			for (let k = tamanho; k >= 1; k--) {
+				soma += numeros.charAt(tamanho - k) * pos--;
+				if (pos < 2) pos = 9;
+			};
+			
+			resultado = soma % 11 < 2 ? 0 : 11 - soma % 11;
+			if (resultado != digitos.charAt(1)) result = false;
+	
+			return result;
+
+		} else if (type === "birthday") {
 
 			const birthday = value ? value.split("/") : "";
 			const day = birthday[0];
@@ -111,8 +144,9 @@
 			} else if (day <= 31 && month <= 12 && year < new Date().getFullYear()) {
 				return true;
 			};
-		} else if (object[typeElement] !== undef) {
-			return await object[typeElement].test(value);
+
+		} else if (object[type] !== undef) {
+			return await object[type].test(value);
 		} else {
 			return false;
 		};
@@ -163,25 +197,25 @@
 
 		const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
 		const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
-		const nodeElement = dom.createElement("textarea");
+		const element = dom.createElement("textarea");
 
-		nodeElement.style.fontSize = "10px";
-		nodeElement.style.border = 0;
-		nodeElement.style.padding = 0;
-		nodeElement.style.margin = 0;
-		nodeElement.style.position = "absolute";
-		nodeElement.style[isRTL ? "right" : "left"] = "-9999px";
-		nodeElement.style.top = `${yPosition}px`;
-		nodeElement.setAttribute("readonly", "");
-		nodeElement.value = string;
+		element.style.fontSize = "10px";
+		element.style.border = 0;
+		element.style.padding = 0;
+		element.style.margin = 0;
+		element.style.position = "absolute";
+		element.style[isRTL ? "right" : "left"] = "-9999px";
+		element.style.top = `${yPosition}px`;
+		element.setAttribute("readonly", "");
+		element.value = string;
 
-		dom.body.appendChild(nodeElement);
+		dom.body.appendChild(element);
 
-		nodeElement.focus();
-		nodeElement.select();
+		element.focus();
+		element.select();
 
 		dom.execCommand("copy");
-		dom.body.removeChild(nodeElement);
+		dom.body.removeChild(element);
 	};
 
 	const isValidElementType = type => {
