@@ -1,12 +1,13 @@
 /** 
  * @license boteasy-dom
- * @version 1.0.9
+ * @version 1.1.0
  * 
- * @description This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform,
- * but can be used on other platforms.
+ * @description This document is inspired by jQuery and React and was developed by Ronaldo,
+ * exclusively for the Boteasy platform, but can be used on other platforms.
  * 
  * @copyright (c) since 2020 Boteasy, all rights reserved.
 */
+
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
@@ -16,10 +17,10 @@
 	"use strict";
 
 	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.0.9";
+	const version = "1.1.0";
 	const Fragment = 0xeacb;
-	const dom = document;
 	const undef = undefined;
+	const dom = document;
 	const link = window.location;
 	const storage = window.localStorage;
 
@@ -34,7 +35,7 @@
 			prop: {
 				action: "disabled",
 				value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value
-			},
+			}
 		};
 		setSplit(target).map(element => {
 			const selector = dom.querySelector(element);
@@ -62,6 +63,20 @@
 		selectorAll.forEach(element => element.style["pointer-events"] = props ? "none" : "all");
 	};
 
+	/**
+	 * @param { object } object
+	 * @param { number|string } index
+	 * @returns { string|object|array }
+	*/
+	const match = (object, index) => {
+		return object[index];
+	};
+
+	/**
+	 * @param { string } element
+	 * @param { number|string } value
+	 * @returns { Promise }
+	*/
 	const tests = async (element, value) => {
 
 		const type = element?.replace(/\s/g, "");
@@ -71,7 +86,7 @@
 			email: /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z\-0-9]+.)+[a-zA-Z]{2,4}))$/,
 			password: /^(?=.*[\d])(?=.*[A-Za-z])([\w!@#$%^&*]){6,}$/,
 			phone: /\d{2}[ ]\d{5}-\d{4}/,
-			random: /[a-zA-Z\-0-9]{8}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{12}/
+			"pix-random": /[a-zA-Z\-0-9]{8}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{12}/
 		};
 
 		if (type === "CPF") {
@@ -145,8 +160,8 @@
 				return true;
 			};
 
-		} else if (object[type] !== undef) {
-			return await object[type].test(value);
+		} else if (match(object, type) !== undef) {
+			return await match(object, type).test(value);
 		} else {
 			return false;
 		};
@@ -392,14 +407,15 @@
 
 	exports.version = version;
 	exports.Fragment = Fragment;
-	exports.dom = dom;
 	exports.undef = undef;
+	exports.dom = dom;
 	exports.link = link;
 	exports.storage = storage;
 	exports.css = css;
 	exports.html = html;
 	exports.prop = prop;
 	exports.wait = wait;
+	exports.match = match;
 	exports.tests = tests;
 	exports.request = request;
 	exports.copy = copy;

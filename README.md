@@ -102,6 +102,13 @@ Boteasy.prop("input", true);
 Boteasy.prop("input", false);
 ```
 
+# .match({}, index):
+* This function serves to get an index of an object;
+
+```shell
+Boteasy.match({first: "boteasy", last: "dom"}, "last");
+```
+
 # .tests(target, value):
 * This function serves to perform input tests;
 
