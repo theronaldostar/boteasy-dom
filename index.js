@@ -1,6 +1,6 @@
 /** 
  * @license boteasy-dom
- * @version 1.1.0
+ * @version 1.1.1
  * 
  * @description This document is inspired by jQuery and React and was developed by Ronaldo,
  * exclusively for the Boteasy platform, but can be used on other platforms.
@@ -16,13 +16,11 @@
 
 	"use strict";
 
-	const instanceKey = `boteasy-root$${Math.random().toString(36).slice(2)}`;
-	const version = "1.1.0";
+	const version = "1.1.1";
 	const Fragment = 0xeacb;
-	const undef = undefined;
 	const dom = document;
 	const link = window.location;
-	const storage = window.localStorage;
+	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
 
 	const setSplit = string => string.replace(/\s/g, "").split(",");
 
@@ -42,6 +40,18 @@
 			if (selector) selector[data[func].action] = data[func].value;
 		});
 	};
+
+	const storage = (() => {
+		const data = window.localStorage;
+		const set = (key, value) => data.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
+		const get = key => {
+			const value = data.getItem(key);
+			return value.includes("{") ? JSON.parse(value) : value;
+		};
+		const remove = key => data.removeItem(key);
+		const clear = key => data.clear(key);
+		return {set, get, remove, clear};
+	})();
 
 	const css = (() => {
 		const toApply = (action, element, value) => {
@@ -68,9 +78,7 @@
 	 * @param { number|string } index
 	 * @returns { string|object|array }
 	*/
-	const match = (object, index) => {
-		return object[index];
-	};
+	const match = (object, index) => object[index];
 
 	/**
 	 * @param { string } element
@@ -150,17 +158,17 @@
 
 			if (value?.replace(/[^\d]/g, "").toString().length !== 8) {
 				return false;
-			} else if (day === undef || day <= 0 || day > 31) {
+			} else if (day === undefined || day <= 0 || day > 31) {
 				return false;
-			} else if (month === undef || month <= 0 || month > 12) {
+			} else if (month === undefined || month <= 0 || month > 12) {
 				return false;
-			} else if (year === undef || year <= 0 || year <= 1930 || year >= 2008) {
+			} else if (year === undefined || year <= 0 || year <= 1930 || year >= 2008) {
 				return false;
 			} else if (day <= 31 && month <= 12 && year < new Date().getFullYear()) {
 				return true;
 			};
 
-		} else if (match(object, type) !== undef) {
+		} else if (match(object, type) !== undefined) {
 			return await match(object, type).test(value);
 		} else {
 			return false;
@@ -185,8 +193,8 @@
 		const link = event?.cors ? cors + url + endPoint : url + endPoint;
 
 		const callback = {
-			responseText: undef,
-			responseJSON: undef,
+			responseText: undefined,
+			responseJSON: undefined,
 			type: "connection",
 			status: "connection::ERROR",
 			statusText: "A technical fault has been detected and is already being fixed."
@@ -258,7 +266,7 @@
 		const type = virtualNode?.type;
 		const props = virtualNode?.props;
 		const isValid = isValidElementType(type || virtualNode);
-		let element = undef;
+		let element = undefined;
 
 		if (typeof virtualNode.type === "object") {
 			virtualNode.type.props = {...virtualNode.type.props, ...virtualNode.props};
@@ -329,17 +337,17 @@
 			if (container.nodeType === 1 && container.tagName && container.tagName.toUpperCase() === "BODY") {
 				throw Error(".createRoot(): Creating roots directly on body is not allowed.");
 			};
-			container[instanceKey] = RootSettings;
+			container[instance] = RootSettings;
 		};
 
 		const render = children => {
 			if (checkComponent(children)) {
-				if (!container[instanceKey].children && container.lastChild === null) {
+				if (!container[instance].children && container.lastChild === null) {
 					updateContainer();
 					const unRendered = createVirtualNode(children);
 					container.appendChild(unRendered);
-					container[instanceKey].onDisplay = true;
-					container[instanceKey].children = children;
+					container[instance].onDisplay = true;
+					container[instance].children = children;
 				} else {
 					throw Error(".render(): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
 				};
@@ -349,15 +357,15 @@
 		};
 
 		const hydrate = children => {
-			if (container[instanceKey].$hydrate) {
+			if (container[instance].$hydrate) {
 				if (checkComponent(children)) {
-					if (container[instanceKey].onDisplay && container.lastChild !== null) {
-						if (container[instanceKey].children !== children) {
+					if (container[instance].onDisplay && container.lastChild !== null) {
+						if (container[instance].children !== children) {
 							updateContainer();
 							const unRendered = createVirtualNode(children);
 							container.appendChild(unRendered);
-							container[instanceKey].onDisplay = true;
-							container[instanceKey].children = children;
+							container[instance].onDisplay = true;
+							container[instance].children = children;
 						} else {
 							throw Error(".hydrate(). You are trying to Hydrate a route by passing a component identical to the one rendered.");
 						};
@@ -373,8 +381,8 @@
 		};
 
 		const unmount = () => {
-			if (!container[instanceKey].onDisplay) {
-				container[instanceKey] = RootSettings;
+			if (!container[instance].onDisplay) {
+				container[instance] = RootSettings;
 				updateContainer();
 			} else {
 				throw Error(".unmount(): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
@@ -407,7 +415,6 @@
 
 	exports.version = version;
 	exports.Fragment = Fragment;
-	exports.undef = undef;
 	exports.dom = dom;
 	exports.link = link;
 	exports.storage = storage;
