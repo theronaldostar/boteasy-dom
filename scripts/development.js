@@ -1,5 +1,5 @@
 /** 
- * @license Boteasy-DOM v1.1.2
+ * @license Boteasy-DOM v1.1.2-correction
  * development.js
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
@@ -15,7 +15,7 @@
 
 	"use strict";
 
-	const version = "1.1.2";
+	const version = "1.1.2-correction";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const link = window.location;
