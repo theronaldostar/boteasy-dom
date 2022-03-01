@@ -1,4 +1,8 @@
-# boteasy-dom
+# BoteasyDOM &middot; [![npm package][npm-badge]][npm]
+
+[npm-badge]: https://img.shields.io/npm/v/boteasy-dom.svg?style=flat-square
+[npm]: https://www.npmjs.org/package/boteasy-dom
+
 * This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms.
 
 # How to use?
@@ -7,26 +11,15 @@
 npm i boteasy-dom
 ```
 
-# How to use JSX?
-* If you want to use jsx and want to use our renderer, use this in the file:
-
-```shell
-/**
- * @jsx $.createElement
- * @jsxFrag $.Fragment
- * @jsxRuntime classic
-*/
-```
-
 # Import:
 
 ```shell
-import $ from "boteasy-dom";
+import BoteasyDOM from "boteasy-dom";
 /**
- * @jsx $.createElement
- * @jsxFrag $.Fragment
+ * @jsx BoteasyDOM.createElement
+ * @jsxFrag BoteasyDOM.Fragment
  * @jsxRuntime classic
- * Tells babel to use $.createElement for JSX.
+ * Tells babel to use BoteasyDOM.createElement for JSX.
  * See how to use globally: https://babeljs.io/docs/en/babel-plugin-transform-react-jsx#usage
 */
 ```
@@ -35,115 +28,115 @@ import $ from "boteasy-dom";
 * a boteasy-dom version
 
 ```shell
-$.version;
+BoteasyDOM.version;
 ```
 
 # .Fragment:
 * Fragment for components
 
 ```shell
-$.Fragment;
+BoteasyDOM.Fragment;
 ```
 
 # .dom:
 * document
 
 ```shell
-$.dom;
+BoteasyDOM.dom;
 ```
 
 # .link:
 * window.location
 
 ```shell
-$.link;
+BoteasyDOM.link;
 ```
 
 # .storage:
 * Manipulates: window.localStorage
 
 ```shell
-$.storage.set("boteasy", {first: "boteasy", last: "dom"});
+BoteasyDOM.storage.set("boteasy", {first: "boteasy", last: "dom"});
 ```
 
 ```shell
-$.storage.get("boteasy");
+BoteasyDOM.storage.get("boteasy");
 ```
 
 ```shell
-$.storage.remove("boteasy");
+BoteasyDOM.storage.remove("boteasy");
 ```
 
 ```shell
-$.storage.clear.();
+BoteasyDOM.storage.clear();
 ```
 
 # .css():
 * This function is for you to add or remove class on one or multiple elements;
 
 ```shell
-$.css.add("input", "class");
+BoteasyDOM.css.add("input", "class");
 ```
 
 ```shell
-$.css.remove("input", "class");
+BoteasyDOM.css.remove("input", "class");
 ```
 
 # .html(target, value):
 * This function serves to add or remove an element in the DOM;
 
 ```shell
-$.html("label", "Just a test!");
+BoteasyDOM.html("label", "Just a test!");
 ```
 
 # .prop(target, bolean):
 * This function serves to enable/disable elements;
 
 ```shell
-$.prop("input", true);
+BoteasyDOM.prop("input", true);
 ```
 
 ```shell
-$.prop("input", false);
+BoteasyDOM.prop("input", false);
 ```
 
 # .match({}, index):
 * This function serves to get an index of an object;
 
 ```shell
-$.match({first: "boteasy", last: "dom"}, "last");
+BoteasyDOM.match({first: "boteasy", last: "dom"}, "last");
 ```
 
 # .tests(target, value):
 * This function serves to perform input tests;
 
 ```shell
-$.tests("input#fullname", "your fullname").then(status => {});
+BoteasyDOM.tests("input#fullname", "your fullname").then(status => {});
 ```
 
 # wait(target, bolean):
 * This function serves to disable the entire site/App so that the user does not make multiple clicks or leave the page during a request;
 
 ```shell
-$.wait(true);
+BoteasyDOM.wait(true);
 ```
 
 ```shell
-$.wait(false);
+BoteasyDOM.wait(false);
 ```
 
 # .copy(value):
 * This function serves to copy a text to a clipboard;
 
 ```shell
-$.copy("Just a test!");
+BoteasyDOM.copy("Just a test!");
 ```
 
 # .request({}):
 * This function serves to perform AJAX requests;
 
 ```shell
-$.request({
+BoteasyDOM.request({
 	url: "",
 	method: "GET",
 	headers: {},
@@ -159,8 +152,8 @@ $.request({
 * This function serves to create elements to be rendered by Boteasy-dom;
 
 ```shell
-$.createElement($.Fragment, null,
-	$.createElement("input", {type: "email", className: "boteasy", style: {color: "#fff", "font-weight": "bold"}})
+BoteasyDOM.createElement(BoteasyDOM.Fragment, null,
+	BoteasyDOM.createElement("input", {type: "email", className: "boteasy", style: {color: "#fff", "font-weight": "bold"}})
 );
 ```
 
@@ -169,23 +162,23 @@ $.createElement($.Fragment, null,
 * Send the second parameter as  true to give permission to hydrate;
 
 ```shell
-const container = $.dom.querySelector("#modal");
-const modal = $.createRoot(container, true);
+const container = BoteasyDOM.dom.querySelector("#modal");
+const modal = BoteasyDOM.createRoot(container, true);
 ```
 
 * Render the element in the root;
 
 ```shell
-const element = $.createElement("h1", null, "Hello, world!");
-modal.render($.createElement(element));
+const element = BoteasyDOM.createElement("h1", null, "Hello, world!");
+modal.render(BoteasyDOM.createElement(element));
 ```
 
 * hydrate the element in the root;
 
 ```shell
 const name = "Ronaldo S.";
-const element = $.createElement("h1", null, "Hello, ", name);
-modal.hydrate($.createElement(element));
+const element = BoteasyDOM.createElement("h1", null, "Hello, ", name);
+modal.hydrate(BoteasyDOM.createElement(element));
 ```
 
 * Remove the element in the root;
@@ -198,6 +191,6 @@ modal.unmount();
 * This function is just for adding some local states.
 
 ```shell
-const [state, setState] = $.useState(10); //{state: 10}
-setState(prev => (prev + 1)); //{state: 11}
+const [state, setState] = BoteasyDOM.useState(10);
+setState(prev => (prev + 1));
 ```
