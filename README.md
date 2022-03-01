@@ -3,7 +3,7 @@
 [npm-badge]: https://img.shields.io/npm/v/boteasy-dom.svg?style=flat-square
 [npm]: https://www.npmjs.org/package/boteasy-dom
 
-* This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms.
+* This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms!
 
 # How to use?
 
