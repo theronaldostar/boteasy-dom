@@ -1,7 +1,4 @@
-# BoteasyDOM &middot; [![npm package][npm-badge]][npm]
-
-[npm-badge]: https://img.shields.io/npm/v/boteasy-dom.svg?style=flat-square
-[npm]: https://www.npmjs.org/package/boteasy-dom
+# [BoteasyDOM](https://www.boteasy.net/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/theronaldostar/boteasy-dom/blob/main/LICENSE)
 
 * This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms!
 
@@ -100,13 +97,6 @@ BoteasyDOM.prop("input", true);
 BoteasyDOM.prop("input", false);
 ```
 
-# .match({}, index):
-* This function serves to get an index of an object;
-
-```shell
-BoteasyDOM.match({first: "boteasy", last: "dom"}, "last");
-```
-
 # .tests(target, value):
 * This function serves to perform input tests;
 
@@ -193,4 +183,20 @@ modal.unmount();
 ```shell
 const [state, setState] = BoteasyDOM.useState(10);
 setState(prev => (prev + 1));
+```
+
+# .useEffect():
+* ---
+
+```shell
+BoteasyDOM.useEffect(() => {
+	//
+}, []);
+```
+
+# .match({}, index):
+* This function serves to get an index of an object;
+
+```shell
+BoteasyDOM.match({first: "boteasy", last: "dom"}, "last");
 ```
