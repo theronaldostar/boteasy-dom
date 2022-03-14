@@ -1,8 +1,4 @@
-# [BoteasyDOM](https://boteasy.net/)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/theronaldostar/boteasy-dom/blob/main/LICENSE)
-[![npm version](https://img.shields.io/npm/v/boteasy-dom.svg?style=flat)](https://www.npmjs.com/package/boteasy-dom)
-[![npm version](https://badge.fury.io/js/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom)
-[![Downloads](https://img.shields.io/npm/dm/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom)
+# [BoteasyDOM](https://boteasy.net/)[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/theronaldostar/boteasy-dom/blob/main/LICENSE)[![npm version](https://img.shields.io/npm/v/boteasy-dom.svg?style=flat)](https://www.npmjs.com/package/boteasy-dom)[![npm version](https://badge.fury.io/js/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom)[![Downloads](https://img.shields.io/npm/dm/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom)
 
 * This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms!
 ---
@@ -210,5 +206,10 @@ useEffect(() => {
 * This function serves to get an index of an object;
 
 ```shell
+<<<<<<< HEAD
 match({first: "boteasy", last: "dom"}, "last");
 ```
+=======
+BoteasyDOM.match({first: "boteasy", last: "dom"}, "last");
+```
+>>>>>>> d46c7268addbb7ce5ca882537eeed00cf3b638d4
