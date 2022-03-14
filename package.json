@@ -1,13 +1,15 @@
 {
 	"name": "boteasy-dom",
-	"version": "1.1.4",
+	"version": "1.1.5-experimental-l6m74urx6ue",
 	"description": "This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms.",
 	"license": "MIT",
 	"private": false,
-	"author": {
-		"name": "Ronaldo S.",
-		"email": "ronaldo.rs44@gmail.com"
-	},
+	"authors": [
+		{
+			"name": "Ronaldo S.",
+			"email": "ronaldo.rs44@gmail.com"
+		}
+	],
 	"homepage": "https://github.com/theronaldostar/boteasy-dom",
 	"files": [
 		"index.d.ts",

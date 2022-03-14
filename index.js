@@ -1,5 +1,5 @@
 /** 
- * @license Boteasy-DOM v1.1.4
+ * @license Boteasy-DOM v1.1.5-experimental-l6m74urx6ue
  * index.js
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
@@ -11,25 +11,21 @@
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
 	(global = global || self, factory(global.BoteasyDOM = {}));
-} (this, (exports => {
+} (this, (function(exports) {
 
 	"use strict";
 
-	const version = "1.1.4";
+	const version = "1.1.5-experimental-l6m74urx6ue";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const link = window.location;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
 
-	const match = (object, index, change = null) => {
-		if (change) {
-			object[index] = change;
-		} else return object[index];
+	function setSplit(string) {
+		return string.replace(/\s/g, "").split(",");
 	};
 
-	const setSplit = string => string.replace(/\s/g, "").split(",");
-
-	const setProp = (func, target, value) => {
+	function setProp(func, target, value) {
 		const object = {
 			html: {
 				action: "innerHTML",
@@ -46,39 +42,49 @@
 		});
 	};
 
-	const storage = (() => {
+	const storage = (function() {
 		const data = window.localStorage;
-		const set = (key, value = null) => data.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
-		const get = key => {
+		function set(key, value = null) {
+			data.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
+		};
+		function get(key) {
 			const value = data.getItem(key);
 			return (value || "").includes("{") ? JSON.parse(value) : value;
 		};
-		const remove = key => data.removeItem(key);
-		const clear = key => data.clear(key);
+		function remove(key) {data.removeItem(key)};
+		function clear(key) {data.clear(key)};
 		return { set, get, remove, clear };
 	})();
 
-	const css = (() => {
-		const toApply = (action, element, value) => {
+	const css = (function() {
+		function toApply(action, element, value) {
 			const selector = dom.querySelector(element);
 			selector && selector.classList[action](...setSplit(value));
 		};
-		const add = (target, value) => setSplit(target).map(element => toApply("add", element, value));
-		const remove = (target, value) => setSplit(target).map(element => toApply("remove", element, value));
+		function add(target, value) {
+			setSplit(target).map(element => toApply("add", element, value));
+		};
+		function remove(target, value) {
+			setSplit(target).map(element => toApply("remove", element, value));
+		};
 		return { add, remove };
 	})();
 
-	const html = (target, value) => setProp("html", target, value);
+	function html(target, value) {
+		return setProp("html", target, value);
+	};
 
-	const prop = (target, value) => setProp("prop", target, value);
+	function prop(target, value) {
+		return setProp("prop", target, value);
+	};
 
-	const wait = action => {
+	function wait(action) {
 		const selectorAll = dom.querySelectorAll("html, head, body");
 		const props = typeof action === "string" ? JSON.parse(action) : action;
 		selectorAll.forEach(element => element.style["pointer-events"] = props ? "none" : "all");
 	};
 
-	const tests = async (element, value) => {
+	async function tests(element, value) {
 
 		const type = element?.replace(/\s/g, "");
 
@@ -168,12 +174,12 @@
 		};
 	};
 
-	const request = props => {
+	function request(props) {
 
 		const url = props?.url || null;
 		const method = props?.method?.toUpperCase() || "GET";
 		const headers = new Headers(props?.headers || {});
-		if (method !== "GET") headers.append("Content-Type", "application/x-www-form-urlencoded");
+		method !== "GET" && headers.append("Content-Type", "application/x-www-form-urlencoded");
 		const data = new URLSearchParams(props?.data || {});
 		const params = method === "GET" ? `?${data.toString()}` : data.toString();
 		const dataType = props?.dataType?.toLowerCase() || "json";
@@ -193,7 +199,11 @@
 			statusText: "A technical fault has been detected and is already being fixed."
 		};
 
-		fetch(link, { method, headers, body }).then(async response => {
+		fetch(link, {
+			method,
+			headers,
+			body
+		}).then(async function(response) {
 			if (!response.ok) {
 				let resolve = response.text();
 				callback.type = response.type;
@@ -206,10 +216,12 @@
 				});
 			};
 			return response[dataType]();
-		}).then(success).catch(data => error({...callback, data}));
+		}).then(success).catch(function(data) {
+			error({...callback, data});
+		});
 	};
 
-	const copy = value => {
+	function copy(value) {
 
 		const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
 		const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
@@ -234,7 +246,7 @@
 		dom.body.removeChild(element);
 	};
 
-	const isValidElementType = type => {
+	function isValidElementType(type) {
 		return type === Fragment ||
 		typeof type === "object" ||
 		typeof type === "function" ||
@@ -242,13 +254,13 @@
 		typeof type === "number" && typeof type !== "undefined";
 	};
 
-	const createElement = (type, props, ...children) => {
+	function createElement(type, props, ...children) {
 		const virtualProps = {...props, children};
 		if (typeof type === "function") return type(virtualProps);
 		return { type, props: {...props}, children };
 	};
 
-	const createVirtualNode = virtualNode => {
+	function createVirtualNode(virtualNode) {
 
 		const propsDOM = {
 			"className": true,
@@ -301,11 +313,10 @@
 		} else {
 			(virtualNode.children || []).map(children => element.appendChild(createVirtualNode(children)));
 		};
-
 		return element;
 	};
 
-	const createRoot = (container, $hydrate = false) => {
+	function createRoot(container, $hydrate = false) {
 
 		const RootSettings = {
 			$hydrate,
@@ -313,11 +324,11 @@
 			onDisplay: false
 		};
 
-		const checkComponent = children => {
+		function checkComponent(children) {
 			return typeof children === "object" && typeof children.props !== "undefined";
 		};
 
-		const updateContainer = () => {
+		function updateContainer() {
 			let sibling;
 			while (sibling = container.lastChild) container.removeChild(sibling);
 		};
@@ -331,7 +342,7 @@
 			container[instance] = RootSettings;
 		};
 
-		const render = children => {
+		function render(children) {
 			if (checkComponent(children)) {
 				if (!container[instance].children && container.lastChild === null) {
 					updateContainer();
@@ -347,7 +358,7 @@
 			};
 		};
 
-		const hydrate = children => {
+		function hydrate(children) {
 			if (container[instance].$hydrate) {
 				if (checkComponent(children)) {
 					if (container[instance].onDisplay && container.lastChild !== null) {
@@ -371,7 +382,7 @@
 			};
 		};
 
-		const unmount = () => {
+		function unmount() {
 			if (!container[instance].onDisplay) {
 				container[instance] = RootSettings;
 				updateContainer();
@@ -383,15 +394,15 @@
 		return { render, hydrate, unmount };
 	};
 
-	const useState = (initialState = null) => {
+	function useState(initialState = null) {
 
 		const weakMap = new WeakMap();
 
-		const get = object => {
+		function get(object) {
 			if(!weakMap.has(object)) weakMap.set(object, {});
 			return weakMap.get(object);
 		};
-		const set = newState => {
+		function set(newState) {
 			let old = get(this);
 			if (typeof newState === "function") {
 				old.state = newState(old.state);
@@ -399,13 +410,19 @@
 		};
 
 		const data = get(this);
-
 		set(initialState);
-		return [ data, set ];
+
+		return [data, set];
 	};
 
-	const useEffect = (i = () => {}, d = null) => {
-		//Under development
+	function useEffect(effect = function() {}, deps = null) {
+		//TODO: Under development
+	};
+
+	function match(object, index, change = null) {
+		if (change) {
+			object[index] = change;
+		} else return object[index];
 	};
 
 	exports.version = version;
