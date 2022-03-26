@@ -203,13 +203,9 @@ useEffect(() => {
 ```
 
 # .match({}, index):
-* This function serves to get an index of an object;
+* This function is a direct alternative to "switch ~ case".
 
 ```shell
-<<<<<<< HEAD
-match({first: "boteasy", last: "dom"}, "last");
+const index = "first";
+match({first: "boteasy", last: "dom"}, index);
 ```
-=======
-BoteasyDOM.match({first: "boteasy", last: "dom"}, "last");
-```
->>>>>>> d46c7268addbb7ce5ca882537eeed00cf3b638d4

@@ -1,5 +1,5 @@
 /** 
- * @license Boteasy-DOM v1.1.5-experimental-l6m74urx6ue
+ * @license Boteasy-DOM v1.1.5
  * index.js
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
@@ -7,6 +7,7 @@
  * This document is inspired by jQuery and React and was developed by Ronaldo,
  * exclusively for the Boteasy platform, but can be used on other platforms.
 */
+
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
@@ -15,7 +16,7 @@
 
 	"use strict";
 
-	const version = "1.1.5-experimental-l6m74urx6ue";
+	const version = "1.1.5";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const link = window.location;
@@ -36,7 +37,7 @@
 				value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value
 			}
 		};
-		setSplit(target).map(element => {
+		setSplit(target).map(function(element) {
 			const selector = dom.querySelector(element);
 			if (selector) selector[match(object, func).action] = match(object, func).value;
 		});
@@ -102,10 +103,12 @@
 			const CPFNumber = value?.replace(/\D/g, "");
 			if (CPFNumber.toString().length !== 11 || /^(\d)\1{10}$/.test(CPFNumber)) return false;
 
-			[9, 10].forEach(response => {
+			[9, 10].forEach(function(response) {
 				let sum = 0;
 				let answer;
-				CPFNumber.split(/(?=)/).splice(0, response).forEach((event, i) => sum += parseInt(event) * ((response+2) - (i+1)));
+				CPFNumber.split(/(?=)/).splice(0, response).forEach(function(event, i) {
+					return sum += parseInt(event) * ((response+2) - (i+1));
+				});
 				answer = sum%11;
 				answer = answer < 2 ? 0 : 11-answer;
 				if (answer !== Number(CPFNumber.substring(response, response+1))) result = false;
@@ -118,18 +121,18 @@
 			let result = true;
 			const CNPJNumber = value?.replace(/\D/g, "");
 			if (CNPJNumber.toString().length !== 14 || /^(\d)\1{13}$/.test(CNPJNumber)) return false;
-	
+
 			let size = CNPJNumber.length - 2;
 			let numbers = CNPJNumber.substring(0, size);
 			let digits = CNPJNumber.substring(size);
 			let sum = 0;
 			let pos = size-7;
-	
+
 			for (let i = size; i >= 1; i--) {
 				sum += numbers.charAt(size - i) * pos--;
 				if (pos < 2) pos = 9;
 			};
-	
+
 			let _result = sum % 11 < 2 ? 0 : 11 - sum % 11;
 			if (_result != digits.charAt(0)) result = false;
 	
@@ -137,15 +140,15 @@
 			numbers = CNPJNumber.substring(0, size);
 			sum = 0;
 			pos = size-7;
-	
+
 			for (let k = size; k >= 1; k--) {
 				sum += numbers.charAt(size - k) * pos--;
 				if (pos < 2) pos = 9;
 			};
-			
+
 			_result = sum % 11 < 2 ? 0 : 11 - sum % 11;
 			if (_result != digits.charAt(1)) result = false;
-	
+
 			return result;
 
 		} else if (type === "birthday") {
@@ -209,7 +212,7 @@
 				callback.type = response.type;
 				callback.status = response.status;
 				callback.statusText = response.statusText;
-				await resolve.then(data => {
+				await resolve.then(function(data) {
 					callback.responseText = data;
 					callback.responseJSON = JSON.parse(data);
 					throw callback;
@@ -283,7 +286,7 @@
 			if (typeof virtualNode === "string" || typeof virtualNode === "number") return dom.createTextNode(virtualNode);
 			element = typeof type === "undefined" || type === Fragment ? dom.createDocumentFragment() : dom.createElement(type);
 		};
-	
+
 		if (props) {
 			for (let name in props) {
 				const prop = propsDOM[name] ? name : name.toLocaleLowerCase();
@@ -296,7 +299,7 @@
 						element[name] = props[name];
 					} else {
 						if (typeof props[name] === "object" && prop === "style") {
-							Object.entries(props[name]).map(([name, value]) => {
+							Object.entries(props[name]).map(function([name, value]) {
 								element[prop][name] = value;
 							});
 						} else if (typeof props[name] !== "boolean") {
@@ -419,10 +422,10 @@
 		//TODO: Under development
 	};
 
-	function match(object, index, change = null) {
-		if (change) {
-			object[index] = change;
-		} else return object[index];
+	function match(object, index) {
+		return {
+			...object
+		}[index] || null;
 	};
 
 	exports.version = version;

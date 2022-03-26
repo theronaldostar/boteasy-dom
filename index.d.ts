@@ -4,6 +4,7 @@
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
 */
+
 export as namespace BoteasyDOM;
 export declare const version: String;
 export declare const Fragment: Number;
