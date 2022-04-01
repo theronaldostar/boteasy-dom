@@ -198,7 +198,8 @@ setState(prev => (prev + 1));
 
 ```shell
 useEffect(() => {
-	//TODO: effect();
+	//effect();
+	//TODO: Under development! On moment.
 }, [deps]);
 ```
 
@@ -207,5 +208,9 @@ useEffect(() => {
 
 ```shell
 const index = "first";
-match({first: "boteasy", last: "dom"}, index);
+match({
+	first: "boteasy",
+	last: "dom",
+	default: "latest"
+}, index);
 ```

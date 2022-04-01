@@ -1,5 +1,5 @@
 /** 
- * @license Boteasy-DOM v1.1.5
+ * @license Boteasy-DOM v1.1.5-next-jukj1xpvqk-20220331
  * index.js
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
@@ -16,7 +16,7 @@
 
 	"use strict";
 
-	const version = "1.1.5";
+	const version = "1.1.5-next-jukj1xpvqk-20220331";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const link = window.location;
@@ -27,7 +27,8 @@
 	};
 
 	function setProp(func, target, value) {
-		const object = {
+
+		const object = match({
 			html: {
 				action: "innerHTML",
 				value: value || null
@@ -36,10 +37,11 @@
 				action: "disabled",
 				value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value
 			}
-		};
+		}, func);
+
 		setSplit(target).map(function(element) {
 			const selector = dom.querySelector(element);
-			if (selector) selector[match(object, func).action] = match(object, func).value;
+			if (selector) selector[object.action] = object.value;
 		});
 	};
 
@@ -89,13 +91,13 @@
 
 		const type = element?.replace(/\s/g, "");
 
-		const object = {
+		const object = match({
 			fullname: /[A-Za-z][ ][A-Za-z]/gi,
 			email: /^(([^<>()[\].,;:\s@"]+(.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z\-0-9]+.)+[a-zA-Z]{2,4}))$/,
 			password: /^(?=.*[\d])(?=.*[A-Za-z])([\w!@#$%^&*]){6,}$/,
 			phone: /\d{2}[ ]\d{5}-\d{4}/,
 			PIXRandom: /[a-zA-Z\-0-9]{8}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{4}-[a-zA-Z\-0-9]{12}/
-		};
+		}, type);
 
 		if (type === "CPF") {
 
@@ -170,8 +172,8 @@
 				return true;
 			};
 
-		} else if (match(object, type) !== undefined) {
-			return await match(object, type).test(value);
+		} else if (object !== undefined) {
+			return await object.test(value);
 		} else {
 			return false;
 		};
@@ -202,11 +204,7 @@
 			statusText: "A technical fault has been detected and is already being fixed."
 		};
 
-		fetch(link, {
-			method,
-			headers,
-			body
-		}).then(async function(response) {
+		fetch(link, { method, headers, body }).then(async function(response) {
 			if (!response.ok) {
 				let resolve = response.text();
 				callback.type = response.type;
@@ -419,13 +417,15 @@
 	};
 
 	function useEffect(effect = function() {}, deps = null) {
-		//TODO: Under development
+		//TODO: Under development! On moment.
+		effect();
+		console.warn(".useEffect(): Under development! On moment.");
 	};
 
 	function match(object, index) {
 		return {
 			...object
-		}[index] || null;
+		}[index] || (object.default || null);
 	};
 
 	exports.version = version;
