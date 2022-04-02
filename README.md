@@ -207,7 +207,7 @@ useEffect(() => {
 * This function is a direct alternative to "switch ~ case".
 
 ```shell
-const index = "first";
+const index = null;
 match({
 	first: "boteasy",
 	last: "dom",

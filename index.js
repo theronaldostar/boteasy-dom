@@ -1,12 +1,12 @@
 /** 
- * @license Boteasy-DOM v1.1.5-next-jukj1xpvqk-20220331
+ * @license Boteasy-DOM
  * index.js
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
  * 
  * This document is inspired by jQuery and React and was developed by Ronaldo,
  * exclusively for the Boteasy platform, but can be used on other platforms.
-*/
+ */
 
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
@@ -16,7 +16,7 @@
 
 	"use strict";
 
-	const version = "1.1.5-next-jukj1xpvqk-20220331";
+	const version = "1.1.6";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const link = window.location;
@@ -423,9 +423,8 @@
 	};
 
 	function match(object, index) {
-		return {
-			...object
-		}[index] || (object.default || null);
+		return {...object}[typeof index === "function" ? index() : index]||
+		((typeof object.default === "function" ? object.default() : object.default) || null);
 	};
 
 	exports.version = version;
