@@ -16,7 +16,7 @@
 
 	"use strict";
 
-	const version = "1.1.6";
+	const version = "1.1.6-0923fojegcvn-20220402";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const link = window.location;
@@ -423,8 +423,9 @@
 	};
 
 	function match(object, index) {
-		return {...object}[typeof index === "function" ? index() : index]||
-		((typeof object.default === "function" ? object.default() : object.default) || null);
+		const read = {...object}[index] || (object.default || null);
+		const isFunc = typeof read === "function";
+		return isFunc ? read() : read;
 	};
 
 	exports.version = version;
