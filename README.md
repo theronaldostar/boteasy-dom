@@ -45,10 +45,33 @@ dom;
 ```
 
 # .link:
-* window.location
+* Get information or change your app's URL, easily and accurately!
 
 ```shell
-link;
+/**
+ * url: https://www.example.com
+ *
+ * to: https://www.example.com/help
+ * reload: 1000 = 1 second
+ * host: example.com
+ * route: /help
+*/
+```
+
+```shell
+link.to("help");
+```
+
+```shell
+link.reload(1000);
+```
+
+```shell
+link.host;
+```
+
+```shell
+link.route;
 ```
 
 # .storage:

@@ -3,7 +3,7 @@
  * index.d.ts
  * 
  * Copyright (c) since 2020 Boteasy, all rights reserved.
-*/
+ */
 
 export as namespace BoteasyDOM;
 
@@ -13,7 +13,12 @@ export declare const Fragment: Number;
 
 export declare const dom: Document;
 
-export declare const link: Location;
+export declare const link: {
+	to: (url?: string) => void;
+	reload: (time?: number) => void;
+	host: string;
+	route: string;
+};
 
 export declare const storage: {
 	set: (key: string, value?: any) => void;
