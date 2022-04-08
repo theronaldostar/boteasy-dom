@@ -16,7 +16,7 @@
 
 	"use strict";
 
-	const version = "1.1.7-next-cxp7kbe6pi5-correction";
+	const version = "1.1.8-beta-q9mr2v6j10i";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -46,8 +46,8 @@
 
 	const link = (function() {
 		const data = window.location;
-		function to(url = "/") {
-			url && data.replace(url);
+		function to(url = "/", historic = true) {
+			url && (historic ? data.assign(url) : data.replace(url));
 		};
 		function reload(time = 0) {
 			setTimeout(function() {data.reload()}, time);

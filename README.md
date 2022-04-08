@@ -60,7 +60,8 @@ dom;
 ```
 
 ```shell
-link.to("help");
+link.to("help"); //TODO: keep history!
+link.to("help", false);
 ```
 
 ```shell
