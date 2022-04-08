@@ -16,6 +16,7 @@ export declare const dom: Document;
 export declare const link: {
 	to: (url?: string) => void;
 	reload: (time?: number) => void;
+	protocol: string;
 	host: string;
 	route: string;
 };

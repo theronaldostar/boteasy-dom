@@ -53,6 +53,7 @@ dom;
  *
  * to: https://www.example.com/help
  * reload: 1000 = 1 second
+ * protocol: http: | https:
  * host: example.com
  * route: /help
 */
@@ -64,6 +65,10 @@ link.to("help");
 
 ```shell
 link.reload(1000);
+```
+
+```shell
+link.protocol;
 ```
 
 ```shell

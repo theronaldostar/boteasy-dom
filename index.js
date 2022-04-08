@@ -8,7 +8,7 @@
  * exclusively for the Boteasy platform, but can be used on other platforms.
  */
 
- (function (global, factory) {
+(function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
 	(global = global || self, factory(global.BoteasyDOM = {}));
@@ -16,10 +16,9 @@
 
 	"use strict";
 
-	const version = "1.1.7-next-cxp7kbe6pi5";
+	const version = "1.1.7-next-cxp7kbe6pi5-correction";
 	const Fragment = 0xeacb;
 	const dom = document;
-	on;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
 
 	function setSplit(string) {
@@ -53,9 +52,10 @@
 		function reload(time = 0) {
 			setTimeout(function() {data.reload()}, time);
 		};
+		const protocol = data.protocol;
 		const host = data.hostname.replace("www.", "");
 		const route = data.pathname;
-		return { to, reload, host, route };
+		return { to, reload, protocol, host, route };
 	})();
 
 	const storage = (function() {
