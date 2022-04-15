@@ -16,7 +16,7 @@
 
 	"use strict";
 
-	const version = "1.1.8-beta-q9mr2v6j10i";
+	const version = "1.1.8";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -186,7 +186,7 @@
 			};
 
 		} else if (object !== undefined) {
-			return await object.test(value);
+			return object ? await object.test(value) : false;
 		} else {
 			return false;
 		};
