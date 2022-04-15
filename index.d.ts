@@ -39,7 +39,7 @@ export declare function prop(target: any, value: any): void;
 
 export declare function wait(action: boolean): void;
 
-export declare function tests(element: "fullname" | "birthday" | "email" | "password" | "phone" | "PIXRandom" | "CPF" | "CNPJ", value: number|string): Promise<any>;
+export declare function tests(element: string, value: number|string): Promise<any>;
 
 export declare function request(props: {
 	url: string;

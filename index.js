@@ -16,7 +16,7 @@
 
 	"use strict";
 
-	const version = "1.1.8";
+	const version = "1.1.8-next-py5tcgpjrms";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
