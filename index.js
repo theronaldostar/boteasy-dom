@@ -16,7 +16,8 @@
 
 	"use strict";
 
-	const version = "1.1.8-next-py5tcgpjrms";
+	let hooks = [];
+	const version = "1.1.8-next-2xat0i0hgrx";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -408,31 +409,36 @@
 		return { render, hydrate, unmount };
 	};
 
-	function useState(initialState = null) {
+	function useState(initialState = null, hookID = null) {
 
-		const weakMap = new WeakMap();
-
-		function get(object) {
-			if(!weakMap.has(object)) weakMap.set(object, {});
-			return weakMap.get(object);
+		const _id_ = hookID || `state$${Math.random().toString(36).slice(2)}`;
+	
+		function get(index) {
+			if (hooks[index] === undefined) hooks[index] = { state: initialState };
+			return hooks[index];
 		};
 		function set(newState) {
-			let old = get(this);
-			if (typeof newState === "function") {
-				old.state = newState(old.state);
-			} else old.state = newState;
+			let data = get(_id_);
+			typeof newState === "function" ? data.state = newState(data.state) : data.state = newState;
+			hooks[_id_] = data;
 		};
-
-		const data = get(this);
-		set(initialState);
-
-		return [data, set];
+	
+		const state = get(_id_);
+		return [state, set];
 	};
 
-	function useEffect(effect = function() {}, deps = null) {
-		//TODO: Under development! On moment.
-		effect();
-		console.warn(".useEffect(): Under development! On moment.");
+	function useEffect(effect, deps = [], hookID = null) {
+
+		const _id_ = hookID || `effect$${Math.random().toString(36).slice(2)}`;
+
+		if (hooks[_id_] !== undefined) {
+			//TODO: Under development! On moment.
+			console.warn(".useEffect(): Under development! On moment.");
+		} else {
+			hooks[_id_] = deps;
+			effect();
+			useEffect(effect, deps, _id_);
+		};
 	};
 
 	function match(object, index) {

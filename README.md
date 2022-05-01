@@ -227,7 +227,7 @@ setState(prev => (prev + 1));
 
 ```shell
 useEffect(() => {
-	//effect();
+	//function();
 	//TODO: Under development! On moment.
 }, [deps]);
 ```

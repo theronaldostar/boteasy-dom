@@ -66,4 +66,4 @@ export declare function useState(initialState?: any): any[];
 
 export declare function match(object: object, index: any): any;
 
-export declare function useEffect(effect?: () => void, deps?: any): any;
+export declare function useEffect(effect: () => void, deps?: any[]): any;
