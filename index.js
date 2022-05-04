@@ -17,16 +17,14 @@
 	"use strict";
 
 	let hooks = [];
-	const version = "1.1.8-next-2xat0i0hgrx";
+	const version = "1.1.9";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
 
-	function setSplit(string) {
-		return string.replace(/\s/g, "").split(",");
-	};
+	const setSplit = string => string.replace(/\s/g, "").split(",");
 
-	function setProp(func, target, value) {
+	const setProp = (func, target, value) => {
 
 		const object = match({
 			html: {
@@ -39,69 +37,72 @@
 			}
 		}, func);
 
-		setSplit(target).map(function(element) {
+		setSplit(target).map(element => {
 			const selector = dom.querySelector(element);
 			if (selector) selector[object.action] = object.value;
 		});
 	};
 
-	const link = (function() {
+	const link = (() => {
+
 		const data = window.location;
-		function to(url = "/", historic = true) {
+
+		const to = (url = "/", historic = true) => {
 			url && (historic ? data.assign(url) : data.replace(url));
 		};
-		function reload(time = 0) {
-			setTimeout(function() {data.reload()}, time);
+		const reload = (time = 0) => {
+			setTimeout(() => data.reload(), time);
 		};
+
 		const protocol = data.protocol;
 		const host = data.hostname.replace("www.", "");
 		const route = data.pathname;
+
 		return { to, reload, protocol, host, route };
 	})();
 
-	const storage = (function() {
+	const storage = (() => {
+
 		const data = window.localStorage;
-		function set(key, value = null) {
+
+		const set = (key, value = null) => {
 			data.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
 		};
-		function get(key) {
+		const get = key => {
 			const value = data.getItem(key);
 			return (value || "").includes("{") ? JSON.parse(value) : value;
 		};
-		function remove(key) {data.removeItem(key)};
-		function clear(key) {data.clear(key)};
+		const remove = key => data.removeItem(key);
+		const clear = key => data.clear(key);
+
 		return { set, get, remove, clear };
 	})();
 
-	const css = (function() {
-		function toApply(action, element, value) {
+	const css = (() => {
+		const toApply = (action, element, value) => {
 			const selector = dom.querySelector(element);
 			selector && selector.classList[action](...setSplit(value));
 		};
-		function add(target, value) {
+		const add = (target, value) => {
 			setSplit(target).map(element => toApply("add", element, value));
 		};
-		function remove(target, value) {
+		const remove = (target, value) => {
 			setSplit(target).map(element => toApply("remove", element, value));
 		};
 		return { add, remove };
 	})();
 
-	function html(target, value) {
-		return setProp("html", target, value);
-	};
+	const html = (target, value) => setProp("html", target, value);
 
-	function prop(target, value) {
-		return setProp("prop", target, value);
-	};
+	const prop = (target, value) => setProp("prop", target, value);
 
-	function wait(action) {
+	const wait = action => {
 		const selectorAll = dom.querySelectorAll("html, head, body");
 		const props = typeof action === "string" ? JSON.parse(action) : action;
 		selectorAll.forEach(element => element.style["pointer-events"] = props ? "none" : "all");
 	};
 
-	async function tests(element, value) {
+	const tests = async (element, value) => {
 
 		const type = element?.replace(/\s/g, "");
 
@@ -119,10 +120,10 @@
 			const CPFNumber = value?.replace(/\D/g, "");
 			if (CPFNumber.toString().length !== 11 || /^(\d)\1{10}$/.test(CPFNumber)) return false;
 
-			[9, 10].forEach(function(response) {
+			[9, 10].forEach(response => {
 				let sum = 0;
 				let answer;
-				CPFNumber.split(/(?=)/).splice(0, response).forEach(function(event, i) {
+				CPFNumber.split(/(?=)/).splice(0, response).forEach((event, i) => {
 					return sum += parseInt(event) * ((response+2) - (i+1));
 				});
 				answer = sum%11;
@@ -193,7 +194,7 @@
 		};
 	};
 
-	function request(props) {
+	const request = props => {
 
 		const url = props?.url || null;
 		const method = props?.method?.toUpperCase() || "GET";
@@ -218,25 +219,30 @@
 			statusText: "A technical fault has been detected and is already being fixed."
 		};
 
-		fetch(link, { method, headers, body }).then(async function(response) {
+		fetch(link, { method, headers, body }).then(async response => {
+
 			if (!response.ok) {
+
 				let resolve = response.text();
+
 				callback.type = response.type;
 				callback.status = response.status;
 				callback.statusText = response.statusText;
-				await resolve.then(function(data) {
+
+				await resolve.then(data => {
 					callback.responseText = data;
 					callback.responseJSON = JSON.parse(data);
 					throw callback;
 				});
 			};
+
 			return response[dataType]();
-		}).then(success).catch(function(data) {
+		}).then(success).catch(data => {
 			error({...callback, data});
 		});
 	};
 
-	function copy(value) {
+	const copy = value => {
 
 		const yPosition = window.pageYOffset || dom.documentElement.scrollTop;
 		const isRTL = dom.documentElement.getAttribute("dir") === "rtl";
@@ -261,7 +267,7 @@
 		dom.body.removeChild(element);
 	};
 
-	function isValidElementType(type) {
+	const isValidElementType = type => {
 		return type === Fragment ||
 		typeof type === "object" ||
 		typeof type === "function" ||
@@ -269,13 +275,13 @@
 		typeof type === "number" && typeof type !== "undefined";
 	};
 
-	function createElement(type, props, ...children) {
+	const createElement = (type, props, ...children) => {
 		const virtualProps = {...props, children};
 		if (typeof type === "function") return type(virtualProps);
 		return { type, props: {...props}, children };
 	};
 
-	function createVirtualNode(virtualNode) {
+	const createVirtualNode = virtualNode => {
 
 		const propsDOM = {
 			"className": true,
@@ -311,7 +317,7 @@
 						element[name] = props[name];
 					} else {
 						if (typeof props[name] === "object" && prop === "style") {
-							Object.entries(props[name]).map(function([name, value]) {
+							Object.entries(props[name]).map(([name, value]) => {
 								element[prop][name] = value;
 							});
 						} else if (typeof props[name] !== "boolean") {
@@ -331,7 +337,7 @@
 		return element;
 	};
 
-	function createRoot(container, $hydrate = false) {
+	const createRoot = (container, $hydrate = false) => {
 
 		const RootSettings = {
 			$hydrate,
@@ -339,11 +345,11 @@
 			onDisplay: false
 		};
 
-		function checkComponent(children) {
+		const checkComponent = children => {
 			return typeof children === "object" && typeof children.props !== "undefined";
 		};
 
-		function updateContainer() {
+		const updateContainer = () => {
 			let sibling;
 			while (sibling = container.lastChild) container.removeChild(sibling);
 		};
@@ -357,7 +363,7 @@
 			container[instance] = RootSettings;
 		};
 
-		function render(children) {
+		const render = children => {
 			if (checkComponent(children)) {
 				if (!container[instance].children && container.lastChild === null) {
 					updateContainer();
@@ -373,7 +379,7 @@
 			};
 		};
 
-		function hydrate(children) {
+		const hydrate = children => {
 			if (container[instance].$hydrate) {
 				if (checkComponent(children)) {
 					if (container[instance].onDisplay && container.lastChild !== null) {
@@ -397,7 +403,7 @@
 			};
 		};
 
-		function unmount() {
+		const unmount = () => {
 			if (!container[instance].onDisplay) {
 				container[instance] = RootSettings;
 				updateContainer();
@@ -409,15 +415,15 @@
 		return { render, hydrate, unmount };
 	};
 
-	function useState(initialState = null, hookID = null) {
+	const useState = (initialState = null, hookID = null) => {
 
 		const _id_ = hookID || `state$${Math.random().toString(36).slice(2)}`;
 	
-		function get(index) {
+		const get = index => {
 			if (hooks[index] === undefined) hooks[index] = { state: initialState };
 			return hooks[index];
 		};
-		function set(newState) {
+		const set = newState => {
 			let data = get(_id_);
 			typeof newState === "function" ? data.state = newState(data.state) : data.state = newState;
 			hooks[_id_] = data;
@@ -427,7 +433,7 @@
 		return [state, set];
 	};
 
-	function useEffect(effect, deps = [], hookID = null) {
+	const useEffect = (effect, deps = [], hookID = null) => {
 
 		const _id_ = hookID || `effect$${Math.random().toString(36).slice(2)}`;
 
@@ -441,7 +447,7 @@
 		};
 	};
 
-	function match(object, index) {
+	const match = (object, index) => {
 		const read = {...object}[index] || (object.default || null);
 		const isFunc = typeof read === "function";
 		return isFunc ? read() : read;

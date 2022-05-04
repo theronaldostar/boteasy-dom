@@ -218,7 +218,7 @@ modal.unmount();
 * This function is just for adding some local states.
 
 ```shell
-const [state, setState] = useState(10);
+const [state, setState] = useState(9);
 setState(prev => (prev + 1));
 ```
 
