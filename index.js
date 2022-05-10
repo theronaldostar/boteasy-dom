@@ -17,7 +17,7 @@
 	"use strict";
 
 	let hooks = [];
-	const version = "1.2.0-beta-0ixh03hjrnro";
+	const version = "1.2.0-next-4u0xm1k9tg5";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -450,8 +450,8 @@
 
 	const isTwins = (first, last) => {
 
-		const objFirst = Object.getOwnPropertyNames(first);
-		const objLast = Object.getOwnPropertyNames(last);
+		const objFirst = Object.getOwnPropertyNames(first || {});
+		const objLast = Object.getOwnPropertyNames(last || {});
 
 		if (objFirst.length !== objLast.length) return false;
 		for (let i = 0; i < objFirst.length; i++) {
