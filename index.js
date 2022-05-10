@@ -17,7 +17,7 @@
 	"use strict";
 
 	let hooks = [];
-	const version = "1.1.9";
+	const version = "1.2.0-beta-0ixh03hjrnro";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -25,7 +25,6 @@
 	const setSplit = string => string.replace(/\s/g, "").split(",");
 
 	const setProp = (func, target, value) => {
-
 		const object = match({
 			html: {
 				action: "innerHTML",
@@ -36,7 +35,6 @@
 				value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value
 			}
 		}, func);
-
 		setSplit(target).map(element => {
 			const selector = dom.querySelector(element);
 			if (selector) selector[object.action] = object.value;
@@ -53,7 +51,6 @@
 		const reload = (time = 0) => {
 			setTimeout(() => data.reload(), time);
 		};
-
 		const protocol = data.protocol;
 		const host = data.hostname.replace("www.", "");
 		const route = data.pathname;
@@ -93,7 +90,6 @@
 	})();
 
 	const html = (target, value) => setProp("html", target, value);
-
 	const prop = (target, value) => setProp("prop", target, value);
 
 	const wait = action => {
@@ -137,6 +133,7 @@
 
 			let result = true;
 			const CNPJNumber = value?.replace(/\D/g, "");
+
 			if (CNPJNumber.toString().length !== 14 || /^(\d)\1{13}$/.test(CNPJNumber)) return false;
 
 			let size = CNPJNumber.length - 2;
@@ -237,6 +234,7 @@
 			};
 
 			return response[dataType]();
+
 		}).then(success).catch(data => {
 			error({...callback, data});
 		});
@@ -257,12 +255,9 @@
 		element.style.top = `${yPosition}px`;
 		element.setAttribute("readonly", "");
 		element.value = value;
-
 		dom.body.appendChild(element);
-
 		element.focus();
 		element.select();
-
 		dom.execCommand("copy");
 		dom.body.removeChild(element);
 	};
@@ -453,6 +448,19 @@
 		return isFunc ? read() : read;
 	};
 
+	const isTwins = (first, last) => {
+
+		const objFirst = Object.getOwnPropertyNames(first);
+		const objLast = Object.getOwnPropertyNames(last);
+
+		if (objFirst.length !== objLast.length) return false;
+		for (let i = 0; i < objFirst.length; i++) {
+			const index = objFirst[i];
+			if (first[index] !== last[index]) return false;
+		};
+		return true;
+	};
+
 	exports.version = version;
 	exports.Fragment = Fragment;
 	exports.dom = dom;
@@ -470,4 +478,5 @@
 	exports.useState = useState;
 	exports.useEffect = useEffect;
 	exports.match = match;
+	exports.isTwins = isTwins;
 })));

@@ -243,3 +243,12 @@ match({
 	default: "latest"
 }, index);
 ```
+
+# .isTwins({}, {}):
+* As the name says, this function is for you to compare if two objects or array are equal.
+
+```shell
+const array = ["boteasy", "dom"];
+const _array = ["boteasy", "dom", "latest"];
+isTwins(array, _array); //TODO: false
+```
