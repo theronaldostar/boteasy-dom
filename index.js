@@ -17,7 +17,7 @@
 	"use strict";
 
 	let hooks = [];
-	const version = "1.2.0";
+	const version = "1.2.0-latest-mgutzcx1k0p";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -460,6 +460,7 @@
 		};
 
 		if (object === compare) return true;
+		if (!isObject(object) || !isObject(compare)) return false;
 		if (Object.keys(compare).length !== keys.length) return false;
 
 		for (let i = 0; i < keys.length; i++) {

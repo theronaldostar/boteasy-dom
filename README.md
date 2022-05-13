@@ -51,11 +51,11 @@ dom;
 /**
  * url: https://www.example.com
  *
- * to: https://www.example.com/help
+ * to: https://www.example.com/example
  * reload: 1000 = 1 second
  * protocol: http: | https:
  * host: example.com
- * route: /help
+ * route: /example
 */
 ```
 
@@ -249,6 +249,10 @@ match({
 
 ```shell
 const array = ["boteasy", "dom"];
-const _array = ["boteasy", "dom", "latest"];
+const _array = [
+	"boteasy",
+	"dom",
+	"version": ["latest"]
+];
 isEqual(array, _array); //TODO: false
 ```
