@@ -17,7 +17,7 @@
 	"use strict";
 
 	let hooks = [];
-	const version = "1.2.0-next-4u0xm1k9tg5";
+	const version = "1.2.0";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -279,9 +279,10 @@
 	const createVirtualNode = virtualNode => {
 
 		const propsDOM = {
-			"className": true,
-			"htmlFor": true,
-			"tabIndex": true
+			className: true,
+			htmlFor: true,
+			tabIndex: true,
+			textContent: true
 		};
 
 		let element = undefined;
@@ -448,17 +449,45 @@
 		return isFunc ? read() : read;
 	};
 
-	const isTwins = (first, last) => {
+	const isEqual = (object, compare) => {
 
-		const objFirst = Object.getOwnPropertyNames(first || {});
-		const objLast = Object.getOwnPropertyNames(last || {});
+		let equals = true;
+		let keys = Object.keys(object);
 
-		if (objFirst.length !== objLast.length) return false;
-		for (let i = 0; i < objFirst.length; i++) {
-			const index = objFirst[i];
-			if (first[index] !== last[index]) return false;
+		const isObject = value => {
+			const type = typeof value;
+			return value !== null && type === "object";
 		};
-		return true;
+
+		if (object === compare) return true;
+		if (Object.keys(compare).length !== keys.length) return false;
+
+		for (let i = 0; i < keys.length; i++) {
+
+			let obj = object[keys[i]];
+			let objCompare = compare[keys[i]];
+
+			if (typeof obj !== typeof objCompare) {
+				equals = false;
+				break;
+			} else if (isObject(obj)) {
+				equals = isEqual(obj, objCompare);
+				if (!equals) break;
+			} else if (typeof obj === "string") {
+				obj = obj.toLowerCase();
+				objCompare = objCompare.toLowerCase();
+				if (obj !== objCompare) {
+					equals = false;
+					break;
+				};
+			} else {
+				if (obj !== objCompare) {
+					equals = false;
+					break;
+				};
+			};
+		};
+		return equals;
 	};
 
 	exports.version = version;
@@ -478,5 +507,5 @@
 	exports.useState = useState;
 	exports.useEffect = useEffect;
 	exports.match = match;
-	exports.isTwins = isTwins;
+	exports.isEqual = isEqual;
 })));

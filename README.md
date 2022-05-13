@@ -233,7 +233,7 @@ useEffect(() => {
 ```
 
 # .match({}, index):
-* This function is a direct alternative to "switch ~ case".
+* This function is a direct alternative to "switch ~ case", and is based on the match function of the php language.
 
 ```shell
 const index = null;
@@ -244,11 +244,11 @@ match({
 }, index);
 ```
 
-# .isTwins({}, {}):
+# .isEqual({}|[], {}|[]):
 * As the name says, this function is for you to compare if two objects or array are equal.
 
 ```shell
 const array = ["boteasy", "dom"];
 const _array = ["boteasy", "dom", "latest"];
-isTwins(array, _array); //TODO: false
+isEqual(array, _array); //TODO: false
 ```
