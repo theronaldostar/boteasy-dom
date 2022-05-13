@@ -17,7 +17,7 @@
 	"use strict";
 
 	let hooks = [];
-	const version = "1.2.0-latest-mgutzcx1k0p";
+	const version = "1.2.0-correction";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -452,7 +452,7 @@
 	const isEqual = (object, compare) => {
 
 		let equals = true;
-		let keys = Object.keys(object);
+		const keys = Object.keys(object || {});
 
 		const isObject = value => {
 			const type = typeof value;
