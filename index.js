@@ -1,50 +1,30 @@
 /** 
  * @license Boteasy-DOM
- * index.js
+ * @file index.js
  * 
- * Copyright (c) since 2020 Boteasy, all rights reserved.
+ * @copyright (c) since 2020 Boteasy, all rights reserved.
  * 
- * This document is inspired by jQuery and React and was developed by Ronaldo,
+ * @description This document is inspired by jQuery and React and was developed by Ronaldo,
  * exclusively for the Boteasy platform, but can be used on other platforms.
- */
+*/
 
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
 	(global = global || self, factory(global.BoteasyDOM = {}));
-} (this, (function(exports) {
+} (this, (exports => {
 
 	"use strict";
 
 	let hooks = [];
-	const version = "1.2.0-correction";
+
+	const version = "1.2.1-beta-b2c0b7qjwk6";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
 
-	const setSplit = string => string.replace(/\s/g, "").split(",");
-
-	const setProp = (func, target, value) => {
-		const object = match({
-			html: {
-				action: "innerHTML",
-				value: value || null
-			},
-			prop: {
-				action: "disabled",
-				value: typeof value === "string" ? value === "true" || value === "false" ? JSON.parse(value) : false : value
-			}
-		}, func);
-		setSplit(target).map(element => {
-			const selector = dom.querySelector(element);
-			if (selector) selector[object.action] = object.value;
-		});
-	};
-
 	const link = (() => {
-
 		const data = window.location;
-
 		const to = (url = "/", historic = true) => {
 			url && (historic ? data.assign(url) : data.replace(url));
 		};
@@ -59,9 +39,7 @@
 	})();
 
 	const storage = (() => {
-
 		const data = window.localStorage;
-
 		const set = (key, value = null) => {
 			data.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
 		};
@@ -71,31 +49,35 @@
 		};
 		const remove = key => data.removeItem(key);
 		const clear = key => data.clear(key);
-
 		return { set, get, remove, clear };
 	})();
 
 	const css = (() => {
-		const toApply = (action, element, value) => {
-			const selector = dom.querySelector(element);
-			selector && selector.classList[action](...setSplit(value));
+		const toSplit = string => string.replace(/\s/g, "").split(",");
+		const toApply = (action, target, value) => {
+			const selectorAll = dom.querySelectorAll(target);
+			selectorAll.length >= 1 && selectorAll.forEach(selector => selector.classList[action](...toSplit(value || "")));
 		};
-		const add = (target, value) => {
-			setSplit(target).map(element => toApply("add", element, value));
-		};
-		const remove = (target, value) => {
-			setSplit(target).map(element => toApply("remove", element, value));
-		};
+		const add = (target, value) => toApply("add", target, value);
+		const remove = (target, value) => toApply("remove", target, value);
 		return { add, remove };
 	})();
 
-	const html = (target, value) => setProp("html", target, value);
-	const prop = (target, value) => setProp("prop", target, value);
+	const html = (target, newValue) => {
+		const allSelector = dom.querySelectorAll(target || "*");
+		allSelector.length >= 1 && allSelector.forEach(selector => selector.innerHTML = newValue);
+	};
+
+	const prop = (target, prop, newValue) => {
+		const value = typeof newValue === "string" ? (newValue === "true" || newValue === "false" ? JSON.parse(newValue) : undefined) : newValue || undefined;
+		const allSelector = dom.querySelectorAll(target || "*");
+		allSelector.length >= 1 && allSelector.forEach(selector => selector[prop] = value);
+	};
 
 	const wait = action => {
-		const selectorAll = dom.querySelectorAll("html, head, body");
-		const props = typeof action === "string" ? JSON.parse(action) : action;
-		selectorAll.forEach(element => element.style["pointer-events"] = props ? "none" : "all");
+		const value = match({ true: "none", false: undefined, default: undefined }, String(action));
+		const allSelector = dom.querySelectorAll("html, head, body");
+		allSelector.length >= 1 && allSelector.forEach(selector => selector.style["pointer-events"] = value);
 	};
 
 	const tests = async (element, value) => {
@@ -180,15 +162,11 @@
 				return false;
 			} else if (year === undefined || year <= 0 || year <= 1930 || year >= 2008) {
 				return false;
-			} else if (day <= 31 && month <= 12 && year < new Date().getFullYear()) {
-				return true;
-			};
+			} else if (day <= 31 && month <= 12 && year < new Date().getFullYear()) return true;
 
 		} else if (object !== undefined) {
 			return object ? await object.test(value) : false;
-		} else {
-			return false;
-		};
+		} else return false;
 	};
 
 	const request = props => {
@@ -201,7 +179,9 @@
 		const params = method === "GET" ? `?${data.toString()}` : data.toString();
 		const dataType = props?.dataType?.toLowerCase() || "json";
 		const success = props?.success || function() {};
-		const error = props?.error || function(error) {throw error};
+		const error = props?.error || function(error) {
+			throw error;
+		};
 
 		const cors = "//cors-anywhere.herokuapp.com/";
 		const endPoint = method === "GET" ? params : "";
@@ -235,9 +215,7 @@
 
 			return response[dataType]();
 
-		}).then(success).catch(data => {
-			error({...callback, data});
-		});
+		}).then(success).catch(data => error({...callback, data}));
 	};
 
 	const copy = value => {
@@ -263,11 +241,13 @@
 	};
 
 	const isValidElementType = type => {
-		return type === Fragment ||
-		typeof type === "object" ||
-		typeof type === "function" ||
-		typeof type === "string" ||
-		typeof type === "number" && typeof type !== "undefined";
+		return (
+			type === Fragment ||
+			typeof type === "object" ||
+			typeof type === "function" ||
+			typeof type === "string" ||
+			typeof type === "number"
+		) && typeof type !== "undefined";
 	};
 
 	const createElement = (type, props, ...children) => {
@@ -278,17 +258,17 @@
 
 	const createVirtualNode = virtualNode => {
 
+		let element = undefined;
+		const type = virtualNode?.type;
+		const props = virtualNode?.props;
+		const isValid = isValidElementType(type || virtualNode);
+
 		const propsDOM = {
 			className: true,
 			htmlFor: true,
 			tabIndex: true,
 			textContent: true
 		};
-
-		let element = undefined;
-		const type = virtualNode?.type;
-		const props = virtualNode?.props;
-		const isValid = isValidElementType(type || virtualNode);
 
 		if (typeof virtualNode.type === "object") {
 			virtualNode.type.props = {...virtualNode.type.props, ...virtualNode.props};
@@ -413,33 +393,34 @@
 
 	const useState = (initialState = null, hookID = null) => {
 
-		const _id_ = hookID || `state$${Math.random().toString(36).slice(2)}`;
+		const random = hookID || `state$${Math.random().toString(36).slice(2)}`;
 	
 		const get = index => {
-			if (hooks[index] === undefined) hooks[index] = { state: initialState };
+			if (!hooks[index]) hooks[index] = { state: initialState };
 			return hooks[index];
 		};
 		const set = newState => {
-			let data = get(_id_);
+			let data = get(random);
 			typeof newState === "function" ? data.state = newState(data.state) : data.state = newState;
-			hooks[_id_] = data;
+			hooks[random] = data;
 		};
 	
-		const state = get(_id_);
+		const state = get(random);
+
 		return [state, set];
 	};
 
 	const useEffect = (effect, deps = [], hookID = null) => {
 
-		const _id_ = hookID || `effect$${Math.random().toString(36).slice(2)}`;
+		const random = hookID || `effect$${Math.random().toString(36).slice(2)}`;
 
-		if (hooks[_id_] !== undefined) {
+		if (hooks[random] !== undefined) {
 			//TODO: Under development! On moment.
 			console.warn(".useEffect(): Under development! On moment.");
 		} else {
-			hooks[_id_] = deps;
+			hooks[random] = deps;
 			effect();
-			useEffect(effect, deps, _id_);
+			useEffect(effect, deps, random);
 		};
 	};
 
@@ -449,7 +430,7 @@
 		return isFunc ? read() : read;
 	};
 
-	const isEqual = (object, compare) => {
+	const isTwins = (object, compare) => {
 
 		let equals = true;
 		const keys = Object.keys(object || {});
@@ -472,7 +453,7 @@
 				equals = false;
 				break;
 			} else if (isObject(obj)) {
-				equals = isEqual(obj, objCompare);
+				equals = isTwins(obj, objCompare);
 				if (!equals) break;
 			} else if (typeof obj === "string") {
 				obj = obj.toLowerCase();
@@ -488,7 +469,13 @@
 				};
 			};
 		};
+
 		return equals;
+	};
+
+	const toFloat = (amount, fixed = 0) => {
+		const test = /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(amount);
+		return test ? Number(amount.toFixed(fixed || 0)) : NaN;
 	};
 
 	exports.version = version;
@@ -508,5 +495,6 @@
 	exports.useState = useState;
 	exports.useEffect = useEffect;
 	exports.match = match;
-	exports.isEqual = isEqual;
+	exports.isTwins = isTwins;
+	exports.toFloat = toFloat;
 })));

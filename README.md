@@ -38,7 +38,7 @@ Fragment;
 ```
 
 # .dom:
-* document
+* The Document interface represents any web page loaded in the browser and serves as an entry point into the web page's content, which is the DOM tree.
 
 ```shell
 dom;
@@ -100,14 +100,14 @@ storage.clear();
 ```
 
 # .css():
-* This function is for you to add or remove class on one or multiple elements;
+* This function is for you to add or remove multiple class on one or multiple elements;
 
 ```shell
-css.add("input", "class");
+css.add("input, select", "boteasy, dom");
 ```
 
 ```shell
-css.remove("input", "class");
+css.remove("input", "dom");
 ```
 
 # .html(target, value):
@@ -117,15 +117,15 @@ css.remove("input", "class");
 html("label", "Just a test!");
 ```
 
-# .prop(target, bolean):
-* This function serves to enable/disable elements;
+# .prop(target, prop, bolean|string):
+* This function is used to enable/disable elements or select an input type checkbox, for example;
 
 ```shell
-prop("input", true);
+prop("input, select", "disabled", true);
 ```
 
 ```shell
-prop("input", false);
+prop("input", "disabled", false);
 ```
 
 # .tests(target, value):
@@ -135,7 +135,7 @@ prop("input", false);
 tests("input#fullname", "your fullname").then(status => {});
 ```
 
-# wait(target, bolean):
+# wait(target, bolean|string):
 * This function serves to disable the entire site/App so that the user does not make multiple clicks or leave the page during a request;
 
 ```shell
