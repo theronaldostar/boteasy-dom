@@ -86,7 +86,6 @@ export declare const request: (props: {
 	headers?: object;
 	data?: object;
 	dataType?: string;
-	cors?: boolean;
 	success?: (data: any) => any;
 	error?: (error: any) => any;
 }) => Promise<any>;

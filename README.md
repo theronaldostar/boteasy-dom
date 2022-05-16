@@ -163,7 +163,6 @@ request({
 	headers: {},
 	data: {},
 	dataType: "json",
-	cors: false, //TODO: true for active
 	success: () => {},
 	error: () => {}
 });

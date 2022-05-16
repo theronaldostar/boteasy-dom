@@ -18,7 +18,7 @@
 
 	let hooks = [];
 
-	const version = "1.2.1-beta-b2c0b7qjwk6";
+	const version = "1.2.1";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -183,10 +183,9 @@
 			throw error;
 		};
 
-		const cors = "//cors-anywhere.herokuapp.com/";
 		const endPoint = method === "GET" ? params : "";
 		const body = method === "GET" ? null : params;
-		const link = props?.cors ? cors + url + endPoint : url + endPoint;
+		const link = url + endPoint;
 
 		const callback = {
 			responseText: undefined,
@@ -474,8 +473,8 @@
 	};
 
 	const toFloat = (amount, fixed = 0) => {
-		const test = /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(amount);
-		return test ? Number(amount.toFixed(fixed || 0)) : NaN;
+		const test = value => /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(value);
+		return test(amount) ? Number(test(fixed) && fixed >= 1 ? Number(amount).toFixed(fixed) : amount) : NaN;
 	};
 
 	exports.version = version;
