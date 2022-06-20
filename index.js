@@ -18,28 +18,31 @@
 
 	let hooks = [];
 
-	const version = "1.2.1";
+	const version = "1.2.2-next-0a4h4yswu7wb";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
 
 	const link = (() => {
+
 		const data = window.location;
+		const protocol = data.protocol;
+		const host = data.hostname.replace("www.", "");
+		const route = data.pathname;
+
 		const to = (url = "/", historic = true) => {
 			url && (historic ? data.assign(url) : data.replace(url));
 		};
 		const reload = (time = 0) => {
 			setTimeout(() => data.reload(), time);
 		};
-		const protocol = data.protocol;
-		const host = data.hostname.replace("www.", "");
-		const route = data.pathname;
-
 		return { to, reload, protocol, host, route };
 	})();
 
 	const storage = (() => {
+
 		const data = window.localStorage;
+
 		const set = (key, value = null) => {
 			data.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
 		};
@@ -75,7 +78,7 @@
 	};
 
 	const wait = action => {
-		const value = match({ true: "none", false: undefined, default: undefined }, String(action));
+		const value = match({true: "none", false: undefined, default: undefined}, String(action));
 		const allSelector = dom.querySelectorAll("html, head, body");
 		allSelector.length >= 1 && allSelector.forEach(selector => selector.style["pointer-events"] = value);
 	};
@@ -179,9 +182,7 @@
 		const params = method === "GET" ? `?${data.toString()}` : data.toString();
 		const dataType = props?.dataType?.toLowerCase() || "json";
 		const success = props?.success || function() {};
-		const error = props?.error || function(error) {
-			throw error;
-		};
+		const error = props?.error || function(error) {throw error};
 
 		const endPoint = method === "GET" ? params : "";
 		const body = method === "GET" ? null : params;
@@ -296,7 +297,7 @@
 								element[prop][name] = value;
 							});
 						} else if (typeof props[name] !== "boolean") {
-							const toDiscard = {key: true, __self: true, __source: true};
+							const toDiscard = { key: true, __self: true, __source: true };
 							!toDiscard[prop] && element.setAttribute(prop, props[name]);
 						};
 					};

@@ -243,7 +243,7 @@ match({
 }, index);
 ```
 
-# .isEqual({}|[], {}|[]):
+# .isTwins({}|[], {}|[]):
 * As the name says, this function is for you to compare if two objects or array are equal.
 
 ```shell
@@ -253,5 +253,5 @@ const _array = [
 	"dom",
 	"version": ["latest"]
 ];
-isEqual(array, _array); //TODO: false
+isTwins(array, _array); //TODO: false
 ```
