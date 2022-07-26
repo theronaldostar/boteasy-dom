@@ -18,7 +18,7 @@
 
 	let hooks = [];
 
-	const version = "1.2.2-next-0a4h4yswu7wb";
+	const version = "1.2.2";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -478,6 +478,12 @@
 		return test(amount) ? Number(test(fixed) && fixed >= 1 ? Number(amount).toFixed(fixed) : amount) : NaN;
 	};
 
+	const rgba = (string, opacity = 1) => {
+		const rgb = string.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,
+		(_,r,g,b) => "#"+r+r+g+g+b+b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
+		return `rgba(${rgb}, ${opacity})`;
+	};
+
 	exports.version = version;
 	exports.Fragment = Fragment;
 	exports.dom = dom;
@@ -497,4 +503,5 @@
 	exports.match = match;
 	exports.isTwins = isTwins;
 	exports.toFloat = toFloat;
+	exports.rgba = rgba;
 })));

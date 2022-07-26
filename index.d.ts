@@ -138,3 +138,8 @@ export declare const isTwins: (first?: any, last?: any) => true|false;
  * @description Function parses an argument (converting it to a string or number first if needed) and returns a floating point number.
 */
 export declare const toFloat: (amount: number|string, fixed?: number) => number;
+
+/**
+ * @description This function is for you to convert a hex color to rgba!
+*/
+export declare const rgba: (string: string, opacity?: number) => string;

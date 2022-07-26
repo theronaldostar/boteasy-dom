@@ -255,3 +255,9 @@ const _array = [
 ];
 isTwins(array, _array); //TODO: false
 ```
+# .rgba("#", number):
+* This function is for you to convert a hex color to rgba!
+
+```shell
+rgba("#fff", 0.4);
+```

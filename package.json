@@ -1,6 +1,6 @@
 {
 	"name": "boteasy-dom",
-	"version": "1.2.2-next-0a4h4yswu7wb",
+	"version": "1.2.2",
 	"description": "This document is inspired by jQuery and React and was developed by Ronaldo exclusively for the Boteasy platform, but can be used on other platforms.",
 	"license": "MIT",
 	"private": false,
@@ -19,7 +19,12 @@
 	"keywords": [
 		"boteasy-dom",
 		"boteasy",
-		"dom"
+		"dom",
+		"rgb",
+		"JSX",
+		"AJAX",
+		"storage",
+		"match"
 	],
 	"main": "index.js",
 	"types": "index.d.ts",
