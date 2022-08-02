@@ -99,7 +99,7 @@ storage.remove("boteasy");
 storage.clear();
 ```
 
-# .css():
+# .css(target|s, value|s):
 * This function is for you to add or remove multiple class on one or multiple elements;
 
 ```shell
@@ -168,7 +168,7 @@ request({
 });
 ```
 
-# .createElement();
+# .createElement(any, any, any);
 * This function serves to create elements to be rendered by Boteasy-dom;
 
 ```shell
@@ -179,7 +179,7 @@ createElement(Fragment, null,
 //TODO: `<input type="email" className="boteasy" style={{color: "#fff", "font-weight": "bold"}} />`
 
 
-# .createRoot():
+# .createRoot(target/container, bolean|undefined):
 * This function serves to create a route to Boteasy-dom,
 * Send the second parameter as  true to give permission to hydrate;
 
@@ -213,7 +213,7 @@ modal.hydrate(createElement(element));
 modal.unmount();
 ```
 
-# .useState():
+# .useState(any):
 * This function is just for adding some local states.
 
 ```shell
@@ -221,7 +221,7 @@ const [state, setState] = useState(9);
 setState(prev => (prev + 1));
 ```
 
-# .useEffect():
+# .useEffect(function|arrow function, []|undefined):
 * ---
 
 ```shell
@@ -255,9 +255,16 @@ const _array = [
 ];
 isTwins(array, _array); //TODO: false
 ```
-# .rgba("#", number):
+# .rgba("#", number|undefined):
 * This function is for you to convert a hex color to rgba!
 
 ```shell
-rgba("#fff", 0.4);
+rgba("#fff", 0.4); //TODO: rgba(255,255,255,0.4)
+```
+
+# .vibrate(number|undefined):
+* ...
+
+```shell
+vibrate(300); //TODO: duration: 300ms
 ```

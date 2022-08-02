@@ -143,3 +143,8 @@ export declare const toFloat: (amount: number|string, fixed?: number) => number;
  * @description This function is for you to convert a hex color to rgba!
 */
 export declare const rgba: (string: string, opacity?: number) => string;
+
+/**
+ * @description 
+*/
+export declare const vibrate: (time?: number) => void;

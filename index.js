@@ -18,7 +18,7 @@
 
 	let hooks = [];
 
-	const version = "1.2.2";
+	const version = "1.2.3-beta-yxacgl0kicd";
 	const Fragment = 0xeacb;
 	const dom = document;
 	const instance = `boteasy-root$${Math.random().toString(36).slice(2)}`;
@@ -484,6 +484,11 @@
 		return `rgba(${rgb}, ${opacity})`;
 	};
 
+	const vibrate = (time = 100) => {
+		const canVibrate = navigator.vibrate;
+		canVibrate && canVibrate(time);
+	};
+
 	exports.version = version;
 	exports.Fragment = Fragment;
 	exports.dom = dom;
@@ -504,4 +509,5 @@
 	exports.isTwins = isTwins;
 	exports.toFloat = toFloat;
 	exports.rgba = rgba;
+	exports.vibrate = vibrate;
 })));
