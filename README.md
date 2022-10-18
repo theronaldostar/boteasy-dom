@@ -209,23 +209,35 @@ useEffect(() => {
 
 ```shell
 const storage = useStorage();
-storage("theme", "dark"); //set
 ```
 
 ```shell
-storage("theme"); //get
+storage("theme", "dark");
 ```
 
+`set`
+
 ```shell
-storage("theme")(); //remove
+storage("theme");
 ```
+
+`get`
+
+
+```shell
+storage("theme")();
+```
+
+`remove`
 
 # .useNavigate(number|undefined) => (string, boolean|undefined):
 * ???
 
 ```shell
-const navigate = useNavigate(1000); //1000ms delay
+const navigate = useNavigate(1000);
 ```
+
+`1000ms delay`
 
 ```shell
 navigate("/");
