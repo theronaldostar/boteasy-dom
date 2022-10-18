@@ -8,6 +8,10 @@
 npm i boteasy-dom
 ```
 
+```shell
+yarn add boteasy-dom
+```
+
 # Quick use:
 
 ```jsx
@@ -44,21 +48,21 @@ const {  } = BoteasyDOM;
 * A boteasy-dom version
 
 ```shell
-version;
+const ver = version;
 ```
 
 # .dom:
-* The Document interface represents any web page loaded in the browser and serves as an entry point into the web page's content, which is the DOM tree.
+* The Document interface represents any web page loaded in the browser and serves as an entry point into the web page's content, which is the DOM tree
 
 ```shell
-dom;
+const root = dom.querySelector("#root");
 ```
 
 # .Fragment:
 * Allows a component to return multiple elements grouped a list of children without adding extra nodes to the DOM
 
 ```shell
-Fragment;
+<></>
 ```
 
 # .match(object, index):
@@ -78,8 +82,9 @@ match({
 
 ```shell
 const inputId = useId(2);
-<input type="text" id={inputId} />
 ```
+
+`<input type="text" id={inputId} />`
 
 # .useRef(value|VoidFunction):
 * ???
@@ -89,8 +94,9 @@ const email = useRef(() => {
 	let name = "boteasy.dom";
 	return `${name}@example.com`;
 });
-<input type="email" ref={email} />
 ```
+
+`<input type="email" ref={email} />`
 
 # .useHtml(selector, newValue):
 * This function serves to add or remove an element in the DOM;
@@ -99,7 +105,7 @@ const email = useRef(() => {
 useHtml("#root", `<h1>Hello, world!</h1>`);
 ```
 
-# .useWait(true|false):
+# .useWait(bolean|string):
 * This function is for you to disable all elements;
 
 ```shell
@@ -149,7 +155,7 @@ useVibrate([500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110,
 
 ```shell
 useClipboard("Just a test!", () => {
-	console.warn("Text copied to clipboard.");
+	console.info("Text copied to clipboard.");
 });
 ```
 
@@ -187,14 +193,14 @@ setState(prev => (prev + 1));
 
 ```shell
 let name = "boteasy";
-const boteasyTest = () => console.warn(`Hello, ${name}!`);
+const boteasyTest = () => console.info(`Hello, ${name}!`);
 useEffect(() => {
 	boteasyTest();
 	/**
 	 * TODO: Under Construction
 	 * this function is incomplete.
 	*/
-	return () => console.warn("Bye, world!");
+	return () => console.info("Bye, world!");
 }, [name]);
 ```
 
@@ -245,13 +251,12 @@ let { x, y } useScroll(".container", { behavior: "smooth" });
 
 ```shell
 flushAsync(name => {
-	console.warn(`Hello, ${name}!`);
+	console.info(`Hello, ${name}!`);
 }, "BoteasyDOM");
 ```
 
 # .createRoot(container, object|bolean|undefined):
-* This function serves to create a route to Boteasy-dom,
-* Send the second parameter an object containing an intex with hydrate as true.
+* This function serves to create a route to Boteasy-dom, send the second parameter an object containing an intex with hydrate as true.
 
 ```shell
 const container = dom.querySelector("#root");
@@ -261,10 +266,11 @@ const root = createRoot(container, { hydrate: true });
 * Render the element in the root;
 
 ```shell
-const element = createElement("h1", null, "Hello, world!");
-root.render(createElement(element));
+const element = <h1>Hello, world!</h1>;
+root.render(element);
 ```
-// `<h1>Hello, world!</h1>`
+
+`<h1>Hello, world!</h1>`
 
 * Remove the element in the root;
 
@@ -277,18 +283,21 @@ root.unmount();
 
 ```shell
 const name = "Boteasy.";
-const element = createElement("h1", null, "Hello, ", name);
-hydrateRoot(createElement(element));
+const container = dom.querySelector("#root");
+hydrateRoot(container, <h1>Hello, {name}</h1>);
 ```
 
-// `<h1>Hello, Ronaldo S.</h1>`
+`<h1>Hello, Ronaldo S.</h1>`
 
 # .StrictMode():
 * ???
 
 ```shell
-const element = createElement("h1", null, "Hello, world!");
-const App = createElement(StrictMode, null, element);
+const App = (
+	<StrictMode>
+		<h1>Hello, world!</h1>
+	</StrictMode>
+);
 ```
 
 # .createElement(any, null|object, any[]|undefined);
@@ -304,7 +313,7 @@ createElement(StrictMode, null,
 
 ```
 
-// `<input type="email" className="boteasy" style="color: #000;font-weight: bold" />`
+`<input type="email" className="boteasy" style="color: #000;font-weight: bold" />`
 
 # .cssClass():
 * This function is for you to add or remove multiple class on one or multiple elements;
@@ -321,36 +330,44 @@ cssClass.remove("input", "dom");
 * ???
 
 ```shell
-globalStyle({
+const GlobalStyle = globalStyle({
 	color: "#000",
 	fontWeight: "bold"
 	backgroundColor: "#fff8"
 });
 ```
 
+`<GlobalStyle />`
+
 # .cssStyled(object):
 * ???
 
 ```shell
-cssStyled({
+const css = cssStyled({
 	color: "#ff6347",
 	fontWeight: 600
 });
 ```
+
+`<h1 className={css} />`
 
 # .styled(string, object):
 * ???
 
 ```shell
-cssStyled("boteasy", {
+const Style = cssStyled("boteasy", {
 	color: "#ff6347",
 	fontWeight: 600
 });
 ```
 
+`<Style><h1>Hello, world!</h1></Style>`
+
 # .rgba(string, number|undefined):
 * This function is for you to convert a hex color to rgba!
 
 ```shell
-rgba("#fff", 0.4); // rgba(255,255,255,0.4)
+rgba("#fff", 0.4); 
 ```
+
+`rgba(255,255,255,0.4)`
