@@ -1,9 +1,8 @@
 {
 	"name": "boteasy-dom",
-	"version": "1.2.3-experimental-hi0ct5jcrkw",
+	"version": "1.2.3-beta-vwdmtw9",
 	"description": "This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.",
 	"license": "MIT",
-	"private": false,
 	"author": {
 		"name": "Ronaldo S.",
 		"email": "ronaldo.rs44@gmail.com"
@@ -44,6 +43,7 @@
 	"main": "index.js",
 	"types": "index.d.ts",
 	"scripts": {},
+	"engines": {},
 	"bugs": {
 		"url": "https://github.com/theronaldostar/boteasy-dom/issues"
 	},

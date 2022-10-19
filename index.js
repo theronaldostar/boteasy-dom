@@ -15,7 +15,7 @@
 	let currentRoot = null;
 	let dispatcher = {};
 
-	const version = "1.2.3-experimental-hi0ct5jcrkw";
+	const version = "1.2.3-beta-vwdmtw9";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 
@@ -35,9 +35,7 @@
 
 		const hookId = useId();
 
-		if (typeof initialRef === "function") {
-			initialRef = initialRef();
-		};
+		if (typeof initialRef === "function") initialRef = initialRef();
 
 		function getRef(key) {
 			const hooks = dispatcher[currentRoot].hooks;
@@ -54,6 +52,7 @@
 		};
 
 		let value = getRef(hookId);
+
 		return { value, setRef };
 	};
 
@@ -63,7 +62,7 @@
 	};
 
 	function useWait(action) {
-		const value = match({true: "none", false: undefined, default: undefined}, String(action));
+		const value = match({ true: "none", false: undefined, default: undefined }, String(action));
 		const nodeList = dom.querySelectorAll("html, head, body");
 		nodeList.length >= 1 && nodeList.forEach(selector => selector.style["pointer-events"] = value);
 	};
@@ -96,7 +95,7 @@
 			responseJSON: undefined,
 			type: "connection",
 			status: "connection::ERROR",
-			statusText: "A technical fault has been detected and is already being fixed."
+			statusText: "A technical fault has been detected and is already being fixed"
 		};
 
 		fetch(link, { method, headers, body }).then(async response => {
@@ -167,9 +166,7 @@
 		const hookId = useId();
 		let hooks = dispatcher[currentRoot].hooks;
 
-		if (typeof initialState === "function") {
-			initialState = initialState();
-		};
+		if (typeof initialState === "function") initialState = initialState();
 
 		function getState(key) {
 			if (!hooks[key]) hooks[key] = { state: initialState };
@@ -226,16 +223,18 @@
 		};
 	};
 
-	function useScroll(a, b = {}) {
+	function useScroll(selector, options = {}) {
+		let { behavior = "auto" } = options;
 		/**
-		 * TODO: in Test!
-		 * let { x, y } useScroll(element, { ... });
+		 * TODO: Don't take this feature seriously at the moment!!
+		 * let { x, y } useScroll(selector, { ...options });
 		*/
+		let x;
+		let y;
+		return { x, y };
 	};
 
-	async function flushAsync(callback, arg) {
-		return await callback(arg);
-	};
+	const flushAsync = async (callback, arg) => await callback(arg);
 
 	function createElement(type, props, ...children) {
 		if (typeof type === "function") return type({...props, children});
@@ -320,10 +319,10 @@
 	};
 
 	function renderRoot(container, vNode) {
-		const $ = container.__root$instance;
+		const i = container.__root$instance;
 		const virtualNode = createVirtualNode(vNode);
-		dispatcher[$].mounted = true;
-		dispatcher[$].virtualNode = vNode;
+		dispatcher[i].mounted = true;
+		dispatcher[i].virtualNode = vNode;
 		unmarkContainer(container);
 		container.appendChild(virtualNode);
 	};
@@ -404,14 +403,10 @@
 		return createElement(Fragment, {}, props?.children);
 	};
 
-	/**
-	 * !
-	*/
-
 	function createStyle(random, object) {
 		let css = "";
 		let rules = {};
-		function map(label, props, $rule = false) {
+		function forEach(label, props, $rule = false) {
 			const listing = Object.entries(props).map(([i, value]) => {
 				if (typeof value === "object") {
 					let __i = [];
@@ -423,7 +418,7 @@
 						tag.split(",").map(event => __i.push("".concat(label, search, event)));
 						__i = __i.join(",").trim();
 					} else __i = label.concat(search, tag).trim();
-					map(__i, value, $rule);
+					forEach(__i, value, $rule);
 				} else return `${hydrateProp(i)}: ${hydrateProp(value)};`;
 			}).join("");
 			listing && ($rule ? rules[$rule].css = rules[$rule].css.concat(`${label} {${listing}}`) : css = css.concat(`${label} {${listing}}`));
@@ -434,24 +429,25 @@
 				delete object[key];
 			};
 		});
-		map(random, object);
+		forEach(random, object);
 		Object.entries(rules).map(([i, data]) => {
-			map(random, data.object, i);
+			forEach(random, data.object, i);
 			css = css.concat(`${i} {${data.css}}`);
 		});
 		return css;
 	};
 
-	const cssClass = (function() {
+	function cssClass(selector) {
 		const split = string => (string || "").replace(/\s/g, "").split(",");
-		const replace = (action, target, list) => {
-			const nodeList = dom.querySelectorAll(target);
-			nodeList.length >= 1 && nodeList.forEach(selector => selector.classList[action](...split(list)));
+		const replace = (action, list) => {
+			const nodeList = dom.querySelectorAll(selector || "*");
+			nodeList.length >= 1 && nodeList.forEach(target => target.classList[action](...split(list)));
 		};
-		const add = (target, list) => replace("add", target, list);
-		const remove = (target, list) => replace("remove", target, list);
-		return { add, remove };
-	})();
+		const add = classList => replace("add", classList);
+		const remove = classList => replace("remove", classList);
+		const toggle = classList => replace("toggle", classList);
+		return { add, remove, toggle };
+	};
 
 	function globalStyle(jssObject) {
 		const style = createDOMElement("element", "style");

@@ -65,7 +65,7 @@ const root = dom.querySelector("#root");
 <></>
 ```
 
-# .match(object, index):
+# .match(object, string|null):
 * This function is a direct alternative to "switch ~ case", and is based on the match function of the php language.
 
 ```shell
@@ -97,6 +97,8 @@ const email = useRef(() => {
 ```
 
 `<input type="email" ref={email} />`
+
+`let yourEmail = email.value;`
 
 # .useHtml(selector, newValue):
 * This function serves to add or remove an element in the DOM;
@@ -147,14 +149,29 @@ useRequest({
 * ???
 
 ```shell
+useVibrate(100);
+```
+
+`100ms`
+
+```shell
 useVibrate([500, 110, 500, 110, 450, 110, 200, 110, 170, 40, 450, 110, 200, 110, 170, 40, 500]);
 ```
+
+`starwars`
+
+```shell
+useVibrate([150, 150, 150, 150, 75, 75, 150, 150, 150, 150, 450]);
+```
+
+`powerrangers`
 
 # .useClipboard(string, VoidFunction|undefined):
 * This function serves to copy a text to a clipboard;
 
 ```shell
-useClipboard("Just a test!", () => {
+const text = "Just a test!";
+useClipboard(text, () => {
 	console.info("Text copied to clipboard.");
 });
 ```
@@ -193,9 +210,9 @@ setState(prev => (prev + 1));
 
 ```shell
 let name = "boteasy";
-const boteasyTest = () => console.info(`Hello, ${name}!`);
+const boteasyTest = text => console.info(`Hello, ${text}!`);
 useEffect(() => {
-	boteasyTest();
+	boteasyTest(name);
 	/**
 	 * TODO: Under Construction
 	 * this function is incomplete.
@@ -207,13 +224,11 @@ useEffect(() => {
 # .useStorage() => (string, any):
 * Manipulates: window.localStorage.
 
-`---`
-
 ```shell
 const storage = useStorage();
 ```
 
-`set`
+`---`
 
 ```shell
 storage("theme", () => {
@@ -222,19 +237,21 @@ storage("theme", () => {
 });
 ```
 
-`get`
+`set`
 
 ```shell
 storage("theme");
 ```
 
-`remove`
+`get`
 
 ```shell
 storage()("theme");
 ```
 
-# .useNavigate(number|undefined) => (string, boolean|undefined):
+`remove`
+
+# .useNavigate(number|undefined):
 * ???
 
 ```shell
@@ -243,12 +260,18 @@ const navigate = useNavigate(1000);
 
 `1000ms delay`
 
+# (string, boolean|undefined):
+
 ```shell
 navigate("/");
 ```
 
 ```shell
 navigate("login", false);
+```
+
+```shell
+navigate("https://www.example.com/", false);
 ```
 
 # .useScroll(..., object|undefined):
@@ -259,7 +282,7 @@ navigate("login", false);
  * TODO: Under Construction
  * this function is incomplete.
 */
-let { x, y } useScroll(".container", { behavior: "smooth" });
+let { x, y } useScroll("body", { behavior: "smooth" });
 ```
 
 # .flushAsync(VoidFunction, any):
@@ -268,7 +291,7 @@ let { x, y } useScroll(".container", { behavior: "smooth" });
 ```shell
 flushAsync(name => {
 	console.info(`Hello, ${name}!`);
-}, "BoteasyDOM");
+}, "Boteasy");
 ```
 
 # .createRoot(container, object|bolean|undefined):
@@ -276,7 +299,12 @@ flushAsync(name => {
 
 ```shell
 const container = dom.querySelector("#root");
-const root = createRoot(container, { hydrate: true });
+const root = createRoot(container, {
+	hydrate: true,
+	response: () => {
+		console.info("rendered");
+	}
+});
 ```
 
 * Render the element in the root;
@@ -298,9 +326,9 @@ root.unmount();
 * hydrate the element in the root;
 
 ```shell
-const name = "Boteasy.";
+const name = "Boteasy";
 const container = dom.querySelector("#root");
-hydrateRoot(container, <h1>Hello, {name}</h1>);
+hydrateRoot(container, <h1>Hello, {name}.</h1>);
 ```
 
 `<h1>Hello, Ronaldo S.</h1>`
@@ -331,15 +359,27 @@ createElement(StrictMode, null,
 
 `<input type="email" className="boteasy" style="color: #000;font-weight: bold" />`
 
-# .cssClass():
+# .cssClass(string|undefined):
 * This function is for you to add or remove multiple class on one or multiple elements;
 
 ```shell
-cssClass.add("input, select", "boteasy, dom");
+cssClass("input, select").toggle("boteasy, dom");
 ```
 
 ```shell
-cssClass.remove("input", "dom");
+const css = cssClass("input, select");
+```
+
+```shell
+css.add("boteasy, dom");
+```
+
+```shell
+css.remove("dom");
+```
+
+```shell
+css.toggle("dom");
 ```
 
 # .globalStyle(object):
@@ -371,13 +411,15 @@ const css = cssStyled({
 * ???
 
 ```shell
-const Style = cssStyled("boteasy", {
+const Style = cssStyled("boteasy-dom", {
 	color: "#ff6347",
 	fontWeight: 600
 });
 ```
 
 `<Style><h1>Hello, world!</h1></Style>`
+
+`final: <boteasy-dom class="jss-..."><h1>Hello, world!</h1></boteasy-dom>`
 
 # .rgba(string, number|undefined):
 * This function is for you to convert a hex color to rgba!

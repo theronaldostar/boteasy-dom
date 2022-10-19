@@ -36,6 +36,11 @@ declare namespace BoteasyDOM {
 		render: (children: DOMElement) => void;
 		unmount: Void;
 	}
+	interface CSSOptions {
+		add(classList: string): void;
+		remove(classList: string): void;
+		toggle(classList: string): void;
+	}
 	/**
 	 * !
 	*/
@@ -136,10 +141,7 @@ declare namespace BoteasyDOM {
 	/**
 	 * @description This function is for you to add or remove multiple class on one or multiple elements
 	*/
-	const cssClass: {
-		add(target: string, list: string): void;
-		remove(target: string, list: string): void;
-	};
+	function cssClass(selector?: string): CSSOptions;
 	/**
 	 * @description ???
 	*/
