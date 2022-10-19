@@ -207,28 +207,32 @@ useEffect(() => {
 # .useStorage() => (string, any):
 * Manipulates: window.localStorage.
 
-```shell
-const storage = useStorage();
-```
+`---`
 
 ```shell
-storage("theme", "dark");
+const storage = useStorage();
 ```
 
 `set`
 
 ```shell
-storage("theme");
+storage("theme", () => {
+	const prefers = window.matchMedia("(prefers-color-scheme: dark)").matches;
+	return prefers ? "dark" : "light"
+});
 ```
 
 `get`
 
-
 ```shell
-storage("theme")();
+storage("theme");
 ```
 
 `remove`
+
+```shell
+storage()("theme");
+```
 
 # .useNavigate(number|undefined) => (string, boolean|undefined):
 * ???

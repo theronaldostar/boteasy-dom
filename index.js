@@ -10,28 +10,28 @@
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
 	(global = global || self, factory(global.BoteasyDOM = {}));
-} (this, (exports => {
+} (this, (function(exports) {
 
 	let currentRoot = null;
 	let dispatcher = {};
 
-	const version = "1.2.3-experimental-ddy9lpe4hv";
+	const version = "1.2.3-experimental-hi0ct5jcrkw";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 
-	const match = (object, index) => {
+	function match(object, index) {
 		let item = {...object}[index];
 		const test = prop => typeof prop === "function";
 		if (item === undefined) return test(object.default || null) ? object.default() : object.default;
 		return test(item) ? item() : item;
 	};
 
-	const useId = (start = 2) => {
+	function useId(start = 2) {
 		const initial = start >= 2 && start <= 9 ? start : 2;
 		return Math.random().toString(36).slice(initial);
 	};
 
-	const useRef = (initialRef = null) => {
+	function useRef(initialRef = null) {
 
 		const hookId = useId();
 
@@ -39,12 +39,13 @@
 			initialRef = initialRef();
 		};
 
-		const getRef = key => {
+		function getRef(key) {
 			const hooks = dispatcher[currentRoot].hooks;
 			if (!hooks[key]) hooks[key] = initialRef;
 			return hooks[key];
 		};
-		const setRef = ({ target }) => {
+
+		function setRef({ target }) {
 			/**
 			 * TODO: Under Construction
 			 * this function is incomplete.
@@ -56,24 +57,24 @@
 		return { value, setRef };
 	};
 
-	const useHtml = (selector, newValue) => {
+	function useHtml(selector, newValue) {
 		const nodeList = dom.querySelectorAll(selector || "*");
 		nodeList.length >= 1 && nodeList.forEach(target => target.innerHTML = newValue || "");
 	};
 
-	const useWait = action => {
+	function useWait(action) {
 		const value = match({true: "none", false: undefined, default: undefined}, String(action));
 		const nodeList = dom.querySelectorAll("html, head, body");
 		nodeList.length >= 1 && nodeList.forEach(selector => selector.style["pointer-events"] = value);
 	};
 
-	const useProp = (selector, attribute, newValue = true) => {
+	function useProp(selector, attribute, newValue = true) {
 		const attr = typeof newValue === "string" ? (newValue === "true" || newValue === "false" ? JSON.parse(newValue) : true) : newValue;
 		const nodeList = dom.querySelectorAll(selector || "*");
 		nodeList.length >= 1 && nodeList.forEach(target => target[attribute] = attr);
 	};
 
-	const useRequest = props => {
+	function useRequest(props) {
 
 		const url = props?.url || "";
 		const method = props?.method?.toUpperCase() || "GET";
@@ -114,23 +115,23 @@
 		}).then(success).catch(data => error({...callback, data})).finally($finally);
 	};
 
-	const useVibrate = (pattern = 1000) => {
+	function useVibrate(pattern = 1000) {
 		const set = time => navigator.vibrate(time);
 		"vibrate" in navigator && set(pattern);
 	};
 
-	const useClipboard = (value, effect = () => {}) => {
+	function useClipboard(value, effect = function() {}) {
 		const test = "clipboard" in navigator;
 		test && navigator.clipboard.writeText(value).then(effect);
 	};
 
-	const useTwins = (primary = {}, secondary = {}) => {
+	function useTwins(primary = {}, secondary = {}) {
 
 		let isTwins = true;
 		const $$primary = Object.keys(primary || {});
 		const $$secondary = Object.keys(secondary || {});
 
-		const check = object => {
+		function check(object) {
 			const type = typeof object === "object";
 			const length = Object.keys(object || {}).length > 0;
 			return object !== null && type && length;
@@ -139,7 +140,7 @@
 		if ($$primary.length !== $$secondary.length) return false;
 		if (!check(primary) || !check(secondary)) return false;
 
-		const forEach = ($primary, $secondary) => {
+		function forEach($primary, $secondary) {
 			Object.entries($primary).map(([i, value]) => {
 				const $value = $secondary[i];
 				if (check(value) && check($value)) {
@@ -155,13 +156,13 @@
 		return isTwins;
 	};
 
-	const useFloat = (value, fixed = 0) => {
+	function useFloat(value, fixed = 0) {
 		const amount = typeof value === "number" ? value : Number(value) || NaN;
 		const check = amount => /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(amount);
 		return check(amount) ? Number(check(fixed) && fixed >= 1 ? amount.toFixed(fixed) : amount) : NaN;
 	};
 
-	const useState = (initialState = null) => {
+	function useState(initialState = null) {
 
 		const hookId = useId();
 		let hooks = dispatcher[currentRoot].hooks;
@@ -170,11 +171,12 @@
 			initialState = initialState();
 		};
 
-		const getState = key => {
+		function getState(key) {
 			if (!hooks[key]) hooks[key] = { state: initialState };
 			return hooks[key];
 		};
-		const setState = newState => {
+
+		function setState(newState) {
 			let prev = getState(hookId);
 			typeof newState === "function" ? prev.state = newState(prev.state) : prev.state = newState;
 			hooks[hookId] = prev;
@@ -184,7 +186,7 @@
 		return [state, setState];
 	};
 
-	const useEffect = (effect, deps = []) => {
+	function useEffect(effect, deps = []) {
 
 		const hookId = useId();
 		let hooks = dispatcher[currentRoot].hooks;
@@ -201,35 +203,41 @@
 		};
 	};
 
-	const useStorage = () => {
-		const storage = window.localStorage;
-		return (key = "", value = null) => {
-			const data = storage?.getItem(key);
+	function useStorage() {
+		const local = window.localStorage;
+		function storage(key, value = null) {
+			const item = local.getItem(key);
 			if (key && value) {
-				storage?.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
-			} else return /^(?=.*[{}])/.test(data || "") ? JSON.parse(data) : data;
-			return () => key && storage?.removeItem(key);
+				if (typeof value === "function") value = value();
+				local.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
+			} else if (key && !value) {
+				return /^(?=.*[{}])/.test(item) ? JSON.parse(item) : item;
+			};
+			return $key => $key && local.removeItem($key);
 		};
+		return storage;
 	};
 
-	const useNavigate = (delay = 0) => {
+	function useNavigate(delay = 0) {
 		const data = window.location;
-		return (to = ".", historic = true) => {
+		return function(to = ".", historic = true) {
 			const action = () => historic ? data.assign(to) : data.replace(to);
 			to && delay > 0 ? setTimeout(() => action(), delay) : action();
 		};
 	};
 
-	const useScroll = (a, b = {}) => {
+	function useScroll(a, b = {}) {
 		/**
 		 * TODO: in Test!
 		 * let { x, y } useScroll(element, { ... });
 		*/
 	};
 
-	const flushAsync = async (callback, arg) => await callback(arg);
+	async function flushAsync(callback, arg) {
+		return await callback(arg);
+	};
 
-	const createElement = (type, props, ...children) => {
+	function createElement(type, props, ...children) {
 		if (typeof type === "function") return type({...props, children});
 		return {type, props: {...props}, children};
 	};
@@ -242,12 +250,12 @@
 		}, type)
 	);
 
-	const hydrateProp = prop => {
+	function hydrateProp(prop) {
 		const $typeof = typeof prop === "string" ? prop.split(/(?=[A-Z])/).join("-").toLocaleLowerCase() : prop;
 		return $typeof;
 	};
 
-	const createVirtualNode = virtualNode => {
+	function createVirtualNode(virtualNode) {
 
 		const isValidElementType = type => (
 			type === Fragment ||
@@ -306,12 +314,12 @@
 		return element;
 	};
 
-	const unmarkContainer = container => {
+	function unmarkContainer(container) {
 		let sibling;
 		while (sibling = container.lastChild) container.removeChild(sibling);
 	};
 
-	const renderRoot = (container, vNode) => {
+	function renderRoot(container, vNode) {
 		const $ = container.__root$instance;
 		const virtualNode = createVirtualNode(vNode);
 		dispatcher[$].mounted = true;
@@ -322,7 +330,7 @@
 
 	const checkComponent = children => typeof children === "object" && typeof children.props !== "undefined";
 
-	const createRoot = (container, options = false) => {
+	function createRoot(container, options = false) {
 
 		const instance = `root$${useId()}`;
 
@@ -342,7 +350,7 @@
 			hooks: {container}
 		};
 
-		const render = children => {
+		function render(children) {
 			if (checkComponent(children)) {
 				if (!dispatcher[instance].virtualNode && container.lastChild === null) {
 					renderRoot(container, children);
@@ -356,7 +364,7 @@
 			};
 		};
 
-		const unmount = () => {
+		function unmount() {
 			if (!dispatcher[instance].mounted) {
 				delete dispatcher[instance];
 				unmarkContainer(container);
@@ -368,7 +376,7 @@
 		return { render, unmount };
 	};
 
-	const hydrateRoot = (container, children) => {
+	function hydrateRoot(container, children) {
 		const instance = container?.__root$instance;
 		if (dispatcher[instance]?.options?.hydrate) {
 			if (checkComponent(children)) {
@@ -391,7 +399,7 @@
 		};
 	};
 
-	const StrictMode = props => {
+	function StrictMode(props) {
 		"use strict";
 		return createElement(Fragment, {}, props?.children);
 	};
@@ -400,10 +408,10 @@
 	 * !
 	*/
 
-	const createStyle = (random, object) => {
+	function createStyle(random, object) {
 		let css = "";
 		let rules = {};
-		const map = (label, props, $rule = false) => {
+		function map(label, props, $rule = false) {
 			const listing = Object.entries(props).map(([i, value]) => {
 				if (typeof value === "object") {
 					let __i = [];
@@ -434,7 +442,7 @@
 		return css;
 	};
 
-	const cssClass = (() => {
+	const cssClass = (function() {
 		const split = string => (string || "").replace(/\s/g, "").split(",");
 		const replace = (action, target, list) => {
 			const nodeList = dom.querySelectorAll(target);
@@ -445,14 +453,14 @@
 		return { add, remove };
 	})();
 
-	const globalStyle = jssObject => {
+	function globalStyle(jssObject) {
 		const style = createDOMElement("element", "style");
 		style.setAttribute("data-boteasy", "global-style");
 		style.textContent = createStyle("", jssObject);
 		dom.querySelector("head").appendChild(style);
 	};
 
-	const cssStyled = jssObject => {
+	function cssStyled(jssObject) {
 		const random = `jss-${useId(6)}`;
 		const style = createDOMElement("element", "style");
 		style.setAttribute("data-boteasy", `agnostic-style(${random})`);
@@ -461,7 +469,7 @@
 		return random;
 	};
 
-	const styled = (tagName, jssObject) => {
+	function styled(tagName, jssObject) {
 		const random = `jss-${useId(6)}`;
 		const style = createDOMElement("element", "style");
 		style.setAttribute("data-boteasy", `${tagName}(${random})`);
@@ -470,7 +478,7 @@
 		return createElement(tagName || "div", {className: random});
 	};
 
-	const rgba = (hex, opacity = 1) => {
+	function rgba(hex, opacity = 1) {
 		const rgb = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,
 		(_,r,g,b) => "#"+r+r+g+g+b+b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
 		return `rgba(${rgb}, ${opacity})`;

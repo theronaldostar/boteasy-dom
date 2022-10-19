@@ -46,114 +46,114 @@ declare namespace BoteasyDOM {
 	/**
 	 * @description This function is a direct alternative to "switch ~ case", and is based on the match function of the php language
 	*/
-	const match: <O, I>(object: O, index: I) => any;
+	function match<O, I>(object: O, index: I): any;
 	/**
 	 * @description ???
 	*/
-	const useId: (start?: number) => string;
+	function useId(start?: number): string;
 	/**
 	 * @description ???
 	*/
-	const useRef: <R>(initialRef: R|(() => R)) => {
+	function useRef<R>(initialRef: R|(() => R)): {
 		value: R;
 		setRef: ({ target }: any) => void;
 	};
 	/**
 	 * @description This function serves to add or remove an element in the DOM
 	*/
-	const useHtml: <N>(selector: string, newValue: N) => void;
+	function useHtml<N>(selector: string, newValue: N): void;
 	/**
 	 * @description This function is for you to disable all elements
 	*/
-	const useWait: (action: boolean|string) => void;
+	function useWait(action: boolean|string): void;
 	/**
 	 * @description This function is used to enable/disable elements or select an input type checkbox, for example
 	*/
-	const useProp: <N = undefined>(selector: string, attribute: string, newValue: N) => void;
+	function useProp<N = undefined>(selector: string, attribute: string, newValue: N): void;
 	/**
 	 * @description This function serves to perform AJAX requests;
 	*/
-	const useRequest: (props: RequestProps) => Promise<any>;
+	function useRequest(props: RequestProps): Promise<any>;
 	/**
 	 * @description ???
 	*/
-	const useVibrate: (pattern?: number) => void;
+	function useVibrate(pattern?: number): void;
 	/**
 	 * @description This function serves to copy a text to a clipboard;
 	*/
-	const useClipboard: (value: string, effect?: Void) => void;
+	function useClipboard(value: string, effect?: Void): void;
 	/**
 	 * @description As the name says, this function is for you to compare if two objects or array are equal
 	*/
-	const useTwins: <P, S>(primary?: P, secondary?: S) => true|false;
+	function useTwins<P, S>(primary?: P, secondary?: S): true|false;
 	/**
 	 * @description ???
 	*/
-	const useFloat: (value: number|string, fixed?: number) => number;
+	function useFloat(value: number|string, fixed?: number): number;
 	/**
 	 * @description This function is just for adding some local states.
 	*/
-	const useState: <S>(initialState: S|(() => S)) => [S, Dispatch<StateAction<S>>];
+	function useState<S>(initialState: S|(() => S)): [S, Dispatch<StateAction<S>>];
 	/**
 	 * @description ???
 	*/
-	const useEffect: (effect: Void, deps?: any[]) => void;
+	function useEffect(effect: Void, deps?: any[]): void;
 	/**
 	 * @description Manipulates: window.localStorage.
 	*/
-	const useStorage: () => <V>(key?: string, value?: V) => any;
+	function useStorage(): <V>(key?: string, value?: V) => any;
 	/**
 	 * @description ???
 	*/
-	const useNavigate: (delay?: number) => (to?: string, historic?: boolean) => void;
+	function useNavigate(delay?: number): (to?: string, historic?: boolean) => void;
 	/**
 	 * @description ???
 	*/
-	const useScroll: (a, b?: object) => void;
+	function useScroll(a, b?: object): void;
 	/**
 	 * @description ???
 	*/
-	const flushAsync: <C, A>(callback: (arg: A) => C, arg?: A) => Promise<C>;
+	function flushAsync<C, A>(callback: (arg: A) => C, arg?: A): Promise<C>;
 	/**
 	 * @description This function serves to create elements to be rendered by Boteasy-dom
 	*/
-	const createElement: (type: any, props: null|object, ...children: any[]) => object;
+	function createElement(type: any, props: null|object, ...children: any[]): object;
 	/**
 	 * @description This function serves to create a route to Boteasy-dom, Send the second parameter an object containing an intex with hydrate as true
 	*/
-	const createRoot: (container: DOMElement, args?: {
+	function createRoot(container: DOMElement, args?: {
 		hydrate?: boolean;
 		response?: () => any;
-	}) => Root;
+	}): Root;
 	/**
 	 * @description hydrate the element in the root.
 	*/
-	const hydrateRoot: (container: DOMElement, children: DOMElement) => void;
+	function hydrateRoot(container: DOMElement, children: DOMElement): void;
 	/**
 	 * @description StrictMode is a tool for highlighting potential problems in an application. Like Fragment, StrictMode does not render any visible UI. It activates additional checks and warnings for its descendants
 	*/
-	const StrictMode: <P>(props: P) => void;
+	function StrictMode<P>(props: P): void;
 	/**
-	 * @description  This function is for you to add or remove multiple class on one or multiple elements
+	 * @description This function is for you to add or remove multiple class on one or multiple elements
 	*/
 	const cssClass: {
-		add: (target: string, list: string) => void;
-		remove: (target: string, list: string) => void;
+		add(target: string, list: string): void;
+		remove(target: string, list: string): void;
 	};
 	/**
 	 * @description ???
 	*/
-	const globalStyle: <G>(jssObject: G) => void;
+	function globalStyle<G>(jssObject: G): void;
 	/**
 	 * @description ???
 	*/
-	const cssStyled: <O>(jssObject: O) => string;
+	function cssStyled<O>(jssObject: O): string;
 	/**
 	 * @description ???
 	*/
-	const styled: <O>(tagName: string, jssObject: O) => any;
+	function styled<O>(tagName: string, jssObject: O): any;
 	/**
 	 * @description ???
 	*/
-	const rgba: (hex: string, opacity?: number) => string;
+	function rgba(hex: string, opacity?: number): string;
 }
