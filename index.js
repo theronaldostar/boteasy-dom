@@ -15,7 +15,7 @@
 	let currentRoot = null;
 	let dispatcher = {};
 
-	const version = "1.2.3-beta-vwdmtw9";
+	const version = "1.2.3";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 
