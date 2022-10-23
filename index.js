@@ -16,7 +16,7 @@
 	let currentRoot = null;
 	let dispatcher = {};
 
-	const version = "1.2.4-next-n7tax8";
+	const version = "1.2.4-next-ep4euk0m5";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 

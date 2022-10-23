@@ -4,6 +4,7 @@
  * 
  * @copyright (c) since 2020 Boteasy, all rights reserved.
 */
+
 export = BoteasyDOM;
 
 declare namespace BoteasyDOM {
