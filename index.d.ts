@@ -19,9 +19,7 @@ declare namespace BoteasyDOM {
 	 * @description Allows a component to return multiple elements grouped a list of children without adding extra nodes to the DOM
 	*/
 	const Fragment: Symbol;
-	/**
-	 * !
-	*/
+	/**/
 	interface RequestProps {
 		url: string;
 		method?: string;
@@ -41,9 +39,7 @@ declare namespace BoteasyDOM {
 		remove(classList: string): void;
 		toggle(classList: string): void;
 	}
-	/**
-	 * !
-	*/
+	/**/
 	type Void<V = any> = (value: V) => any;
 	type Dispatch<D> = (value: D) => void;
 	type StateAction<S> = S | ((prev: S) => S);
@@ -66,7 +62,11 @@ declare namespace BoteasyDOM {
 	/**
 	 * @description This function serves to add or remove an element in the DOM
 	*/
-	function useHtml<N>(selector: string, newValue: N): void;
+	function useHtml<H>(selector: string, value: H): void;
+	/**
+	 * @description ???
+	*/
+	function useAppend<A>(selector: string, element: A, position?: boolean): void;
 	/**
 	 * @description This function is for you to disable all elements
 	*/

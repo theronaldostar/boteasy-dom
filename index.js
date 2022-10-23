@@ -6,6 +6,7 @@
  * @copyright (c) since 2020 Boteasy, all rights reserved.
  * @description This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.
 */
+
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
@@ -15,9 +16,11 @@
 	let currentRoot = null;
 	let dispatcher = {};
 
-	const version = "1.2.3";
+	const version = "1.2.4-next-n7tax8";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
+
+	const nodeList = selector => dom.querySelectorAll(selector || "*");
 
 	function match(object, index) {
 		let item = {...object}[index];
@@ -27,8 +30,10 @@
 	};
 
 	function useId(start = 2) {
-		const initial = start >= 2 && start <= 9 ? start : 2;
-		return Math.random().toString(36).slice(initial);
+		const i = start >= 2 && start <= 9 ? start : 2;
+		const first = Date.now().toString(36);
+		const last = Math.random().toString(36).substring(i);
+		return first + last;
 	};
 
 	function useRef(initialRef = null) {
@@ -56,21 +61,26 @@
 		return { value, setRef };
 	};
 
-	function useHtml(selector, newValue) {
-		const nodeList = dom.querySelectorAll(selector || "*");
-		nodeList.length >= 1 && nodeList.forEach(target => target.innerHTML = newValue || "");
+	function useHtml(selector, value) {
+		const list = nodeList(selector);
+		list.length >= 1 && list.forEach(target => target.innerHTML = value || "");
+	};
+
+	function useAppend(selector, element, position = false) {
+		const list = nodeList(selector);
+		list.length >= 1 && list.forEach(target => target.insertAdjacentHTML(!position ? "afterbegin" : "beforeend", element));
 	};
 
 	function useWait(action) {
 		const value = match({ true: "none", false: undefined, default: undefined }, String(action));
-		const nodeList = dom.querySelectorAll("html, head, body");
-		nodeList.length >= 1 && nodeList.forEach(selector => selector.style["pointer-events"] = value);
+		const list = nodeList("html, head, body");
+		list.length >= 1 && list.forEach(selector => selector.style["pointer-events"] = value);
 	};
 
 	function useProp(selector, attribute, newValue = true) {
 		const attr = typeof newValue === "string" ? (newValue === "true" || newValue === "false" ? JSON.parse(newValue) : true) : newValue;
-		const nodeList = dom.querySelectorAll(selector || "*");
-		nodeList.length >= 1 && nodeList.forEach(target => target[attribute] = attr);
+		const list = nodeList(selector);
+		list.length >= 1 && list.forEach(target => target[attribute] = attr);
 	};
 
 	function useRequest(props) {
@@ -127,8 +137,8 @@
 	function useTwins(primary = {}, secondary = {}) {
 
 		let isTwins = true;
-		const $$primary = Object.keys(primary || {});
-		const $$secondary = Object.keys(secondary || {});
+		const __primary = Object.keys(primary || {});
+		const __secondary = Object.keys(secondary || {});
 
 		function check(object) {
 			const type = typeof object === "object";
@@ -136,14 +146,15 @@
 			return object !== null && type && length;
 		};
 
-		if ($$primary.length !== $$secondary.length) return false;
+		if (__primary.length !== __secondary.length) return false;
 		if (!check(primary) || !check(secondary)) return false;
 
 		function forEach($primary, $secondary) {
 			Object.entries($primary).map(([i, value]) => {
 				const $value = $secondary[i];
 				if (check(value) && check($value)) {
-					forEach(value, $value);return;
+					forEach(value, $value);
+					return;
 				};
 				if (typeof value !== typeof $value) isTwins = false;
 				if (JSON.stringify(value) !== JSON.stringify($value)) isTwins = false;
@@ -164,6 +175,7 @@
 	function useState(initialState = null) {
 
 		const hookId = useId();
+
 		let hooks = dispatcher[currentRoot].hooks;
 
 		if (typeof initialState === "function") initialState = initialState();
@@ -180,12 +192,14 @@
 		};
 
 		let state = getState(hookId);
+
 		return [state, setState];
 	};
 
 	function useEffect(effect, deps = []) {
 
 		const hookId = useId();
+
 		let hooks = dispatcher[currentRoot].hooks;
 
 		if (hooks[hookId] !== undefined) {
@@ -234,35 +248,34 @@
 		return { x, y };
 	};
 
-	const flushAsync = async (callback, arg) => await callback(arg);
+	async function flushAsync(callback, arg) {
+		await callback(arg);
+	};
 
 	function createElement(type, props, ...children) {
 		if (typeof type === "function") return type({...props, children});
 		return {type, props: {...props}, children};
 	};
 
-	const createDOMElement = (type = null, label = null) => (
-		match({
-			element: () => dom.createElement(label),
-			text: () => dom.createTextNode(label),
-			default: () => dom.createDocumentFragment()
-		}, type)
-	);
+	const createDOMElement = (type = null, label = null) => (match({
+		element: () => dom.createElement(label),
+		text: () => dom.createTextNode(label),
+		default: () => dom.createDocumentFragment()
+	}, type));
 
-	function hydrateProp(prop) {
-		const $typeof = typeof prop === "string" ? prop.split(/(?=[A-Z])/).join("-").toLocaleLowerCase() : prop;
-		return $typeof;
-	};
+	const hydrateProp = prop => typeof prop === "string" ? prop.split(/(?=[A-Z])/).join("-").toLocaleLowerCase() : prop;
 
-	function createVirtualNode(virtualNode) {
-
-		const isValidElementType = type => (
+	function isValidElementType(type) {
+		return (
 			type === Fragment ||
 			typeof type === "object" ||
 			typeof type === "function" ||
 			typeof type === "string" ||
 			typeof type === "number"
 		) && typeof type !== "undefined";
+	};
+
+	function createVirtualNode(virtualNode) {
 
 		let element;
 		const type = virtualNode.type || Fragment;
@@ -318,11 +331,13 @@
 		while (sibling = container.lastChild) container.removeChild(sibling);
 	};
 
-	function renderRoot(container, vNode) {
+	function renderRoot(container, node) {
 		const i = container.__root$instance;
-		const virtualNode = createVirtualNode(vNode);
+		const virtualNode = createVirtualNode(node);
+		/**/
 		dispatcher[i].mounted = true;
-		dispatcher[i].virtualNode = vNode;
+		dispatcher[i].virtualNode = node;
+		/**/
 		unmarkContainer(container);
 		container.appendChild(virtualNode);
 	};
@@ -330,48 +345,41 @@
 	const checkComponent = children => typeof children === "object" && typeof children.props !== "undefined";
 
 	function createRoot(container, options = false) {
-
 		const instance = `root$${useId()}`;
-
+		/**/
 		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
 			throw Error(".createRoot(container, {...}): Target container is not a DOM element.");
 		} else if (container.nodeType === 1 && container.tagName && container.tagName.toUpperCase() === "BODY") {
 			throw Error(".createRoot(container, {...}): Creating roots directly on body is not allowed.");
 		};
-
+		/**/
 		container.__root$instance = instance;
 		currentRoot = instance;
-
+		/**/
 		dispatcher[instance] = {
 			options,
 			virtualNode: null,
 			mounted: false,
-			hooks: {container}
+			hooks: { container }
 		};
-
+		/**/
 		function render(children) {
 			if (checkComponent(children)) {
 				if (!dispatcher[instance].virtualNode && container.lastChild === null) {
 					renderRoot(container, children);
 					const $response = dispatcher[instance].options?.response;
 					typeof $response === "function" && $response();
-				} else {
-					throw Error(".render(</>): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
-				};
-			} else {
-				throw Error(`.render(</>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.createElement("label", {className: "greeting"}, "Hello, world!");`);
-			};
+				} else throw Error(".render(</>): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
+			} else throw Error(`.render(</>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.createElement("label", {className: "greeting"}, "Hello, world!");`);
 		};
-
+		/**/
 		function unmount() {
 			if (!dispatcher[instance].mounted) {
 				delete dispatcher[instance];
 				unmarkContainer(container);
-			} else {
-				throw Error(".unmount(): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
-			};
+			} else throw Error(".unmount(): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
 		};
-
+		/**/
 		return { render, unmount };
 	};
 
@@ -384,28 +392,22 @@
 						renderRoot(container, children);
 						const response = dispatcher[instance].options?.response;
 						typeof response === "function" && response();
-					} else {
-						throw Error(".hydrateRoot(container, </>): You are trying to Hydrate a route by passing a component identical to the one rendered.");
-					};
-				} else {
-					throw Error(".hydrateRoot(container, </>): Cannot update a route that does not have any component rendered by Boteasy-dom");
-				};
-			} else {
-				throw Error(`.hydrateRoot(container, </>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.createElement("label", {className: "greeting"}, "Hello, world!");`);
-			};
-		} else {
-			throw Error(".hydrateRoot(container, </>): Cannot hydrate this route because the second parameter in .createRoot(container, {...}): Was sent false, null or a object empty when it was created.");
-		};
+					} else throw Error(".hydrateRoot(container, </>): You are trying to Hydrate a route by passing a component identical to the one rendered.");
+				} else throw Error(".hydrateRoot(container, </>): Cannot update a route that does not have any component rendered by Boteasy-dom");
+			} else throw Error(`.hydrateRoot(container, </>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.createElement("label", {className: "greeting"}, "Hello, world!");`);
+		} else throw Error(".hydrateRoot(container, </>): Cannot hydrate this route because the second parameter in .createRoot(container, {...}): Was sent false, null or a object empty when it was created.");
 	};
 
 	function StrictMode(props) {
 		"use strict";
-		return createElement(Fragment, {}, props?.children);
+		return createElement(Fragment, null, props?.children);
 	};
 
 	function createStyle(random, object) {
+		/**/
 		let css = "";
 		let rules = {};
+		/**/
 		function forEach(label, props, $rule = false) {
 			const listing = Object.entries(props).map(([i, value]) => {
 				if (typeof value === "object") {
@@ -423,25 +425,29 @@
 			}).join("");
 			listing && ($rule ? rules[$rule].css = rules[$rule].css.concat(`${label} {${listing}}`) : css = css.concat(`${label} {${listing}}`));
 		};
+		/**/
 		Object.keys(object).map(key => {
 			if (key.startsWith("@")) {
 				key === "@import" ? css = css.concat(`${key} ${object[key]};`) : rules[key] = {css: "", object: object[key]};
 				delete object[key];
 			};
 		});
+		/**/
 		forEach(random, object);
+		/**/
 		Object.entries(rules).map(([i, data]) => {
 			forEach(random, data.object, i);
 			css = css.concat(`${i} {${data.css}}`);
 		});
+		/**/
 		return css;
 	};
 
 	function cssClass(selector) {
 		const split = string => (string || "").replace(/\s/g, "").split(",");
 		const replace = (action, list) => {
-			const nodeList = dom.querySelectorAll(selector || "*");
-			nodeList.length >= 1 && nodeList.forEach(target => target.classList[action](...split(list)));
+			const list = nodeList(selector);
+			list.length >= 1 && list.forEach(target => target.classList[action](...split(list)));
 		};
 		const add = classList => replace("add", classList);
 		const remove = classList => replace("remove", classList);
@@ -487,6 +493,7 @@
 	exports.useId = useId;
 	exports.useRef = useRef;
 	exports.useHtml = useHtml;
+	exports.useAppend = useAppend;
 	exports.useWait = useWait;
 	exports.useProp = useProp;
 	exports.useRequest = useRequest;

@@ -66,7 +66,7 @@ const root = dom.querySelector("#root");
 ```
 
 # .match(object, string|null):
-* This function is a direct alternative to "switch ~ case", and is based on the match function of the php language.
+* This function is a direct alternative to "switch ~ case", and is based on the match function of the php language
 
 ```shell
 const index = null;
@@ -84,9 +84,10 @@ match({
 const inputId = useId(2);
 ```
 
-`<input type="text" id={inputId} />`
+`JSX: <input type="text" id={inputId} />`
+`Pure: createElement("input", {type: "text", id: inputId})`
 
-# .useRef(value|VoidFunction):
+# .useRef(any|function):
 * ???
 
 ```shell
@@ -96,16 +97,32 @@ const email = useRef(() => {
 });
 ```
 
-`<input type="email" ref={email} />`
+`JSX: <input type="email" ref={email} />`
+`Pure: createElement("input", {type: "email", ref: email})`
 
 `let yourEmail = email.value;`
 
-# .useHtml(selector, newValue):
-* This function serves to add or remove an element in the DOM;
+# .useHtml(selector, value):
+* This function serves to add or remove an element in the DOM
 
 ```shell
 useHtml("#root", `<h1>Hello, world!</h1>`);
 ```
+
+# .useAppend(selector, string, boolean|undefined):
+* ???
+
+```shell
+useAppend("#root", `<div>Text</div>`);
+```
+
+`Just inside the element, before its first child.`
+
+```shell
+useAppend("#root", `<div>Text</div>`, true);
+```
+
+`Just inside the element, after its last child.`
 
 # .useWait(bolean|string):
 * This function is for you to disable all elements;
@@ -166,7 +183,7 @@ useVibrate([150, 150, 150, 150, 75, 75, 150, 150, 150, 150, 450]);
 
 `powerrangers`
 
-# .useClipboard(string, VoidFunction|undefined):
+# .useClipboard(string, function|undefined):
 * This function serves to copy a text to a clipboard;
 
 ```shell
@@ -197,7 +214,7 @@ const total = 100.123;
 useFloat(total, 2);
 ```
 
-# .useState(value|VoidFunction):
+# .useState(any|function):
 * This function is just for adding some local states.
 
 ```shell
@@ -285,13 +302,13 @@ navigate("https://www.example.com/", false);
 let { x, y } useScroll("body", { behavior: "smooth" });
 ```
 
-# .flushAsync(VoidFunction, any):
+# .flushAsync(function, any):
 * ???
 
 ```shell
-flushAsync(name => {
-	console.info(`Hello, ${name}!`);
-}, "Boteasy");
+flushAsync(event => {
+	console.info(`Hello, ${event.name}!`);
+}, { name: "Boteasy" });
 ```
 
 # .createRoot(container, object|bolean|undefined):
