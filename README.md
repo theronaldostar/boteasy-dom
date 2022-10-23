@@ -62,7 +62,7 @@ const root = dom.querySelector("#root");
 * Allows a component to return multiple elements grouped a list of children without adding extra nodes to the DOM
 
 ```shell
-<></>
+<>{/* ... */}</>
 ```
 
 # .match(object, string|null):
@@ -85,6 +85,7 @@ const inputId = useId(2);
 ```
 
 `JSX: <input type="text" id={inputId} />`
+
 `Pure: createElement("input", {type: "text", id: inputId})`
 
 # .useRef(any|function):
@@ -98,6 +99,7 @@ const email = useRef(() => {
 ```
 
 `JSX: <input type="email" ref={email} />`
+
 `Pure: createElement("input", {type: "email", ref: email})`
 
 `let yourEmail = email.value;`
@@ -279,6 +281,8 @@ const navigate = useNavigate(1000);
 
 # (string, boolean|undefined):
 
+`Send the second parameter as false, to removes the current page from the session history and navigates to the given URL.`
+
 ```shell
 navigate("/");
 ```
@@ -371,10 +375,9 @@ createElement(StrictMode, null,
 		})
 	)
 );
-
 ```
 
-`<input type="email" className="boteasy" style="color: #000;font-weight: bold" />`
+`<input type="email" class="boteasy" style="color: #000;font-weight: bold">`
 
 # .cssClass(string|undefined):
 * This function is for you to add or remove multiple class on one or multiple elements;
@@ -410,7 +413,9 @@ const GlobalStyle = globalStyle({
 });
 ```
 
-`<GlobalStyle />`
+`JSX: <GlobalStyle />`
+
+`Pure: GlobalStyle()`
 
 # .cssStyled(object):
 * ???
@@ -422,7 +427,9 @@ const css = cssStyled({
 });
 ```
 
-`<h1 className={css} />`
+`JSX: <h1 class={css} />`
+
+`Pure: createElement("h1", {className: css});`
 
 # .styled(string, object):
 * ???
@@ -434,7 +441,9 @@ const Style = cssStyled("boteasy-dom", {
 });
 ```
 
-`<Style><h1>Hello, world!</h1></Style>`
+`JSX: <Style><h1>Hello, world!</h1></Style>`
+
+`Pure: createElement(Style, null, createElement("h1", null, "Hello, world!"));`
 
 `final: <boteasy-dom class="jss-..."><h1>Hello, world!</h1></boteasy-dom>`
 
