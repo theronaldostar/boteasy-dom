@@ -37,11 +37,18 @@ root.render(<App />);
 ```shell
 import BoteasyDOM from "boteasy-dom";
 /**
- * @jsx createElement
+ * @jsx jsxDEV
  * @jsxFrag Fragment
  * @jsxRuntime classic
 */
 const {  } = BoteasyDOM;
+```
+
+# .theme:
+* ???
+
+```shell
+const scheme = theme;
 ```
 
 # .version:
@@ -84,9 +91,9 @@ match({
 const inputId = useId(2);
 ```
 
-`JSX: <input type="text" id={inputId} />`
+`<input type="text" id={inputId} />`
 
-`Pure: createElement("input", {type: "text", id: inputId})`
+`jsxDEV("input", {type: "text", id: inputId})`
 
 # .useRef(any|function):
 * ???
@@ -98,9 +105,9 @@ const email = useRef(() => {
 });
 ```
 
-`JSX: <input type="email" ref={email} />`
+`<input type="email" ref={email} />`
 
-`Pure: createElement("input", {type: "email", ref: email})`
+`jsxDEV("input", {type: "email", ref: email})`
 
 `let yourEmail = email.value;`
 
@@ -247,8 +254,6 @@ useEffect(() => {
 const storage = useStorage();
 ```
 
-`---`
-
 ```shell
 storage("theme", () => {
 	const prefers = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -269,6 +274,12 @@ storage()("theme");
 ```
 
 `remove`
+
+```shell
+storage()();
+```
+
+`clear`
 
 # .useNavigate(number|undefined):
 * ???
@@ -365,7 +376,20 @@ const App = (
 );
 ```
 
-# .createElement(any, null|object, any[]|undefined);
+# .StyleProvider():
+* ???
+
+```shell
+const provider = {color: "#000", fontWeight: "bold"};
+const App = (
+	<StyleProvider theme={provider}>
+		<>{...}</>
+	</StyleProvider>
+);
+```
+
+# .createElement(any, null|object, any[]|undefined):
+# .jsxDEV(any, null|object, any[]|undefined):
 * This function serves to create elements to be rendered by Boteasy-dom;
 
 ```shell
@@ -376,6 +400,17 @@ createElement(StrictMode, null,
 	)
 );
 ```
+
+```shell
+jsxDEV(StrictMode, null,
+	jsxDEV(Fragment, null,
+		jsxDEV("input", {type: "email", className: "boteasy", style: {color: "#000", fontWeight: "bold"}
+		})
+	)
+);
+```
+
+`Both methods are the same.`
 
 `<input type="email" class="boteasy" style="color: #000;font-weight: bold">`
 
@@ -413,9 +448,9 @@ const GlobalStyle = globalStyle({
 });
 ```
 
-`JSX: <GlobalStyle />`
+`<GlobalStyle />`
 
-`Pure: GlobalStyle()`
+`GlobalStyle()`
 
 # .cssStyled(object):
 * ???
@@ -427,9 +462,9 @@ const css = cssStyled({
 });
 ```
 
-`JSX: <h1 class={css} />`
+`<h1 class={css} />`
 
-`Pure: createElement("h1", {className: css});`
+`jsxDEV("h1", {className: css});`
 
 # .styled(string, object):
 * ???
@@ -441,9 +476,9 @@ const Style = cssStyled("boteasy-dom", {
 });
 ```
 
-`JSX: <Style><h1>Hello, world!</h1></Style>`
+`<Style><h1>Hello, world!</h1></Style>`
 
-`Pure: createElement(Style, null, createElement("h1", null, "Hello, world!"));`
+`jsxDEV(Style, null, jsxDEV("h1", null, "Hello, world!"));`
 
 `final: <boteasy-dom class="jss-..."><h1>Hello, world!</h1></boteasy-dom>`
 

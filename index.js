@@ -6,7 +6,6 @@
  * @copyright (c) since 2020 Boteasy, all rights reserved.
  * @description This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.
 */
-
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
@@ -15,8 +14,9 @@
 
 	let currentRoot = null;
 	let dispatcher = {};
+	let theme = {};
 
-	const version = "1.2.4-next-ep4euk0m5";
+	const version = "1.2.4-next-2sb8frif";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 
@@ -84,7 +84,7 @@
 	};
 
 	function useRequest(props) {
-
+		/*#__SPACE__*/
 		const url = props?.url || "";
 		const method = props?.method?.toUpperCase() || "GET";
 		const headers = new Headers(props?.headers || {});
@@ -95,11 +95,11 @@
 		const success = props?.success || function() {};
 		const error = props?.error || function(error) {throw error};
 		const $finally = props?.finally || function() {};
-
+		/*#__SPACE__*/
 		const endPoint = method === "GET" ? params : "";
 		const body = method === "GET" ? null : params;
 		const link = url + endPoint;
-
+		/*#__SPACE__*/
 		const callback = {
 			responseText: undefined,
 			responseJSON: undefined,
@@ -107,7 +107,7 @@
 			status: "connection::ERROR",
 			statusText: "A technical fault has been detected and is already being fixed"
 		};
-
+		/*#__SPACE__*/
 		fetch(link, { method, headers, body }).then(async response => {
 			if (!response.ok) {
 				let resolve = response.text();
@@ -135,20 +135,20 @@
 	};
 
 	function useTwins(primary = {}, secondary = {}) {
-
+		/*#__SPACE__*/
 		let isTwins = true;
 		const __primary = Object.keys(primary || {});
 		const __secondary = Object.keys(secondary || {});
-
+		/*#__SPACE__*/
 		function check(object) {
 			const type = typeof object === "object";
 			const length = Object.keys(object || {}).length > 0;
 			return object !== null && type && length;
 		};
-
+		/*#__SPACE__*/
 		if (__primary.length !== __secondary.length) return false;
 		if (!check(primary) || !check(secondary)) return false;
-
+		/*#__SPACE__*/
 		function forEach($primary, $secondary) {
 			Object.entries($primary).map(([i, value]) => {
 				const $value = $secondary[i];
@@ -160,9 +160,8 @@
 				if (JSON.stringify(value) !== JSON.stringify($value)) isTwins = false;
 			});
 		};
-
+		/*#__SPACE__*/
 		forEach(primary, secondary);
-
 		return isTwins;
 	};
 
@@ -216,15 +215,15 @@
 
 	function useStorage() {
 		const local = window.localStorage;
-		function storage(key, value = null) {
+		function storage(key, value) {
 			const item = local.getItem(key);
-			if (key && value) {
+			if (key && value !== undefined) {
 				if (typeof value === "function") value = value();
 				local.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
 			} else if (key && !value) {
-				return /^(?=.*[{}])/.test(item) ? JSON.parse(item) : item;
+				return /^\s*(null|false|true)\s*$/i.test(item) ? JSON.parse(item) : item;
 			};
-			return $key => $key && local.removeItem($key);
+			return __key => typeof __key === "string" ? local.removeItem(__key) : local.clear();
 		};
 		return storage;
 	};
@@ -257,13 +256,18 @@
 		return {type, props: {...props}, children};
 	};
 
-	const createDOMElement = (type = null, label = null) => (match({
+	function jsxDEV(type, props, ...children) {};
+
+	const /*#__PRIVATE__*/createDOMElement = (type = null, label = null) => (match({
 		element: () => dom.createElement(label),
 		text: () => dom.createTextNode(label),
 		default: () => dom.createDocumentFragment()
 	}, type));
 
-	const hydrateProp = prop => typeof prop === "string" ? prop.split(/(?=[A-Z])/).join("-").toLocaleLowerCase() : prop;
+	function hydrateProp(prop) {
+		if (typeof prop === "function") return prop();
+		return typeof prop === "string" ? prop.split(/(?=[A-Z])/).join("-").toLocaleLowerCase() : prop;
+	};
 
 	function isValidElementType(type) {
 		return (
@@ -334,10 +338,8 @@
 	function renderRoot(container, node) {
 		const i = container.__root$instance;
 		const virtualNode = createVirtualNode(node);
-		/**/
 		dispatcher[i].mounted = true;
 		dispatcher[i].virtualNode = node;
-		/**/
 		unmarkContainer(container);
 		container.appendChild(virtualNode);
 	};
@@ -346,23 +348,23 @@
 
 	function createRoot(container, options = false) {
 		const instance = `root$${useId()}`;
-		/**/
+		/*#__SPACE__*/
 		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
 			throw Error(".createRoot(container, {...}): Target container is not a DOM element.");
 		} else if (container.nodeType === 1 && container.tagName && container.tagName.toUpperCase() === "BODY") {
 			throw Error(".createRoot(container, {...}): Creating roots directly on body is not allowed.");
 		};
-		/**/
+		/*#__SPACE__*/
 		container.__root$instance = instance;
 		currentRoot = instance;
-		/**/
+		/*#__SPACE__*/
 		dispatcher[instance] = {
 			options,
 			virtualNode: null,
 			mounted: false,
 			hooks: { container }
 		};
-		/**/
+		/*#__SPACE__*/
 		function render(children) {
 			if (checkComponent(children)) {
 				if (!dispatcher[instance].virtualNode && container.lastChild === null) {
@@ -370,16 +372,16 @@
 					const $response = dispatcher[instance].options?.response;
 					typeof $response === "function" && $response();
 				} else throw Error(".render(</>): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
-			} else throw Error(`.render(</>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.createElement("label", {className: "greeting"}, "Hello, world!");`);
+			} else throw Error(`.render(</>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.jsxDEV("label", {className: "greeting"}, "Hello, world!");`);
 		};
-		/**/
+		/*#__SPACE__*/
 		function unmount() {
 			if (!dispatcher[instance].mounted) {
 				delete dispatcher[instance];
 				unmarkContainer(container);
 			} else throw Error(".unmount(): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
 		};
-		/**/
+		/*#__SPACE__*/
 		return { render, unmount };
 	};
 
@@ -394,20 +396,25 @@
 						typeof response === "function" && response();
 					} else throw Error(".hydrateRoot(container, </>): You are trying to Hydrate a route by passing a component identical to the one rendered.");
 				} else throw Error(".hydrateRoot(container, </>): Cannot update a route that does not have any component rendered by Boteasy-dom");
-			} else throw Error(`.hydrateRoot(container, </>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.createElement("label", {className: "greeting"}, "Hello, world!");`);
+			} else throw Error(`.hydrateRoot(container, </>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.jsxDEV("label", {className: "greeting"}, "Hello, world!");`);
 		} else throw Error(".hydrateRoot(container, </>): Cannot hydrate this route because the second parameter in .createRoot(container, {...}): Was sent false, null or a object empty when it was created.");
 	};
 
 	function StrictMode(props) {
 		"use strict";
-		return createElement(Fragment, null, props?.children);
+		return /*#__PURE__*/createElement(Fragment, null, props?.children);
+	};
+
+	function StyleProvider(props) {
+		theme = props?.theme || {};
+		return /*#__PURE__*/createElement(Fragment, null, props?.children);
 	};
 
 	function createStyle(random, object) {
-		/**/
+		/*#__SPACE__*/
 		let css = "";
 		let rules = {};
-		/**/
+		/*#__SPACE__*/
 		function forEach(label, props, $rule = false) {
 			const listing = Object.entries(props).map(([i, value]) => {
 				if (typeof value === "object") {
@@ -425,29 +432,29 @@
 			}).join("");
 			listing && ($rule ? rules[$rule].css = rules[$rule].css.concat(`${label} {${listing}}`) : css = css.concat(`${label} {${listing}}`));
 		};
-		/**/
+		/*#__SPACE__*/
 		Object.keys(object).map(key => {
 			if (key.startsWith("@")) {
 				key === "@import" ? css = css.concat(`${key} ${object[key]};`) : rules[key] = {css: "", object: object[key]};
 				delete object[key];
 			};
 		});
-		/**/
+		/*#__SPACE__*/
 		forEach(random, object);
-		/**/
+		/*#__SPACE__*/
 		Object.entries(rules).map(([i, data]) => {
 			forEach(random, data.object, i);
 			css = css.concat(`${i} {${data.css}}`);
 		});
-		/**/
+		/*#__SPACE__*/
 		return css;
 	};
 
 	function cssClass(selector) {
 		const split = string => (string || "").replace(/\s/g, "").split(",");
 		const replace = (action, list) => {
-			const list = nodeList(selector);
-			list.length >= 1 && list.forEach(target => target.classList[action](...split(list)));
+			const allNode = nodeList(selector);
+			allNode.length >= 1 && allNode.forEach(target => target.classList[action](...split(list)));
 		};
 		const add = classList => replace("add", classList);
 		const remove = classList => replace("remove", classList);
@@ -477,7 +484,7 @@
 		style.setAttribute("data-boteasy", `${tagName}(${random})`);
 		style.textContent = createStyle(`.${random}`, jssObject);
 		dom.querySelector("head").appendChild(style);
-		return createElement(tagName || "div", {className: random});
+		return /*#__PURE__*/createElement(tagName || "div", {className: random});
 	};
 
 	function rgba(hex, opacity = 1) {
@@ -486,6 +493,7 @@
 		return `rgba(${rgb}, ${opacity})`;
 	};
 
+	exports.theme = theme;
 	exports.version = version;
 	exports.dom = dom;
 	exports.Fragment = Fragment;
@@ -510,7 +518,9 @@
 	exports.createRoot = createRoot;
 	exports.hydrateRoot = hydrateRoot;
 	exports.StrictMode = StrictMode;
+	exports.StyleProvider = StyleProvider;
 	exports.createElement = createElement;
+	exports.jsxDEV = createElement;
 	exports.cssClass = cssClass;
 	exports.globalStyle = globalStyle;
 	exports.cssStyled = cssStyled;

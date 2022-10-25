@@ -4,10 +4,13 @@
  * 
  * @copyright (c) since 2020 Boteasy, all rights reserved.
 */
-
 export = BoteasyDOM;
 
 declare namespace BoteasyDOM {
+	/**
+	 * @description ???
+	*/
+	let theme: object;
 	/**
 	 * @description a boteasy-dom version
 	*/
@@ -138,7 +141,11 @@ declare namespace BoteasyDOM {
 	/**
 	 * @description StrictMode is a tool for highlighting potential problems in an application. Like Fragment, StrictMode does not render any visible UI. It activates additional checks and warnings for its descendants
 	*/
-	function StrictMode<P>(props: P): void;
+	function StrictMode<S>(props: S): void;
+	/**
+	 * @description ???
+	*/
+	function StyleProvider<P>(props: P): void;
 	/**
 	 * @description This function is for you to add or remove multiple class on one or multiple elements
 	*/
