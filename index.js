@@ -12,15 +12,18 @@
 	(global = global || self, factory(global.BoteasyDOM = {}));
 } (this, (function(exports) {
 
+	//@ts-check
 	let currentRoot = null;
 	let dispatcher = {};
 	let theme = {};
 
-	const version = "1.2.4-next-2sb8frif";
+	const version = "1.2.4-beta-rslde3ey";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 
-	const nodeList = selector => dom.querySelectorAll(selector || "*");
+	function nodeList(selector) {
+		return dom.querySelectorAll(selector || "*");
+	};
 
 	function match(object, index) {
 		let item = {...object}[index];
@@ -134,25 +137,34 @@
 		test && navigator.clipboard.writeText(value).then(effect);
 	};
 
+	function isObj(data) {
+		const type = typeof data === "object";
+		const length = Object.keys(data || {}).length > 0;
+		return data !== null && type && length;
+	};
+
 	function useTwins(primary = {}, secondary = {}) {
 		/*#__SPACE__*/
 		let isTwins = true;
 		const __primary = Object.keys(primary || {});
 		const __secondary = Object.keys(secondary || {});
 		/*#__SPACE__*/
-		function check(object) {
+		function isObj(object) {
 			const type = typeof object === "object";
 			const length = Object.keys(object || {}).length > 0;
 			return object !== null && type && length;
 		};
 		/*#__SPACE__*/
 		if (__primary.length !== __secondary.length) return false;
-		if (!check(primary) || !check(secondary)) return false;
+		if (!isObj(primary) || !isObj(secondary)) {
+			if (primary === secondary) return true;
+			return false;
+		};
 		/*#__SPACE__*/
 		function forEach($primary, $secondary) {
 			Object.entries($primary).map(([i, value]) => {
 				const $value = $secondary[i];
-				if (check(value) && check($value)) {
+				if (isObj(value) && isObj($value)) {
 					forEach(value, $value);
 					return;
 				};
@@ -167,8 +179,8 @@
 
 	function useFloat(value, fixed = 0) {
 		const amount = typeof value === "number" ? value : Number(value) || NaN;
-		const check = amount => /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(amount);
-		return check(amount) ? Number(check(fixed) && fixed >= 1 ? amount.toFixed(fixed) : amount) : NaN;
+		const isFloat = amount => /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(amount);
+		return isFloat(amount) ? Number(isFloat(fixed) && fixed >= 1 ? amount.toFixed(fixed) : amount) : NaN;
 	};
 
 	function useState(initialState = null) {
@@ -344,7 +356,7 @@
 		container.appendChild(virtualNode);
 	};
 
-	const checkComponent = children => typeof children === "object" && typeof children.props !== "undefined";
+	const isComponent = children => typeof children === "object" && typeof children.props !== "undefined";
 
 	function createRoot(container, options = false) {
 		const instance = `root$${useId()}`;
@@ -366,7 +378,7 @@
 		};
 		/*#__SPACE__*/
 		function render(children) {
-			if (checkComponent(children)) {
+			if (isComponent(children)) {
 				if (!dispatcher[instance].virtualNode && container.lastChild === null) {
 					renderRoot(container, children);
 					const $response = dispatcher[instance].options?.response;
@@ -388,7 +400,7 @@
 	function hydrateRoot(container, children) {
 		const instance = container?.__root$instance;
 		if (dispatcher[instance]?.options?.hydrate) {
-			if (checkComponent(children)) {
+			if (isComponent(children)) {
 				if (dispatcher[instance].mounted && container.lastChild !== null) {
 					if (!useTwins(dispatcher[instance].virtualNode, children)) {
 						renderRoot(container, children);
@@ -507,6 +519,7 @@
 	exports.useRequest = useRequest;
 	exports.useVibrate = useVibrate;
 	exports.useClipboard = useClipboard;
+	exports.isObj = isObj;
 	exports.useTwins = useTwins;
 	exports.useFloat = useFloat;
 	exports.useState = useState;

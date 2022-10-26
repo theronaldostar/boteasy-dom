@@ -202,6 +202,13 @@ useClipboard(text, () => {
 });
 ```
 
+# .isObj(any):
+* ???
+
+```shell
+const is = isObj({ name: "Boteasy" });
+```
+
 # .useTwins(string|{}|[], string|{}|[]):
 * As the name says, this function is for you to compare if two objects or array are equal.
 
@@ -247,12 +254,14 @@ useEffect(() => {
 }, [name]);
 ```
 
-# .useStorage() => (string, any):
+# .useStorage():
 * Manipulates: window.localStorage.
 
 ```shell
 const storage = useStorage();
 ```
+
+# (string, any|function):
 
 ```shell
 storage("theme", () => {
@@ -376,7 +385,7 @@ const App = (
 );
 ```
 
-# .StyleProvider():
+# .StyleProvider({ theme: object }|undefined):
 * ???
 
 ```shell

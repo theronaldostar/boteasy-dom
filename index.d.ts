@@ -92,6 +92,10 @@ declare namespace BoteasyDOM {
 	*/
 	function useClipboard(value: string, effect?: Void): void;
 	/**
+	 * @description ???
+	*/
+	function isObj<O>(data: O): true|false;
+	/**
 	 * @description As the name says, this function is for you to compare if two objects or array are equal
 	*/
 	function useTwins<P, S>(primary?: P, secondary?: S): true|false;
