@@ -17,7 +17,7 @@
 	let dispatcher = {};
 	let theme = {};
 
-	const version = "1.2.4-beta-rslde3ey";
+	const version = "1.2.4";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 
@@ -32,16 +32,17 @@
 		return test(item) ? item() : item;
 	};
 
-	function useId(start = 2) {
+	function useId(start = 2, selectable = false) {
 		const i = start >= 2 && start <= 9 ? start : 2;
 		const first = Date.now().toString(36);
 		const last = Math.random().toString(36).substring(i);
-		return first + last;
+		const string = first + last;
+		return selectable ? string : `:${string}:`;
 	};
 
 	function useRef(initialRef = null) {
 
-		const hookId = useId();
+		const hookId = useId(void 0, true);
 
 		if (typeof initialRef === "function") initialRef = initialRef();
 
@@ -185,7 +186,7 @@
 
 	function useState(initialState = null) {
 
-		const hookId = useId();
+		const hookId = useId(void 0, true);
 
 		let hooks = dispatcher[currentRoot].hooks;
 
@@ -209,7 +210,7 @@
 
 	function useEffect(effect, deps = []) {
 
-		const hookId = useId();
+		const hookId = useId(void 0, true);
 
 		let hooks = dispatcher[currentRoot].hooks;
 
@@ -270,7 +271,7 @@
 
 	function jsxDEV(type, props, ...children) {};
 
-	const /*#__PRIVATE__*/createDOMElement = (type = null, label = null) => (match({
+	const createDOMElement = (type = null, label = null) => (match({
 		element: () => dom.createElement(label),
 		text: () => dom.createTextNode(label),
 		default: () => dom.createDocumentFragment()
@@ -359,7 +360,7 @@
 	const isComponent = children => typeof children === "object" && typeof children.props !== "undefined";
 
 	function createRoot(container, options = false) {
-		const instance = `root$${useId()}`;
+		const instance = `root$${useId(void 0, true)}`;
 		/*#__SPACE__*/
 		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
 			throw Error(".createRoot(container, {...}): Target container is not a DOM element.");
@@ -422,7 +423,7 @@
 		return /*#__PURE__*/createElement(Fragment, null, props?.children);
 	};
 
-	function createStyle(random, object) {
+	function createStyle(random = "", object) {
 		/*#__SPACE__*/
 		let css = "";
 		let rules = {};
@@ -474,28 +475,34 @@
 		return { add, remove, toggle };
 	};
 
+	function appendCSSInHead(cssContent, global = false) {
+		const style = dom.querySelector(`head > [data-boteasy="${global ? "global-style" : "style"}"]`);
+		if (style) {
+			style.insertAdjacentText("beforeend", cssContent);
+		} else {
+			let newStyle = createDOMElement("element", "style");
+			newStyle.setAttribute("data-boteasy", global ? "global-style" : "style");
+			newStyle.textContent = cssContent;
+			dom.querySelector("head").appendChild(newStyle);
+		};
+	};
+
 	function globalStyle(jssObject) {
-		const style = createDOMElement("element", "style");
-		style.setAttribute("data-boteasy", "global-style");
-		style.textContent = createStyle("", jssObject);
-		dom.querySelector("head").appendChild(style);
+		const content = createStyle(void 0, jssObject);
+		appendCSSInHead(content, true);
 	};
 
 	function cssStyled(jssObject) {
-		const random = `jss-${useId(6)}`;
-		const style = createDOMElement("element", "style");
-		style.setAttribute("data-boteasy", `agnostic-style(${random})`);
-		style.textContent = createStyle(`.${random}`, jssObject);
-		dom.querySelector("head").appendChild(style);
+		const random = `jss-${useId(void 0, true)}`;
+		const content = createStyle(`.${random}`, jssObject);
+		appendCSSInHead(content);
 		return random;
 	};
 
 	function styled(tagName, jssObject) {
-		const random = `jss-${useId(6)}`;
-		const style = createDOMElement("element", "style");
-		style.setAttribute("data-boteasy", `${tagName}(${random})`);
-		style.textContent = createStyle(`.${random}`, jssObject);
-		dom.querySelector("head").appendChild(style);
+		const random = `jss-${useId(6, true)}`;
+		const content = createStyle(`.${random}`, jssObject);
+		appendCSSInHead(content);
 		return /*#__PURE__*/createElement(tagName || "div", {className: random});
 	};
 

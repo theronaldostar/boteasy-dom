@@ -1,6 +1,6 @@
 {
 	"name": "boteasy-dom",
-	"version": "1.2.4-beta-rslde3ey",
+	"version": "1.2.4",
 	"description": "This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.",
 	"license": "MIT",
 	"author": {

@@ -84,12 +84,21 @@ match({
 }, index);
 ```
 
-# .useId(number|undefined):
+# .useId(number|undefined, boolean|undefined):
 * ???
 
 ```shell
 const inputId = useId(2);
 ```
+
+`returns: :string:`
+
+
+```shell
+const inputId = useId(2, true);
+```
+
+`returns: string`
 
 `<input type="text" id={inputId} />`
 
