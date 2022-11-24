@@ -69,7 +69,7 @@ const root = dom.querySelector("#root");
 * Allows a component to return multiple elements grouped a list of children without adding extra nodes to the DOM
 
 ```shell
-<>{/* ... */}</>
+<>{/*@__DATA__*/}</>
 ```
 
 # .match(object, string|null):
@@ -313,11 +313,13 @@ const navigate = useNavigate(1000);
 `Send the second parameter as false, to removes the current page from the session history and navigates to the given URL.`
 
 ```shell
-navigate("/");
+navigate();
 ```
 
+`reload`
+
 ```shell
-navigate("login", false);
+navigate("login");
 ```
 
 ```shell
@@ -388,6 +390,12 @@ hydrateRoot(container, <h1>Hello, {name}.</h1>);
 
 ```shell
 const App = (
+	<StrictMode element={<h1>Hello, world!</h1>} />
+);
+```
+
+```shell
+const App = (
 	<StrictMode>
 		<h1>Hello, world!</h1>
 	</StrictMode>
@@ -399,10 +407,19 @@ const App = (
 
 ```shell
 const provider = {color: "#000", fontWeight: "bold"};
+```
+
+```shell
 const App = (
 	<StyleProvider theme={provider}>
-		<>{...}</>
+		<>{/*@__DATA__*/}</>
 	</StyleProvider>
+);
+```
+
+```shell
+const App = (
+	<StyleProvider theme={provider} element={<>{/*@__DATA__*/}</>} />
 );
 ```
 

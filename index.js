@@ -1,11 +1,12 @@
-/** 
+/**
  * @license Boteasy-DOM
  * index.js
  * 
  * @license MIT
  * @copyright (c) since 2020 Boteasy, all rights reserved.
  * @description This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.
-*/
+ */
+
 (function (global, factory) {
 	typeof exports === "object" && typeof module !== "undefined" ? factory(exports) :
 	typeof define === "function" && define.amd ? define(["exports"], factory) :
@@ -15,24 +16,24 @@
 	//@ts-check
 	let currentRoot = null;
 	let dispatcher = {};
-	let theme = {};
+	let themeStorage = {};
 
-	const version = "1.2.4";
+	const version = "1.2.5";
 	const dom = document;
 	const Fragment = Symbol.for("fragment");
 
-	function nodeList(selector) {
-		return dom.querySelectorAll(selector || "*");
-	};
+	const { localStorage, location, navigator, console } = window;
 
-	function match(object, index) {
+	const nodeList = selector => dom.querySelectorAll(selector || "*");
+
+	const match = (object, index) => {
 		let item = {...object}[index];
 		const test = prop => typeof prop === "function";
 		if (item === undefined) return test(object.default || null) ? object.default() : object.default;
 		return test(item) ? item() : item;
 	};
 
-	function useId(start = 2, selectable = false) {
+	const useId = (start = 2, selectable = false) => {
 		const i = start >= 2 && start <= 9 ? start : 2;
 		const first = Date.now().toString(36);
 		const last = Math.random().toString(36).substring(i);
@@ -40,19 +41,19 @@
 		return selectable ? string : `:${string}:`;
 	};
 
-	function useRef(initialRef = null) {
+	const useRef = (initialRef = null) => {
 
 		const hookId = useId(void 0, true);
 
 		if (typeof initialRef === "function") initialRef = initialRef();
 
-		function getRef(key) {
+		const getRef = key => {
 			const hooks = dispatcher[currentRoot].hooks;
 			if (!hooks[key]) hooks[key] = initialRef;
 			return hooks[key];
 		};
 
-		function setRef({ target }) {
+		const setRef = ({ target }) => {
 			/**
 			 * TODO: Under Construction
 			 * this function is incomplete.
@@ -65,30 +66,30 @@
 		return { value, setRef };
 	};
 
-	function useHtml(selector, value) {
+	const useHtml = (selector, value) => {
 		const list = nodeList(selector);
 		list.length >= 1 && list.forEach(target => target.innerHTML = value || "");
 	};
 
-	function useAppend(selector, element, position = false) {
+	const useAppend = (selector, element, position = false) => {
 		const list = nodeList(selector);
 		list.length >= 1 && list.forEach(target => target.insertAdjacentHTML(!position ? "afterbegin" : "beforeend", element));
 	};
 
-	function useWait(action) {
+	const useWait = action => {
 		const value = match({ true: "none", false: undefined, default: undefined }, String(action));
 		const list = nodeList("html, head, body");
 		list.length >= 1 && list.forEach(selector => selector.style["pointer-events"] = value);
 	};
 
-	function useProp(selector, attribute, newValue = true) {
+	const useProp = (selector, attribute, newValue = true) => {
 		const attr = typeof newValue === "string" ? (newValue === "true" || newValue === "false" ? JSON.parse(newValue) : true) : newValue;
 		const list = nodeList(selector);
 		list.length >= 1 && list.forEach(target => target[attribute] = attr);
 	};
 
-	function useRequest(props) {
-		/*#__SPACE__*/
+	const useRequest = props => {
+
 		const url = props?.url || "";
 		const method = props?.method?.toUpperCase() || "GET";
 		const headers = new Headers(props?.headers || {});
@@ -99,11 +100,11 @@
 		const success = props?.success || function() {};
 		const error = props?.error || function(error) {throw error};
 		const $finally = props?.finally || function() {};
-		/*#__SPACE__*/
+
 		const endPoint = method === "GET" ? params : "";
 		const body = method === "GET" ? null : params;
 		const link = url + endPoint;
-		/*#__SPACE__*/
+
 		const callback = {
 			responseText: undefined,
 			responseJSON: undefined,
@@ -111,7 +112,7 @@
 			status: "connection::ERROR",
 			statusText: "A technical fault has been detected and is already being fixed"
 		};
-		/*#__SPACE__*/
+
 		fetch(link, { method, headers, body }).then(async response => {
 			if (!response.ok) {
 				let resolve = response.text();
@@ -128,41 +129,42 @@
 		}).then(success).catch(data => error({...callback, data})).finally($finally);
 	};
 
-	function useVibrate(pattern = 1000) {
+	const useVibrate = (pattern = 1000) => {
 		const set = time => navigator.vibrate(time);
 		"vibrate" in navigator && set(pattern);
 	};
 
-	function useClipboard(value, effect = function() {}) {
+	const useClipboard = (value, effect = () => {}) => {
 		const test = "clipboard" in navigator;
 		test && navigator.clipboard.writeText(value).then(effect);
 	};
 
-	function isObj(data) {
+	const isObj = data => {
 		const type = typeof data === "object";
 		const length = Object.keys(data || {}).length > 0;
 		return data !== null && type && length;
 	};
 
-	function useTwins(primary = {}, secondary = {}) {
-		/*#__SPACE__*/
+	const useTwins = (primary = {}, secondary = {}) => {
+
 		let isTwins = true;
 		const __primary = Object.keys(primary || {});
 		const __secondary = Object.keys(secondary || {});
-		/*#__SPACE__*/
-		function isObj(object) {
+
+		const isObj = object => {
 			const type = typeof object === "object";
 			const length = Object.keys(object || {}).length > 0;
 			return object !== null && type && length;
 		};
-		/*#__SPACE__*/
+
 		if (__primary.length !== __secondary.length) return false;
+
 		if (!isObj(primary) || !isObj(secondary)) {
 			if (primary === secondary) return true;
 			return false;
 		};
-		/*#__SPACE__*/
-		function forEach($primary, $secondary) {
+
+		const forEach = ($primary, $secondary) => {
 			Object.entries($primary).map(([i, value]) => {
 				const $value = $secondary[i];
 				if (isObj(value) && isObj($value)) {
@@ -173,18 +175,19 @@
 				if (JSON.stringify(value) !== JSON.stringify($value)) isTwins = false;
 			});
 		};
-		/*#__SPACE__*/
+
 		forEach(primary, secondary);
+
 		return isTwins;
 	};
 
-	function useFloat(value, fixed = 0) {
+	const useFloat = (value, fixed = 0) => {
 		const amount = typeof value === "number" ? value : Number(value) || NaN;
 		const isFloat = amount => /^(\-|\+)?([0-9]+(\.[0-9]+)?|Infinity)$/.test(amount);
 		return isFloat(amount) ? Number(isFloat(fixed) && fixed >= 1 ? amount.toFixed(fixed) : amount) : NaN;
 	};
 
-	function useState(initialState = null) {
+	const useState = (initialState = null) => {
 
 		const hookId = useId(void 0, true);
 
@@ -192,12 +195,12 @@
 
 		if (typeof initialState === "function") initialState = initialState();
 
-		function getState(key) {
+		const getState = key => {
 			if (!hooks[key]) hooks[key] = { state: initialState };
 			return hooks[key];
 		};
 
-		function setState(newState) {
+		const setState = newState => {
 			let prev = getState(hookId);
 			typeof newState === "function" ? prev.state = newState(prev.state) : prev.state = newState;
 			hooks[hookId] = prev;
@@ -208,7 +211,7 @@
 		return [state, setState];
 	};
 
-	function useEffect(effect, deps = []) {
+	const useEffect = (effect, deps = []) => {
 
 		const hookId = useId(void 0, true);
 
@@ -226,9 +229,9 @@
 		};
 	};
 
-	function useStorage() {
-		const local = window.localStorage;
-		function storage(key, value) {
+	const useStorage = () => {
+		const local = localStorage;
+		return (key, value) => {
 			const item = local.getItem(key);
 			if (key && value !== undefined) {
 				if (typeof value === "function") value = value();
@@ -238,18 +241,17 @@
 			};
 			return __key => typeof __key === "string" ? local.removeItem(__key) : local.clear();
 		};
-		return storage;
 	};
 
-	function useNavigate(delay = 0) {
-		const data = window.location;
-		return function(to = ".", historic = true) {
+	const useNavigate = (delay = 0) => {
+		const data = location;
+		return (to = ".", historic = true) => {
 			const action = () => historic ? data.assign(to) : data.replace(to);
 			to && delay > 0 ? setTimeout(() => action(), delay) : action();
 		};
 	};
 
-	function useScroll(selector, options = {}) {
+	const useScroll = (selector, options = {}) => {
 		let { behavior = "auto" } = options;
 		/**
 		 * TODO: Don't take this feature seriously at the moment!!
@@ -260,39 +262,39 @@
 		return { x, y };
 	};
 
-	async function flushAsync(callback, arg) {
-		await callback(arg);
-	};
+	const flushAsync = async (callback, arg) => await callback(arg);
 
-	function createElement(type, props, ...children) {
+	const createElement = (type, props, ...children) => {
 		if (typeof type === "function") return type({...props, children});
 		return {type, props: {...props}, children};
 	};
 
-	function jsxDEV(type, props, ...children) {};
+	/**
+	 * const jsxDEV = (type, props, ...children) => {};
+	*/
 
-	const createDOMElement = (type = null, label = null) => (match({
-		element: () => dom.createElement(label),
-		text: () => dom.createTextNode(label),
-		default: () => dom.createDocumentFragment()
-	}, type));
+	const createDOMElement = (type = null, label = null) => (
+		match({
+			element: () => dom.createElement(label),
+			text: () => dom.createTextNode(label),
+			default: () => dom.createDocumentFragment()
+		}, type)
+	);
 
-	function hydrateProp(prop) {
+	const hydrateProp = prop => {
 		if (typeof prop === "function") return prop();
 		return typeof prop === "string" ? prop.split(/(?=[A-Z])/).join("-").toLocaleLowerCase() : prop;
 	};
 
-	function isValidElementType(type) {
-		return (
-			type === Fragment ||
-			typeof type === "object" ||
-			typeof type === "function" ||
-			typeof type === "string" ||
-			typeof type === "number"
-		) && typeof type !== "undefined";
-	};
+	const isValidElementType = type => (
+		type === Fragment ||
+		typeof type === "object" ||
+		typeof type === "function" ||
+		typeof type === "string" ||
+		typeof type === "number"
+	) && typeof type !== "undefined";
 
-	function createVirtualNode(virtualNode) {
+	const createVirtualNode = virtualNode => {
 
 		let element;
 		const type = virtualNode.type || Fragment;
@@ -343,12 +345,12 @@
 		return element;
 	};
 
-	function unmarkContainer(container) {
+	const unmarkContainer = container => {
 		let sibling;
 		while (sibling = container.lastChild) container.removeChild(sibling);
 	};
 
-	function renderRoot(container, node) {
+	const renderRoot = (container, node) => {
 		const i = container.__root$instance;
 		const virtualNode = createVirtualNode(node);
 		dispatcher[i].mounted = true;
@@ -359,26 +361,27 @@
 
 	const isComponent = children => typeof children === "object" && typeof children.props !== "undefined";
 
-	function createRoot(container, options = false) {
+	const createRoot = (container, options = false) => {
+
 		const instance = `root$${useId(void 0, true)}`;
-		/*#__SPACE__*/
+
 		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
 			throw Error(".createRoot(container, {...}): Target container is not a DOM element.");
 		} else if (container.nodeType === 1 && container.tagName && container.tagName.toUpperCase() === "BODY") {
 			throw Error(".createRoot(container, {...}): Creating roots directly on body is not allowed.");
 		};
-		/*#__SPACE__*/
+
 		container.__root$instance = instance;
 		currentRoot = instance;
-		/*#__SPACE__*/
+
 		dispatcher[instance] = {
 			options,
 			virtualNode: null,
 			mounted: false,
 			hooks: { container }
 		};
-		/*#__SPACE__*/
-		function render(children) {
+
+		const render = children => {
 			if (isComponent(children)) {
 				if (!dispatcher[instance].virtualNode && container.lastChild === null) {
 					renderRoot(container, children);
@@ -387,18 +390,18 @@
 				} else throw Error(".render(</>): It looks like the Boteasy-dom container was removed without using Boteasy-dom. Instead, call .unmount() to empty the root's container.");
 			} else throw Error(`.render(</>): The passed component is invalid, you must pass an object, created by Boteasy-dom itself. Example: BoteasyDOM.jsxDEV("label", {className: "greeting"}, "Hello, world!");`);
 		};
-		/*#__SPACE__*/
-		function unmount() {
+
+		const unmount = () => {
 			if (!dispatcher[instance].mounted) {
 				delete dispatcher[instance];
 				unmarkContainer(container);
 			} else throw Error(".unmount(): Container cannot be emptied as it does not contain content rendered and recognized by Boteasy-dom.");
 		};
-		/*#__SPACE__*/
+
 		return { render, unmount };
 	};
 
-	function hydrateRoot(container, children) {
+	const hydrateRoot = (container, children) => {
 		const instance = container?.__root$instance;
 		if (dispatcher[instance]?.options?.hydrate) {
 			if (isComponent(children)) {
@@ -413,22 +416,24 @@
 		} else throw Error(".hydrateRoot(container, </>): Cannot hydrate this route because the second parameter in .createRoot(container, {...}): Was sent false, null or a object empty when it was created.");
 	};
 
-	function StrictMode(props) {
+	const StrictMode = props => {
 		"use strict";
-		return /*#__PURE__*/createElement(Fragment, null, props?.children);
+		const { element, children } = props;
+		return /*#__PURE__*/createElement(Fragment, null, element || children);
 	};
 
-	function StyleProvider(props) {
-		theme = props?.theme || {};
-		return /*#__PURE__*/createElement(Fragment, null, props?.children);
+	const StyleProvider = props => {
+		const { theme = {}, element, children } = props;
+		themeStorage = theme;
+		return /*#__PURE__*/createElement(Fragment, null, element || children);
 	};
 
-	function createStyle(random = "", object) {
-		/*#__SPACE__*/
+	const createStyle = (random = "", object) => {
+
 		let css = "";
 		let rules = {};
-		/*#__SPACE__*/
-		function forEach(label, props, $rule = false) {
+
+		const forEach = (label, props, $rule = false) => {
 			const listing = Object.entries(props).map(([i, value]) => {
 				if (typeof value === "object") {
 					let __i = [];
@@ -445,25 +450,25 @@
 			}).join("");
 			listing && ($rule ? rules[$rule].css = rules[$rule].css.concat(`${label} {${listing}}`) : css = css.concat(`${label} {${listing}}`));
 		};
-		/*#__SPACE__*/
+
 		Object.keys(object).map(key => {
 			if (key.startsWith("@")) {
 				key === "@import" ? css = css.concat(`${key} ${object[key]};`) : rules[key] = {css: "", object: object[key]};
 				delete object[key];
 			};
 		});
-		/*#__SPACE__*/
+
 		forEach(random, object);
-		/*#__SPACE__*/
+
 		Object.entries(rules).map(([i, data]) => {
 			forEach(random, data.object, i);
 			css = css.concat(`${i} {${data.css}}`);
 		});
-		/*#__SPACE__*/
+
 		return css;
 	};
 
-	function cssClass(selector) {
+	const cssClass = selector => {
 		const split = string => (string || "").replace(/\s/g, "").split(",");
 		const replace = (action, list) => {
 			const allNode = nodeList(selector);
@@ -475,7 +480,7 @@
 		return { add, remove, toggle };
 	};
 
-	function appendCSSInHead(cssContent, global = false) {
+	const appendCSSInHead = (cssContent, global = false) => {
 		const style = dom.querySelector(`head > [data-boteasy="${global ? "global-style" : "style"}"]`);
 		if (style) {
 			style.insertAdjacentText("beforeend", cssContent);
@@ -487,32 +492,32 @@
 		};
 	};
 
-	function globalStyle(jssObject) {
+	const globalStyle = jssObject => {
 		const content = createStyle(void 0, jssObject);
 		appendCSSInHead(content, true);
 	};
 
-	function cssStyled(jssObject) {
+	const cssStyled = jssObject => {
 		const random = `jss-${useId(void 0, true)}`;
 		const content = createStyle(`.${random}`, jssObject);
 		appendCSSInHead(content);
 		return random;
 	};
 
-	function styled(tagName, jssObject) {
+	const styled = (tagName, jssObject) => {
 		const random = `jss-${useId(6, true)}`;
 		const content = createStyle(`.${random}`, jssObject);
 		appendCSSInHead(content);
 		return /*#__PURE__*/createElement(tagName || "div", {className: random});
 	};
 
-	function rgba(hex, opacity = 1) {
+	const rgba = (hex, opacity = 1) => {
 		const rgb = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,
 		(_,r,g,b) => "#"+r+r+g+g+b+b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
 		return `rgba(${rgb}, ${opacity})`;
 	};
 
-	exports.theme = theme;
+	exports.theme = themeStorage;
 	exports.version = version;
 	exports.dom = dom;
 	exports.Fragment = Fragment;
