@@ -15,7 +15,7 @@ yarn add boteasy-dom
 # Quick use:
 
 ```jsx
-import { dom, useState, createRoot } from "boteasy-dom";
+import { useState, createRoot } from "boteasy-dom";
 
 const App = () => {
 	const [count, setCount] = useState(0);
@@ -27,7 +27,7 @@ const App = () => {
 	);
 };
 
-const container = dom.querySelector("#root");
+const container = document.querySelector("#root");
 const root = createRoot(container);
 root.render(<App />);
 ```
@@ -56,13 +56,6 @@ const scheme = theme;
 
 ```shell
 const ver = version;
-```
-
-# .dom:
-* The Document interface represents any web page loaded in the browser and serves as an entry point into the web page's content, which is the DOM tree
-
-```shell
-const root = dom.querySelector("#root");
 ```
 
 # .Fragment:
@@ -350,7 +343,7 @@ flushAsync(event => {
 * This function serves to create a route to Boteasy-dom, send the second parameter an object containing an intex with hydrate as true.
 
 ```shell
-const container = dom.querySelector("#root");
+const container = document.querySelector("#root");
 const root = createRoot(container, {
 	hydrate: true,
 	response: () => {
@@ -379,7 +372,7 @@ root.unmount();
 
 ```shell
 const name = "Boteasy";
-const container = dom.querySelector("#root");
+const container = document.querySelector("#root");
 hydrateRoot(container, <h1>Hello, {name}.</h1>);
 ```
 

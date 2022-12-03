@@ -18,13 +18,12 @@
 	let dispatcher = {};
 	let themeStorage = {};
 
-	const version = "1.2.5";
-	const dom = document;
+	const version = "1.2.6-next-mrqhaxi";
 	const Fragment = Symbol.for("fragment");
 
 	const { localStorage, location, navigator, console } = window;
 
-	const nodeList = selector => dom.querySelectorAll(selector || "*");
+	const nodeList = selector => document.querySelectorAll(selector || "*");
 
 	const match = (object, index) => {
 		let item = {...object}[index];
@@ -43,7 +42,7 @@
 
 	const useRef = (initialRef = null) => {
 
-		const hookId = useId(void 0, true);
+		const hookId = useId(undefined, true);
 
 		if (typeof initialRef === "function") initialRef = initialRef();
 
@@ -189,7 +188,7 @@
 
 	const useState = (initialState = null) => {
 
-		const hookId = useId(void 0, true);
+		const hookId = useId(undefined, true);
 
 		let hooks = dispatcher[currentRoot].hooks;
 
@@ -213,7 +212,7 @@
 
 	const useEffect = (effect, deps = []) => {
 
-		const hookId = useId(void 0, true);
+		const hookId = useId(undefined, true);
 
 		let hooks = dispatcher[currentRoot].hooks;
 
@@ -237,7 +236,7 @@
 				if (typeof value === "function") value = value();
 				local.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
 			} else if (key && !value) {
-				return /^\s*(null|false|true)\s*$/i.test(item) ? JSON.parse(item) : item;
+				return /s}|{s*/.test(item) ? JSON.parse(item) : item;
 			};
 			return __key => typeof __key === "string" ? local.removeItem(__key) : local.clear();
 		};
@@ -275,9 +274,9 @@
 
 	const createDOMElement = (type = null, label = null) => (
 		match({
-			element: () => dom.createElement(label),
-			text: () => dom.createTextNode(label),
-			default: () => dom.createDocumentFragment()
+			element: () => document.createElement(label),
+			text: () => document.createTextNode(label),
+			default: () => document.createDocumentFragment()
 		}, type)
 	);
 
@@ -363,7 +362,7 @@
 
 	const createRoot = (container, options = false) => {
 
-		const instance = `root$${useId(void 0, true)}`;
+		const instance = `root$${useId(undefined, true)}`;
 
 		if (!(container && (container.nodeType === 1 || container.nodeType === 9 || container.nodeType === 11))) {
 			throw Error(".createRoot(container, {...}): Target container is not a DOM element.");
@@ -481,24 +480,24 @@
 	};
 
 	const appendCSSInHead = (cssContent, global = false) => {
-		const style = dom.querySelector(`head > [data-boteasy="${global ? "global-style" : "style"}"]`);
+		const style = document.querySelector(`head > [data-boteasy="${global ? "global-style" : "style"}"]`);
 		if (style) {
 			style.insertAdjacentText("beforeend", cssContent);
 		} else {
 			let newStyle = createDOMElement("element", "style");
 			newStyle.setAttribute("data-boteasy", global ? "global-style" : "style");
 			newStyle.textContent = cssContent;
-			dom.querySelector("head").appendChild(newStyle);
+			document.querySelector("head").appendChild(newStyle);
 		};
 	};
 
 	const globalStyle = jssObject => {
-		const content = createStyle(void 0, jssObject);
+		const content = createStyle(undefined, jssObject);
 		appendCSSInHead(content, true);
 	};
 
 	const cssStyled = jssObject => {
-		const random = `jss-${useId(void 0, true)}`;
+		const random = `jss-${useId(undefined, true)}`;
 		const content = createStyle(`.${random}`, jssObject);
 		appendCSSInHead(content);
 		return random;
@@ -519,7 +518,6 @@
 
 	exports.theme = themeStorage;
 	exports.version = version;
-	exports.dom = dom;
 	exports.Fragment = Fragment;
 	exports.match = match;
 	exports.useId = useId;
