@@ -18,7 +18,7 @@
 	let dispatcher = {};
 	let themeStorage = {};
 
-	const version = "1.2.6-next-mrqhaxi";
+	const version = "1.2.6-next-71h91oxp";
 	const Fragment = Symbol.for("fragment");
 
 	const { localStorage, location, navigator, console } = window;
@@ -236,7 +236,7 @@
 				if (typeof value === "function") value = value();
 				local.setItem(key, typeof value === "object" ? JSON.stringify(value) : value);
 			} else if (key && !value) {
-				return /s}|{s*/.test(item) ? JSON.parse(item) : item;
+				return (item === "null" || /s}|{s*/.test(item)) ? JSON.parse(item) : item;
 			};
 			return __key => typeof __key === "string" ? local.removeItem(__key) : local.clear();
 		};
