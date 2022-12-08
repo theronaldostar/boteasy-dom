@@ -29,9 +29,9 @@ declare namespace BoteasyDOM {
 	type StateAction<S> = S | ((prev: S) => S);
 	type DOMElement = Element|HTMLElement|DocumentFragment;
 	/**/
-	type RequestError = {
+	type RequestError<J = any> = {
 		responseText: string;
-		responseJSON: object;
+		responseJSON: J;
 		type: string;
 		status: string;
 		statusText: string;
@@ -43,7 +43,7 @@ declare namespace BoteasyDOM {
 		data?: object;
 		dataType?: string;
 		success?: Void<R>;
-		error?: (error: RequestError) => any;
+		error?: Void<RequestError<R>>;
 		finally?: Void;
 	}
 	type Root = {
