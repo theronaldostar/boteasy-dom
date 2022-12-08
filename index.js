@@ -18,7 +18,7 @@
 	let dispatcher = {};
 	let themeStorage = {};
 
-	const version = "1.2.6-next-71h91oxp-@types";
+	const version = "1.2.6-next-correction-types";
 	const Fragment = Symbol.for("fragment");
 
 	const { localStorage, location, navigator, console } = window;
