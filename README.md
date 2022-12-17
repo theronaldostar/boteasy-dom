@@ -319,15 +319,29 @@ navigate("login");
 navigate("https://www.example.com/", false);
 ```
 
-# .useScroll(..., object|undefined):
+# .useScroll(string, object|undefined):
 * ???
 
 ```shell
-/**
- * TODO: Under Construction
- * this function is incomplete.
-*/
-let { x, y } useScroll("body", { behavior: "smooth" });
+const { x, y } useScroll("#root", { behavior: "smooth", offset = { top: 200, left: 0 } });
+```
+
+`methods`
+
+```shell
+y.value;
+```
+
+```shell
+y.setScroll(100);
+```
+
+```shell
+y.start();
+```
+
+```shell
+y.end();
 ```
 
 # .flushAsync(function, any):
@@ -504,11 +518,21 @@ const Style = cssStyled("boteasy-dom", {
 });
 ```
 
-`<Style><h1>Hello, world!</h1></Style>`
+```
+<Style>
+	<h1>Hello, world!</h1>
+</Style>
+```
 
 `jsxDEV(Style, null, jsxDEV("h1", null, "Hello, world!"));`
 
-`final: <boteasy-dom class="jss-..."><h1>Hello, world!</h1></boteasy-dom>`
+`final:`
+
+```
+<boteasy-dom class="jss-...">
+	<h1>Hello, world!</h1>
+</boteasy-dom>
+```
 
 # .rgba(string, number|undefined):
 * This function is for you to convert a hex color to rgba!
@@ -517,4 +541,10 @@ const Style = cssStyled("boteasy-dom", {
 rgba("#fff", 0.4); 
 ```
 
-`rgba(255,255,255,0.4)`
+`rgba(255,255,255, 0.4)`
+
+```shell
+rgba("black", .2); 
+```
+
+`rgba(0,0,0, 0.2)`

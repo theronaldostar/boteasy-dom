@@ -3,7 +3,8 @@
  * index.js
  * 
  * @license MIT
- * @copyright (c) since 2020 Boteasy, all rights reserved.
+ * @copyright (c) since 2021 Boteasy, all rights reserved.
+ * 
  * @description This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.
  */
 
@@ -13,15 +14,15 @@
 	(global = global || self, factory(global.BoteasyDOM = {}));
 } (this, (function(exports) {
 
-	//@ts-check
 	let currentRoot = null;
-	let dispatcher = {};
-	let themeStorage = {};
+	let dispatcher = obj;
+	let themeStorage = obj;
 
-	const version = "1.2.6-next-71h91oxp-types";
+	const version = "1.2.6";
 	const Fragment = Symbol.for("fragment");
+	const Obg = Object;
 
-	const { localStorage, location, navigator, console } = window;
+	const { console, localStorage, location, navigator, scroll } = window;
 
 	const nodeList = selector => document.querySelectorAll(selector || "*");
 
@@ -92,7 +93,6 @@
 		const url = props?.url || "";
 		const method = props?.method?.toUpperCase() || "GET";
 		const headers = new Headers(props?.headers || {});
-		method !== "GET" && headers.append("Content-Type", "application/x-www-form-urlencoded");
 		const data = new URLSearchParams(props?.data || {});
 		const params = method === "GET" ? `?${data.toString()}` : data.toString();
 		const dataType = props?.dataType?.toLowerCase() || "json";
@@ -102,22 +102,24 @@
 
 		const endPoint = method === "GET" ? params : "";
 		const body = method === "GET" ? null : params;
-		const link = url + endPoint;
+		const link = url+endPoint;
 
 		const callback = {
 			responseText: undefined,
 			responseJSON: undefined,
 			type: "connection",
 			status: "connection::ERROR",
-			statusText: "A technical fault has been detected and is already being fixed"
+			statusText: "Check your internet connection or the working status of the [url] in question."
 		};
+
+		if (method !== "GET") headers.append("Content-Type", "application/x-www-form-urlencoded");
 
 		fetch(link, { method, headers, body }).then(async response => {
 			if (!response.ok) {
-				let resolve = response.text();
 				callback.type = response.type;
 				callback.status = response.status;
 				callback.statusText = response.statusText;
+				let resolve = response.text();
 				await resolve.then(data => {
 					callback.responseText = data;
 					callback.responseJSON = JSON.parse(data);
@@ -133,30 +135,30 @@
 		"vibrate" in navigator && set(pattern);
 	};
 
-	const useClipboard = (value, effect = () => {}) => {
+	const useClipboard = (value, effect = function() {}) => {
 		const test = "clipboard" in navigator;
 		test && navigator.clipboard.writeText(value).then(effect);
 	};
 
 	const isObj = data => {
 		const type = typeof data === "object";
-		const length = Object.keys(data || {}).length > 0;
+		const length = Obg.keys(data || {}).length > 0;
 		return data !== null && type && length;
 	};
 
 	const useTwins = (primary = {}, secondary = {}) => {
 
 		let isTwins = true;
-		const __primary = Object.keys(primary || {});
-		const __secondary = Object.keys(secondary || {});
+		const $primary = Obg.keys(primary || {});
+		const $secondary = Obg.keys(secondary || {});
 
 		const isObj = object => {
 			const type = typeof object === "object";
-			const length = Object.keys(object || {}).length > 0;
+			const length = Obg.keys(object || {}).length > 0;
 			return object !== null && type && length;
 		};
 
-		if (__primary.length !== __secondary.length) return false;
+		if ($primary.length !== $secondary.length) return false;
 
 		if (!isObj(primary) || !isObj(secondary)) {
 			if (primary === secondary) return true;
@@ -164,7 +166,7 @@
 		};
 
 		const forEach = ($primary, $secondary) => {
-			Object.entries($primary).map(([i, value]) => {
+			Obg.entries($primary).map(([i, value]) => {
 				const $value = $secondary[i];
 				if (isObj(value) && isObj($value)) {
 					forEach(value, $value);
@@ -238,7 +240,7 @@
 			} else if (key && !value) {
 				return (item === "null" || /s}|{s*/.test(item)) ? JSON.parse(item) : item;
 			};
-			return __key => typeof __key === "string" ? local.removeItem(__key) : local.clear();
+			return $key => typeof $key === "string" ? local.removeItem($key) : local.clear();
 		};
 	};
 
@@ -251,14 +253,35 @@
 	};
 
 	const useScroll = (selector, options = {}) => {
-		let { behavior = "auto" } = options;
-		/**
-		 * TODO: Don't take this feature seriously at the moment!!
-		 * let { x, y } useScroll(selector, { ...options });
-		*/
-		let x;
-		let y;
-		return { x, y };
+
+		const {
+			behavior = "auto",
+			offset = { top: 0, left: 0 }
+		} = options;
+
+		const element = document.querySelector(selector || "body");
+
+		const set = props => scroll(props);
+
+		const props = coord => ({
+			get value() {
+				const { x, y } = element?.getBoundingClientRect() || { x: -0, y: -0 };
+				return Math.abs({ top: y, left: x }[coord]);
+			},
+			start: () => set({ [coord]: 0 }),
+			end: () => set({ [coord]: element.scrollHeight }),
+			setScroll: val => {
+				this.value = val;
+				set({[coord]: val, behavior});
+			}
+		});
+
+		set({...offset});
+
+		return {
+			x: props("left"),
+			y: props("top")
+		};
 	};
 
 	const flushAsync = async (callback, arg) => await callback(arg);
@@ -267,10 +290,6 @@
 		if (typeof type === "function") return type({...props, children});
 		return {type, props: {...props}, children};
 	};
-
-	/**
-	 * const jsxDEV = (type, props, ...children) => {};
-	*/
 
 	const createDOMElement = (type = null, label = null) => (
 		match({
@@ -323,7 +342,7 @@
 					if (semantic) {
 						element[i] = props[i];
 					} else if (typeof props[i] === "object" && i === "style") {
-						Object.entries(props[i]).map(([name, value]) => {
+						Obg.entries(props[i]).map(([name, value]) => {
 							const test = typeof value !== "string";
 							element.style[test ? name : hydrateProp(name)] = value;
 						});
@@ -433,24 +452,24 @@
 		let rules = {};
 
 		const forEach = (label, props, $rule = false) => {
-			const listing = Object.entries(props).map(([i, value]) => {
+			const listing = Obg.entries(props).map(([i, value]) => {
 				if (typeof value === "object") {
-					let __i = [];
+					let $i = [];
 					const test = /^(?=.*[&>~+])/.test(i);
 					const operator = test && i.replace(/\s+/g, "").substring(0, 1);
 					const tag = i.replace(/\s+/g, "").replace(/&|>|~|\+/gi, "");
 					const search = match({"&": "", ">": " > ", "~": " ~ ", "+": " + ", default: " "}, operator);
 					if(/^(?=.*[,])/.test(tag)) {
-						tag.split(",").map(event => __i.push("".concat(label, search, event)));
-						__i = __i.join(",").trim();
-					} else __i = label.concat(search, tag).trim();
-					forEach(__i, value, $rule);
+						tag.split(",").map(event => $i.push("".concat(label, search, event)));
+						$i = $i.join(",").trim();
+					} else $i = label.concat(search, tag).trim();
+					forEach($i, value, $rule);
 				} else return `${hydrateProp(i)}: ${hydrateProp(value)};`;
 			}).join("");
 			listing && ($rule ? rules[$rule].css = rules[$rule].css.concat(`${label} {${listing}}`) : css = css.concat(`${label} {${listing}}`));
 		};
 
-		Object.keys(object).map(key => {
+		Obg.keys(object).map(key => {
 			if (key.startsWith("@")) {
 				key === "@import" ? css = css.concat(`${key} ${object[key]};`) : rules[key] = {css: "", object: object[key]};
 				delete object[key];
@@ -459,7 +478,7 @@
 
 		forEach(random, object);
 
-		Object.entries(rules).map(([i, data]) => {
+		Obg.entries(rules).map(([i, data]) => {
 			forEach(random, data.object, i);
 			css = css.concat(`${i} {${data.css}}`);
 		});
@@ -484,7 +503,7 @@
 		if (style) {
 			style.insertAdjacentText("beforeend", cssContent);
 		} else {
-			let newStyle = createDOMElement("element", "style");
+			const newStyle = createDOMElement("element", "style");
 			newStyle.setAttribute("data-boteasy", global ? "global-style" : "style");
 			newStyle.textContent = cssContent;
 			document.querySelector("head").appendChild(newStyle);
@@ -507,12 +526,24 @@
 		const random = `jss-${useId(6, true)}`;
 		const content = createStyle(`.${random}`, jssObject);
 		appendCSSInHead(content);
-		return /*#__PURE__*/createElement(tagName || "div", {className: random});
+		return /*#__PURE__*/createElement(tagName || "div", { className: random });
 	};
 
-	const rgba = (hex, opacity = 1) => {
-		const rgb = hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i,
-		(_,r,g,b) => "#"+r+r+g+g+b+b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
+	const rgba = (color, opacity = 1) => {
+
+		const isHex = color.startsWith("#");
+
+		const getHex = colorName => {
+			const $ = createDOMElement("element", "div");
+			$.style.color = colorName;
+			const $color = window.getComputedStyle(document.body.appendChild($)).color.match(/\d+/g).map(data => parseInt(data, 10));
+			document.body.removeChild($);
+			return ($color.length >= 3) ? `#${(((1<<24) + ($color[0] << 16) + ($color[1] << 8) + $color[2]).toString(16).substring(1))}` : "#fff0";
+		};
+
+		color = isHex ? color : getHex(color);
+
+		const rgb = color.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (_,r,g,b) => "#"+r+r+g+g+b+b).substring(1).match(/.{2}/g).map(x => parseInt(x, 16));
 		return `rgba(${rgb}, ${opacity})`;
 	};
 

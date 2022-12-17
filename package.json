@@ -1,7 +1,7 @@
 {
 	"name": "boteasy-dom",
-	"version": "1.2.6-next-71h91oxp-types",
 	"description": "This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.",
+	"version": "1.2.6",
 	"license": "MIT",
 	"author": {
 		"name": "Ronaldo S.",
@@ -49,6 +49,6 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/theronaldostar/boteasy-dom.git"
+		"url": "https://github.com/theronaldostar/boteasy-dom"
 	}
 }
