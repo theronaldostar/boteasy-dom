@@ -18,11 +18,11 @@
 	let dispatcher = {};
 	let themeStorage = {};
 
-	const version = "1.2.6-remake";
+	const version = "1.2.7";
 	const Fragment = Symbol.for("fragment");
 	const Obg = Object;
 
-	const { console, localStorage, location, navigator, scroll } = window;
+	const { console, localStorage, location, navigator } = window;
 
 	const nodeList = selector => document.querySelectorAll(selector || "*");
 
@@ -261,19 +261,20 @@
 
 		const element = document.querySelector(selector || "body");
 
-		const set = props => scroll(props);
+		const set = props => element?.scroll(props);
 
 		const props = coord => ({
 			get value() {
 				const { x, y } = element?.getBoundingClientRect() || { x: -0, y: -0 };
 				return Math.abs({ top: y, left: x }[coord]);
 			},
-			start: () => set({ [coord]: 0 }),
-			end: () => set({ [coord]: element.scrollHeight }),
-			setScroll: val => {
-				this.value = val;
-				set({[coord]: val, behavior});
-			}
+			start: () => set({[coord]: 0}),
+			end: () => {
+				const width = element?.scrollWidth;
+				const height = element?.scrollHeight;
+				set({[coord]: coord === "top" ? height : width});
+			},
+			setScroll: val => set({[coord]: val, behavior})
 		});
 
 		set({...offset});
