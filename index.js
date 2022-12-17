@@ -15,10 +15,10 @@
 } (this, (function(exports) {
 
 	let currentRoot = null;
-	let dispatcher = obj;
-	let themeStorage = obj;
+	let dispatcher = {};
+	let themeStorage = {};
 
-	const version = "1.2.6";
+	const version = "1.2.6-remake";
 	const Fragment = Symbol.for("fragment");
 	const Obg = Object;
 
