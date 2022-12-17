@@ -18,7 +18,7 @@
 	let dispatcher = {};
 	let themeStorage = {};
 
-	const version = "1.2.7";
+	const version = "1.2.8-next-remeke-1.2.7";
 	const Fragment = Symbol.for("fragment");
 	const Obg = Object;
 
@@ -268,18 +268,26 @@
 				const { x, y } = element?.getBoundingClientRect() || { x: -0, y: -0 };
 				return Math.abs({ top: y, left: x }[coord]);
 			},
-			start: () => set({[coord]: 0}),
-			end: () => {
-				const width = element?.scrollWidth;
-				const height = element?.scrollHeight;
-				set({[coord]: coord === "top" ? height : width});
+			get width() {
+				return element?.scrollWidth;
 			},
-			setScroll: val => set({[coord]: val, behavior})
+			get height() {
+				return element?.scrollHeight;
+			},
+			start() {set({[coord]: 0})},
+			end() {set({[coord]: coord === "top" ? this.height : this.width})},
+			setScroll(val = 0) {set({[coord]: val, behavior})}
 		});
 
 		set({...offset});
 
 		return {
+			get width() {
+				return element?.clientWidth;
+			},
+			get height() {
+				return element?.clientHeight;
+			},
 			x: props("left"),
 			y: props("top")
 		};

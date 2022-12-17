@@ -323,13 +323,17 @@ navigate("https://www.example.com/", false);
 * ???
 
 ```shell
-const { x, y } useScroll("#root", { behavior: "smooth", offset = { top: 200, left: 0 } });
+const { width, height, x, y } useScroll("#root", { behavior: "smooth", offset = { top: 200, left: 0 } });
 ```
 
 `methods`
 
 ```shell
-y.value;
+height; //number
+```
+
+```shell
+y.value; //number
 ```
 
 ```shell

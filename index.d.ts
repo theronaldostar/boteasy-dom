@@ -40,7 +40,9 @@ declare namespace BoteasyDOM {
 	};
 	/**/
 	type ScrollProps = {
-		value: number;
+		readonly value: number;
+		readonly width: number;
+		readonly height: number;
 		start(): void;
 		end(): void;
 		setScroll(value: number): void;
@@ -236,12 +238,14 @@ declare namespace BoteasyDOM {
 	/**
 	 * @description ???
 	 * @example
-	 * const { x, y } = useScroll("#root", {
+	 * const { width, height, x, y } = useScroll("#root", {
 	 * 	behavior: "smooth",
 	 * 	offset = { top: 200, left: 0 }
 	 * });
 	 */
 	const useScroll: (selector: string, options?: Scroll) => {
+		readonly width: number;
+		readonly height: number;
 		x: ScrollProps;
 		y: ScrollProps;
 	};
