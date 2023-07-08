@@ -14,12 +14,12 @@
 		: typeof define === "function" && define.amd
 		? define(["exports"], factory)
 		: ((global = global || self), factory((global.BoteasyDOM = {})));
-})(this, function (exports) {
+})(this, exports => {
 	let currentRoot = null;
 	let dispatcher = {};
 	let themeStorage = {};
 
-	const version = "1.2.8-next-piujzlxrn";
+	const version = "1.2.8";
 	const Fragment = Symbol.for("fragment");
 	const Obg = Object;
 
@@ -95,13 +95,13 @@
 		const data = new URLSearchParams(props?.data || {});
 		const params = method === "GET" ? `?${data.toString()}` : data.toString();
 		const dataType = props?.dataType?.toLowerCase() || "json";
-		const success = props?.success || function () {};
+		const success = props?.success || (() => {});
 		const error =
 			props?.error ||
-			function (error) {
+			(error => {
 				throw error;
-			};
-		const $finally = props?.finally || function () {};
+			});
+		const $finally = props?.finally || (() => {});
 
 		const endPoint = method === "GET" ? params : "";
 		const body = method === "GET" ? null : params;
@@ -142,7 +142,7 @@
 		"vibrate" in navigator && set(pattern);
 	};
 
-	const useClipboard = (value, effect = function () {}) => {
+	const useClipboard = (value, effect = () => {}) => {
 		const test = "clipboard" in navigator;
 		test && navigator.clipboard.writeText(value).then(effect);
 	};

@@ -1,7 +1,7 @@
 {
 	"name": "boteasy-dom",
 	"description": "This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.",
-	"version": "1.2.8-next-piujzlxrn",
+	"version": "1.2.8",
 	"license": "MIT",
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -13,6 +13,7 @@
 	"contributors": [],
 	"homepage": "https://github.com/theronaldostar/boteasy-dom",
 	"files": [
+		".editorconfig",
 		".gitignore",
 		".prettierrc.js",
 		"index.d.ts",
