@@ -1,54 +1,59 @@
 {
 	"name": "boteasy-dom",
 	"description": "This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.",
-	"version": "1.2.8-next-remeke-1.2.7",
+	"version": "1.2.8-next-piujzlxrn",
 	"license": "MIT",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"scripts": {},
 	"author": {
 		"name": "Ronaldo S.",
 		"email": "ronaldo.rs44@gmail.com"
 	},
+	"contributors": [],
 	"homepage": "https://github.com/theronaldostar/boteasy-dom",
 	"files": [
-		"LICENSE",
-		"index.js",
-		"index.d.ts",
 		".gitignore",
-		"package.json",
+		".prettierrc.js",
+		"index.d.ts",
+		"index.js",
+		"LICENSE",
 		"README.md"
 	],
 	"keywords": [
-		"react",
-		"router",
+		"AJAX",
 		"boteasy-dom",
 		"boteasy",
-		"dom",
-		"rgb",
-		"JSX",
-		"jQuery",
-		"AJAX",
-		"storage",
-		"match",
-		"vibrate",
-		"vdom",
+		"clsx",
 		"components",
-		"front-end",
-		"framework",
-		"virtual dom",
-		"user interface",
-		"styled",
 		"css styled",
+		"dom",
+		"framework",
+		"front-end",
+		"global style",
+		"jQuery",
+		"JSX",
+		"match",
+		"react",
+		"router",
+		"rgb",
+		"storage",
 		"styled agnostic",
-		"global style"
+		"styled",
+		"user interface",
+		"vdom",
+		"vibrate",
+		"virtual dom"
 	],
-	"main": "index.js",
-	"types": "index.d.ts",
-	"scripts": {},
-	"engines": {},
 	"bugs": {
 		"url": "https://github.com/theronaldostar/boteasy-dom/issues"
 	},
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/theronaldostar/boteasy-dom"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"prettier": "3.0.0"
 	}
 }

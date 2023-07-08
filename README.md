@@ -1,7 +1,9 @@
-# [BoteasyDOM](https://boteasy.net/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/theronaldostar/boteasy-dom/blob/main/LICENSE)  [![npm version](https://img.shields.io/npm/v/boteasy-dom.svg?style=flat)](https://www.npmjs.com/package/boteasy-dom)  [![npm version](https://badge.fury.io/js/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom)  [![Downloads](https://img.shields.io/npm/dm/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom)
+# [BoteasyDOM](https://boteasy.net/) &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/theronaldostar/boteasy-dom/blob/main/LICENSE) [![npm version](https://img.shields.io/npm/v/boteasy-dom.svg?style=flat)](https://www.npmjs.com/package/boteasy-dom) [![npm version](https://badge.fury.io/js/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom) [![Downloads](https://img.shields.io/npm/dm/boteasy-dom.svg)](https://www.npmjs.com/package/boteasy-dom)
 
-* This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.
+-   This document is inspired by React, React-router, jQuery and styled-components, the aim is to have a merge of everything good in one documentation.
+
 ---
+
 # How to use?
 
 ```shell
@@ -22,7 +24,7 @@ const App = () => {
 	return (
 		<>
 			<h1>{count}</h1>
-			<button onClick={() => setCount(prev => (prev + 1))}>Increment</button>
+			<button onClick={() => setCount(prev => prev + 1)}>Increment</button>
 		</>
 	);
 };
@@ -45,28 +47,32 @@ const {  } = BoteasyDOM;
 ```
 
 # .theme:
-* ???
+
+-   ???
 
 ```shell
 const scheme = theme;
 ```
 
 # .version:
-* A boteasy-dom version
+
+-   A boteasy-dom version
 
 ```shell
 const ver = version;
 ```
 
 # .Fragment:
-* Allows a component to return multiple elements grouped a list of children without adding extra nodes to the DOM
+
+-   Allows a component to return multiple elements grouped a list of children without adding extra nodes to the DOM
 
 ```shell
 <>{/*@__DATA__*/}</>
 ```
 
 # .match(object, string|null):
-* This function is a direct alternative to "switch ~ case", and is based on the match function of the php language
+
+-   This function is a direct alternative to "switch ~ case", and is based on the match function of the php language
 
 ```shell
 const index = null;
@@ -78,14 +84,14 @@ match({
 ```
 
 # .useId(number|undefined, boolean|undefined):
-* ???
+
+-   ???
 
 ```shell
 const inputId = useId(2);
 ```
 
 `returns: :string:`
-
 
 ```shell
 const inputId = useId(2, true);
@@ -98,7 +104,8 @@ const inputId = useId(2, true);
 `jsxDEV("input", {type: "text", id: inputId})`
 
 # .useRef(any|function):
-* ???
+
+-   ???
 
 ```shell
 const email = useRef(() => {
@@ -114,14 +121,16 @@ const email = useRef(() => {
 `let yourEmail = email.value;`
 
 # .useHtml(selector, value):
-* This function serves to add or remove an element in the DOM
+
+-   This function serves to add or remove an element in the DOM
 
 ```shell
 useHtml("#root", `<h1>Hello, world!</h1>`);
 ```
 
 # .useAppend(selector, string, boolean|undefined):
-* ???
+
+-   ???
 
 ```shell
 useAppend("#root", `<div>Text</div>`);
@@ -136,7 +145,8 @@ useAppend("#root", `<div>Text</div>`, true);
 `Just inside the element, after its last child.`
 
 # .useWait(bolean|string):
-* This function is for you to disable all elements;
+
+-   This function is for you to disable all elements;
 
 ```shell
 useWait(true);
@@ -147,7 +157,8 @@ useWait(false);
 ```
 
 # .useProp(selectors, attribute, any):
-* This function is used to enable/disable elements or select an input type checkbox, for example;
+
+-   This function is used to enable/disable elements or select an input type checkbox, for example;
 
 ```shell
 useProp("input, select", "disabled", true);
@@ -158,7 +169,8 @@ useProp("input", "disabled", false);
 ```
 
 # .useRequest({}):
-* This function serves to perform AJAX requests;
+
+-   This function serves to perform AJAX requests;
 
 ```shell
 useRequest({
@@ -174,7 +186,8 @@ useRequest({
 ```
 
 # .useVibrate(number|number[]|undefined):
-* ???
+
+-   ???
 
 ```shell
 useVibrate(100);
@@ -195,7 +208,8 @@ useVibrate([150, 150, 150, 150, 75, 75, 150, 150, 150, 150, 450]);
 `powerrangers`
 
 # .useClipboard(string, function|undefined):
-* This function serves to copy a text to a clipboard;
+
+-   This function serves to copy a text to a clipboard;
 
 ```shell
 const text = "Just a test!";
@@ -205,14 +219,16 @@ useClipboard(text, () => {
 ```
 
 # .isObj(any):
-* ???
+
+-   ???
 
 ```shell
 const is = isObj({ name: "Boteasy" });
 ```
 
 # .useTwins(string|{}|[], string|{}|[]):
-* As the name says, this function is for you to compare if two objects or array are equal.
+
+-   As the name says, this function is for you to compare if two objects or array are equal.
 
 ```shell
 const array = ["boteasy", "dom"];
@@ -225,7 +241,8 @@ useTwins(array, array2);
 ```
 
 # .useFloat(number|string, number):
-* ???
+
+-   ???
 
 ```shell
 const total = 100.123;
@@ -233,7 +250,8 @@ useFloat(total, 2);
 ```
 
 # .useState(any|function):
-* This function is just for adding some local states.
+
+-   This function is just for adding some local states.
 
 ```shell
 const [state, setState] = useState(9);
@@ -241,7 +259,8 @@ setState(prev => (prev + 1));
 ```
 
 # .useEffect(function, []|undefined):
-* ???
+
+-   ???
 
 ```shell
 let name = "boteasy";
@@ -257,7 +276,8 @@ useEffect(() => {
 ```
 
 # .useStorage():
-* Manipulates: window.localStorage.
+
+-   Manipulates: window.localStorage.
 
 ```shell
 const storage = useStorage();
@@ -293,7 +313,8 @@ storage()();
 `clear`
 
 # .useNavigate(number|undefined):
-* ???
+
+-   ???
 
 ```shell
 const navigate = useNavigate(1000);
@@ -320,10 +341,11 @@ navigate("https://www.example.com/", false);
 ```
 
 # .useScroll(string, object|undefined):
-* ???
+
+-   ???
 
 ```shell
-const { width, height, x, y } useScroll("#root", { behavior: "smooth", offset = { top: 200, left: 0 } });
+const { width, height, x, y } = useScroll("#root", { behavior: "smooth", offset = { top: 200, left: 0 } });
 ```
 
 `methods`
@@ -349,7 +371,8 @@ y.end();
 ```
 
 # .flushAsync(function, any):
-* ???
+
+-   ???
 
 ```shell
 flushAsync(event => {
@@ -358,7 +381,8 @@ flushAsync(event => {
 ```
 
 # .createRoot(container, object|bolean|undefined):
-* This function serves to create a route to Boteasy-dom, send the second parameter an object containing an intex with hydrate as true.
+
+-   This function serves to create a route to Boteasy-dom, send the second parameter an object containing an intex with hydrate as true.
 
 ```shell
 const container = document.querySelector("#root");
@@ -370,7 +394,7 @@ const root = createRoot(container, {
 });
 ```
 
-* Render the element in the root;
+-   Render the element in the root;
 
 ```shell
 const element = <h1>Hello, world!</h1>;
@@ -379,14 +403,15 @@ root.render(element);
 
 `<h1>Hello, world!</h1>`
 
-* Remove the element in the root;
+-   Remove the element in the root;
 
 ```shell
 root.unmount();
 ```
 
 # .hydrateRoot(container, component):
-* hydrate the element in the root;
+
+-   hydrate the element in the root;
 
 ```shell
 const name = "Boteasy";
@@ -397,7 +422,8 @@ hydrateRoot(container, <h1>Hello, {name}.</h1>);
 `<h1>Hello, Ronaldo S.</h1>`
 
 # .StrictMode():
-* ???
+
+-   ???
 
 ```shell
 const App = (
@@ -414,7 +440,8 @@ const App = (
 ```
 
 # .StyleProvider({ theme: object }|undefined):
-* ???
+
+-   ???
 
 ```shell
 const provider = {color: "#000", fontWeight: "bold"};
@@ -435,8 +462,10 @@ const App = (
 ```
 
 # .createElement(any, null|object, any[]|undefined):
+
 # .jsxDEV(any, null|object, any[]|undefined):
-* This function serves to create elements to be rendered by Boteasy-dom;
+
+-   This function serves to create elements to be rendered by Boteasy-dom;
 
 ```shell
 createElement(StrictMode, null,
@@ -461,7 +490,8 @@ jsxDEV(StrictMode, null,
 `<input type="email" class="boteasy" style="color: #000;font-weight: bold">`
 
 # .cssClass(string|undefined):
-* This function is for you to add or remove multiple class on one or multiple elements;
+
+-   This function is for you to add or remove multiple class on one or multiple elements;
 
 ```shell
 cssClass("input, select").toggle("boteasy, dom");
@@ -483,8 +513,31 @@ css.remove("dom");
 css.toggle("dom");
 ```
 
+# .useMarginClass(string | string[]):
+
+-   ???
+
+```shell
+const baseClass = useMarginClass("boteasy");
+```
+
+`"boteasy"`
+
+```shell
+const baseClass = useMarginClass("boteasy", "dom");
+```
+
+` "boteasy dom"`
+
+```shell
+<div className={baseClass}>...</div>
+```
+
+`"<div class="boteasy dom">...</div>"`
+
 # .globalStyle(object):
-* ???
+
+-   ???
 
 ```shell
 const GlobalStyle = globalStyle({
@@ -499,7 +552,8 @@ const GlobalStyle = globalStyle({
 `GlobalStyle()`
 
 # .cssStyled(object):
-* ???
+
+-   ???
 
 ```shell
 const css = cssStyled({
@@ -513,7 +567,8 @@ const css = cssStyled({
 `jsxDEV("h1", {className: css});`
 
 # .styled(string, object):
-* ???
+
+-   ???
 
 ```shell
 const Style = cssStyled("boteasy-dom", {
@@ -539,16 +594,17 @@ const Style = cssStyled("boteasy-dom", {
 ```
 
 # .rgba(string, number|undefined):
-* This function is for you to convert a hex color to rgba!
+
+-   This function is for you to convert a hex color to rgba!
 
 ```shell
-rgba("#fff", 0.4); 
+rgba("#fff", 0.4);
 ```
 
 `rgba(255,255,255, 0.4)`
 
 ```shell
-rgba("black", .2); 
+rgba("black", .2);
 ```
 
 `rgba(0,0,0, 0.2)`

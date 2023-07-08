@@ -1,17 +1,20 @@
 /**
  * @license Boteasy-DOM
  * index.d.ts
- * 
+ *
  * @copyright (c) since 2021 Boteasy, all rights reserved.
-*/
+ */
 
 declare namespace BoteasyDOM {
-	/**/
+	/** @type */
 	type Void<V = any> = (value: V) => any;
+	/** @type */
 	type Dispatch<D> = (value: D) => void;
+	/** @type */
 	type StateAction<S> = S | ((prev: S) => S);
-	type DOMElement = Element|HTMLElement|DocumentFragment;
-	/**/
+	/** @type */
+	type DOMElement = Element | HTMLElement | DocumentFragment;
+	/** @type */
 	type RequestError<J = any> = {
 		responseText: string;
 		responseJSON: J;
@@ -19,7 +22,7 @@ declare namespace BoteasyDOM {
 		status: string;
 		statusText: string;
 	};
-	/**/
+	/** @type */
 	type RequestProps<R> = {
 		url: string;
 		method?: string;
@@ -30,7 +33,7 @@ declare namespace BoteasyDOM {
 		error?: Void<RequestError<R>>;
 		finally?: Void;
 	};
-	/**/
+	/** @type */
 	type Scroll = {
 		behavior?: "auto" | "smooth";
 		offset?: {
@@ -38,7 +41,7 @@ declare namespace BoteasyDOM {
 			left?: number;
 		};
 	};
-	/**/
+	/** @type */
 	type ScrollProps = {
 		readonly value: number;
 		readonly width: number;
@@ -47,12 +50,12 @@ declare namespace BoteasyDOM {
 		end(): void;
 		setScroll(value: number): void;
 	};
-	/**/
+	/** @type */
 	type Root = {
 		render: (children: DOMElement) => void;
 		unmount: Void;
 	};
-	/**/
+	/** @type */
 	type CSSOptions = {
 		add: (classList: string) => void;
 		remove: (classList: string) => void;
@@ -103,7 +106,7 @@ declare namespace BoteasyDOM {
 	 * });
 	 * (<input type="email" ref={email} />);
 	 */
-	const useRef: <R>(initialRef: R|(() => R)) => {
+	const useRef: <R>(initialRef: R | (() => R)) => {
 		value: R;
 		setRef: ({ target }: any) => void;
 	};
@@ -128,7 +131,7 @@ declare namespace BoteasyDOM {
 	 * useWait(true);//Block any interaction
 	 * useWait(false);
 	 */
-	const useWait: (action: boolean|string) => void;
+	const useWait: (action: boolean | string) => void;
 	/**
 	 * @description This function is used to enable/disable elements or select an input type checkbox, for example
 	 * @example
@@ -175,7 +178,7 @@ declare namespace BoteasyDOM {
 	 * @example
 	 * const is = isObj({ name: "Boteasy" });
 	 */
-	const isObj: <O>(data: O) => true|false;
+	const isObj: <O>(data: O) => true | false;
 	/**
 	 * @description As the name says, this function is for you to compare if two objects or array are equal
 	 * @example
@@ -183,7 +186,7 @@ declare namespace BoteasyDOM {
 	 * const array2 = ["boteasy", "dom", "version": ["latest"]];
 	 * useTwins(array, array2);//false
 	 */
-	const useTwins: <P, S>(primary?: P, secondary?: S) => true|false;
+	const useTwins: <P, S>(primary?: P, secondary?: S) => true | false;
 	/**
 	 * @description ???
 	 * @example
@@ -197,7 +200,7 @@ declare namespace BoteasyDOM {
 	 * const [state, setState] = useState(9);
 	 * setState(prev => (prev + 1));
 	 */
-	const useState: <S>(initialState: S|(() => S)) => [S, Dispatch<StateAction<S>>];
+	const useState: <S>(initialState: S | (() => S)) => [S, Dispatch<StateAction<S>>];
 	/**
 	 * @description ???
 	 * @example
@@ -243,7 +246,10 @@ declare namespace BoteasyDOM {
 	 * 	offset = { top: 200, left: 0 }
 	 * });
 	 */
-	const useScroll: (selector: string, options?: Scroll) => {
+	const useScroll: (
+		selector: string,
+		options?: Scroll,
+	) => {
 		readonly width: number;
 		readonly height: number;
 		x: ScrollProps;
@@ -260,9 +266,9 @@ declare namespace BoteasyDOM {
 	/**
 	 * @description This function serves to create elements to be rendered by Boteasy-dom
 	 * @example
-	 * createElement("div", {id: "root"}, "loading");//<div id="root">loading</div>
+	 * createElement("div", {id: "root"}, "loading"); //<div id="root">loading</div>
 	 */
-	const createElement: (type: any, props: object|null, ...children: any[]) => object;
+	const createElement: (type: any, props: object | null, ...children: any[]) => object;
 	/**
 	 * @description This function serves to create a route to Boteasy-dom. Send the second parameter an object containing an intex with hydrate as true
 	 * @example
@@ -271,10 +277,13 @@ declare namespace BoteasyDOM {
 	 * 	response: () => console.log("Hello World");
 	 * });
 	 */
-	const createRoot: (container: DOMElement, args?: {
-		hydrate?: boolean;
-		response?: Void;
-	}) => Root;
+	const createRoot: (
+		container: DOMElement,
+		args?: {
+			hydrate?: boolean;
+			response?: Void;
+		},
+	) => Root;
 	/**
 	 * @description hydrate the element in the root.
 	 * @example
@@ -288,7 +297,7 @@ declare namespace BoteasyDOM {
 	 * (<StrictMode><App /></StrictMode>)
 	 * (<StrictMode element={<App />} />)
 	 */
-	const StrictMode: <S = { element?: DOMElement, children?: DOMElement }>(props: S) => void;
+	const StrictMode: <S = { element?: DOMElement; children?: DOMElement }>(props: S) => void;
 	/**
 	 * @description ???
 	 */
@@ -297,6 +306,14 @@ declare namespace BoteasyDOM {
 	 * @description This function is for you to add or remove multiple class on one or multiple elements
 	 */
 	const cssClass: (selector?: string) => CSSOptions;
+	/**
+	 * @description ???
+	 * @example
+	 * const baseClass = useMarginClass("");
+	 *
+	 * const baseClass = useMarginClass("1 2", "3 4 5"); //1 2 3 4 5
+	 */
+	const useMarginClass: <T = string>(...classNames: (boolean | T | undefined)[]) => string;
 	/**
 	 * @description ???
 	 * @example
@@ -318,7 +335,7 @@ declare namespace BoteasyDOM {
 	 * @description ???
 	 * @example
 	 * const Style = styled("boteasy-dom", { color: "#fff", padding: 8, backgroundColor: "tomato" });
-	 * (<Style></Style>);//<boteasy-dom></boteasy-dom>
+	 * (<Style></Style>); //<boteasy-dom></boteasy-dom>
 	 */
 	const styled: <S>(tagName: string, jssObject: S) => any;
 	/**
